@@ -37,15 +37,12 @@ async function main() {
     platform: 'node',
     bundle: true,
     write: false,
-    format: 'cjs',
+    format: 'esm',
     jsx: 'automatic',
     loader: {
       '.js': 'jsx',
       '.ts': 'tsx'
     },
-    // jsxFactory: 'h',
-    // jsxFragment: 'Fragment',
-    // external: ['react'],
     globalName: 'React',
     define: { 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development') }
   }).catch((err) => {
