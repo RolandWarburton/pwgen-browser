@@ -11,7 +11,6 @@ const App = () => {
         setPassword(result.password);
       } else {
         const newPassword = await genpw();
-        localStorage.setItem('key', 'value');
         chrome.storage.local.set({ password: newPassword }, () => {
           setPassword(newPassword);
         });
