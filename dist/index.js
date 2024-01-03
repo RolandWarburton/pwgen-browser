@@ -23508,18 +23508,19 @@ var require_client = __commonJS({
 });
 
 // src/index.tsx
-var import_react = __toESM(require_react());
+var import_react2 = __toESM(require_react());
 var import_client = __toESM(require_client());
 
 // src/popup.tsx
+var import_react = __toESM(require_react());
 var App = () => {
-  return /* @__PURE__ */ React.createElement("div", null, "hello");
+  return /* @__PURE__ */ import_react.default.createElement("div", null, "hello");
 };
 
 // src/index.tsx
 var domNode = document.getElementById("root");
 var root = (0, import_client.createRoot)(domNode);
-root.render(/* @__PURE__ */ import_react.default.createElement(App, null));
+root.render(/* @__PURE__ */ import_react2.default.createElement(App, null));
 /*! Bundled license information:
 
 react/cjs/react.development.js:
