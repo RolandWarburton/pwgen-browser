@@ -1,6 +1,16 @@
-import React from  'react'
+import React, {useState, useEffect} from 'react';
+import { genpw } from '@rolandwarburton/pwgen';
+
 const App = () => {
-  return <div>hello</div>;
+  const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      setPassword(await genpw());
+    })();
+  }, []);
+
+  return <div>{password}</div>;
 };
 
 export { App };
