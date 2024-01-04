@@ -38630,7 +38630,6 @@ var Row = j("div")`
   gap: 10px;
   align-items: center;
   margin: 0.25em;
-  height: 100%;
 `;
 var PasswordCell = j("div")`
 `;
@@ -38796,7 +38795,6 @@ var App = () => {
     "div",
     {
       onClick: () => {
-        console.log("test");
         navigate(`/qr/${password2.password}`);
       }
     },
