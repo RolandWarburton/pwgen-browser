@@ -10,11 +10,14 @@ import {
   SettingsButton,
   ButtonGroup
 } from '../../components/styles';
+import { IconComponent } from './qr';
+import { useNavigate } from 'react-router-dom';
 
 const App = () => {
   const [password, setPassword] = useState('');
   const [passwords, setPasswords] = useState<{ password: string; note: string }[]>([]);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // get the password from storage (set if its not stored)
@@ -77,8 +80,15 @@ const App = () => {
           defaultValue={password}
         />
         {passwords.map((password, index) => (
-          <Row key={index}>
+          <Row key={index} columns="1fr auto 2fr">
             {password.password}
+            <div
+              onClick={() => {
+                navigate(`/qr/${password.password}`);
+              }}
+            >
+              <IconComponent onClickHandler={() => { }} />
+            </div>
             <NoteCell
               type="text"
               placeholder="note"
