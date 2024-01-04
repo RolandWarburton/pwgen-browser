@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { genpw } from '@rolandwarburton/pwgen';
-import { Container, PasswordRow, PasswordCell, NoteCell } from './style';
+import {
+  ButtonGroupButton,
+  Button,
+  Container,
+  PasswordRow,
+  NoteCell,
+  SettingsButton,
+  ButtonGroup
+} from '../../components/styles';
 
 const App = () => {
   const [password, setPassword] = useState('');
