@@ -10,7 +10,7 @@ Generate a password, store up to 5 previously generated passwords.
 
 ![Screenshot 2](./assets/screenshot2.png)
 
-Change the parameters of passwords generated
+Change the parameters of passwords generated.
 
 ## Packaging
 
