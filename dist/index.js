@@ -2381,9 +2381,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React6 = require_react();
+        var React7 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React6.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React7.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -3988,7 +3988,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React6.Children.forEach(props.children, function(child) {
+                React7.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -12435,7 +12435,7 @@ var require_react_dom_development = __commonJS({
           }
         }
         var fakeInternalInstance = {};
-        var emptyRefsObject = new React6.Component().refs;
+        var emptyRefsObject = new React7.Component().refs;
         var didWarnAboutStateAssignmentForComponent;
         var didWarnAboutUninitializedState;
         var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -27060,7 +27060,7 @@ var require_react_router_development = __commonJS({
   "node_modules/react-router/dist/umd/react-router.development.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require_react(), require_router_cjs()) : typeof define === "function" && define.amd ? define(["exports", "react", "@remix-run/router"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.ReactRouter = {}, global.React, global.RemixRouter));
-    })(exports, function(exports2, React6, router2) {
+    })(exports, function(exports2, React7, router2) {
       "use strict";
       function _interopNamespace(e2) {
         if (e2 && e2.__esModule)
@@ -27082,7 +27082,7 @@ var require_react_router_development = __commonJS({
         n2["default"] = e2;
         return Object.freeze(n2);
       }
-      var React__namespace = /* @__PURE__ */ _interopNamespace(React6);
+      var React__namespace = /* @__PURE__ */ _interopNamespace(React7);
       function _extends() {
         _extends = Object.assign ? Object.assign.bind() : function(target) {
           for (var i2 = 1; i2 < arguments.length; i2++) {
@@ -28281,7 +28281,7 @@ var require_react_router_dom_development = __commonJS({
   "node_modules/react-router-dom/dist/umd/react-router-dom.development.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require_react(), require_react_dom(), require_main(), require_router_cjs()) : typeof define === "function" && define.amd ? define(["exports", "react", "react-dom", "react-router", "@remix-run/router"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.ReactRouterDOM = {}, global.React, global.ReactDOM, global.ReactRouter, global.RemixRouter));
-    })(exports, function(exports2, React6, ReactDOM, reactRouter, router2) {
+    })(exports, function(exports2, React7, ReactDOM, reactRouter, router2) {
       "use strict";
       function _interopNamespace(e2) {
         if (e2 && e2.__esModule)
@@ -28303,7 +28303,7 @@ var require_react_router_dom_development = __commonJS({
         n2["default"] = e2;
         return Object.freeze(n2);
       }
-      var React__namespace = /* @__PURE__ */ _interopNamespace(React6);
+      var React__namespace = /* @__PURE__ */ _interopNamespace(React7);
       var ReactDOM__namespace = /* @__PURE__ */ _interopNamespace(ReactDOM);
       function _extends() {
         _extends = Object.assign ? Object.assign.bind() : function(target) {
@@ -29835,7 +29835,7 @@ var require_lib = __commonJS({
       default: () => QRCode
     });
     module.exports = __toCommonJS(src_exports);
-    var import_react6 = __toESM2(require_react());
+    var import_react7 = __toESM2(require_react());
     var qrcodegen;
     ((qrcodegen2) => {
       const _QrCode = class {
@@ -30529,10 +30529,10 @@ var require_lib = __commonJS({
         "imageSettings"
       ]);
       const imgSrc = imageSettings == null ? void 0 : imageSettings.src;
-      const _canvas = (0, import_react6.useRef)(null);
-      const _image = (0, import_react6.useRef)(null);
-      const [isImgLoaded, setIsImageLoaded] = (0, import_react6.useState)(false);
-      (0, import_react6.useEffect)(() => {
+      const _canvas = (0, import_react7.useRef)(null);
+      const _image = (0, import_react7.useRef)(null);
+      const [isImgLoaded, setIsImageLoaded] = (0, import_react7.useState)(false);
+      (0, import_react7.useEffect)(() => {
         if (_canvas.current != null) {
           const canvas = _canvas.current;
           const ctx = canvas.getContext("2d");
@@ -30573,13 +30573,13 @@ var require_lib = __commonJS({
           }
         }
       });
-      (0, import_react6.useEffect)(() => {
+      (0, import_react7.useEffect)(() => {
         setIsImageLoaded(false);
       }, [imgSrc]);
       const canvasStyle = __spreadValues({ height: size, width: size }, style);
       let img = null;
       if (imgSrc != null) {
-        img = /* @__PURE__ */ import_react6.default.createElement("img", {
+        img = /* @__PURE__ */ import_react7.default.createElement("img", {
           src: imgSrc,
           key: imgSrc,
           style: { display: "none" },
@@ -30589,7 +30589,7 @@ var require_lib = __commonJS({
           ref: _image
         });
       }
-      return /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null, /* @__PURE__ */ import_react6.default.createElement("canvas", __spreadValues({
+      return /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, /* @__PURE__ */ import_react7.default.createElement("canvas", __spreadValues({
         style: canvasStyle,
         height: size,
         width: size,
@@ -30623,7 +30623,7 @@ var require_lib = __commonJS({
         if (calculatedImageSettings.excavation != null) {
           cells = excavateModules(cells, calculatedImageSettings.excavation);
         }
-        image = /* @__PURE__ */ import_react6.default.createElement("image", {
+        image = /* @__PURE__ */ import_react7.default.createElement("image", {
           xlinkHref: imageSettings.src,
           height: calculatedImageSettings.h,
           width: calculatedImageSettings.w,
@@ -30633,15 +30633,15 @@ var require_lib = __commonJS({
         });
       }
       const fgPath = generatePath(cells, margin);
-      return /* @__PURE__ */ import_react6.default.createElement("svg", __spreadValues({
+      return /* @__PURE__ */ import_react7.default.createElement("svg", __spreadValues({
         height: size,
         width: size,
         viewBox: `0 0 ${numCells} ${numCells}`
-      }, otherProps), /* @__PURE__ */ import_react6.default.createElement("path", {
+      }, otherProps), /* @__PURE__ */ import_react7.default.createElement("path", {
         fill: bgColor,
         d: `M0,0 h${numCells}v${numCells}H0z`,
         shapeRendering: "crispEdges"
-      }), /* @__PURE__ */ import_react6.default.createElement("path", {
+      }), /* @__PURE__ */ import_react7.default.createElement("path", {
         fill: fgColor,
         d: fgPath,
         shapeRendering: "crispEdges"
@@ -30650,15 +30650,15 @@ var require_lib = __commonJS({
     var QRCode = (props) => {
       const _a = props, { renderAs } = _a, otherProps = __objRest(_a, ["renderAs"]);
       if (renderAs === "svg") {
-        return /* @__PURE__ */ import_react6.default.createElement(QRCodeSVG2, __spreadValues({}, otherProps));
+        return /* @__PURE__ */ import_react7.default.createElement(QRCodeSVG2, __spreadValues({}, otherProps));
       }
-      return /* @__PURE__ */ import_react6.default.createElement(QRCodeCanvas, __spreadValues({}, otherProps));
+      return /* @__PURE__ */ import_react7.default.createElement(QRCodeCanvas, __spreadValues({}, otherProps));
     };
   }
 });
 
 // src/index.tsx
-var import_react5 = __toESM(require_react());
+var import_react6 = __toESM(require_react());
 
 // node_modules/goober/dist/goober.modern.js
 var e = { data: "" };
@@ -30744,7 +30744,7 @@ var import_client = __toESM(require_client());
 var import_react_router_dom6 = __toESM(require_main2());
 
 // src/pages/app/popup.tsx
-var import_react2 = __toESM(require_react());
+var import_react3 = __toESM(require_react());
 var import_react_router_dom = __toESM(require_main2());
 
 // node_modules/@rolandwarburton/pwgen/src/libpwgen/wordlist.js
@@ -38631,10 +38631,19 @@ var Row = j("div")`
   align-items: center;
   margin: 0.25em;
 `;
-var PasswordCell = j("div")`
+var SVGHover = j("div")`
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #bbb;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
 `;
-var NoteCell = j("input")`
-`;
+var PasswordCell = j("div")``;
+var NoteCell = j("input")``;
 var SettingsButton = j("div")`
   position: fixed;
   bottom: 10px;
@@ -38682,12 +38691,11 @@ var Button = j("button")`
 
 // src/pages/app/qr.tsx
 var import_react = __toESM(require_react());
-var IconComponent = (props) => {
+var IconQR = () => {
   return /* @__PURE__ */ import_react.default.createElement(
     "div",
     {
-      style: { padding: "2px", display: "flex", alignItems: "center", justifyContent: "center" },
-      onClick: props.onClickHandler
+      style: { padding: "2px", display: "flex", alignItems: "center", justifyContent: "center" }
     },
     /* @__PURE__ */ import_react.default.createElement(
       "svg",
@@ -38735,12 +38743,53 @@ var IconComponent = (props) => {
 
 // src/pages/app/popup.tsx
 var import_react_router_dom2 = __toESM(require_main2());
+
+// src/pages/app/copy.tsx
+var import_react2 = __toESM(require_react());
+var IconCopy = () => {
+  return /* @__PURE__ */ import_react2.default.createElement(
+    "div",
+    {
+      style: { padding: "2px", display: "flex", alignItems: "center", justifyContent: "center" }
+    },
+    /* @__PURE__ */ import_react2.default.createElement(
+      "svg",
+      {
+        xmlns: "http://www.w3.org/2000/svg",
+        width: "25",
+        height: "25",
+        fill: "none",
+        viewBox: "0 0 24 24"
+      },
+      /* @__PURE__ */ import_react2.default.createElement(
+        "path",
+        {
+          stroke: "#1C274C",
+          strokeLinecap: "round",
+          strokeWidth: "1.5",
+          d: "M20.998 10c-.012-2.175-.108-3.353-.877-4.121C19.243 5 17.828 5 15 5h-3c-2.828 0-4.243 0-5.121.879C6 6.757 6 8.172 6 11v5c0 2.828 0 4.243.879 5.121C7.757 22 9.172 22 12 22h3c2.828 0 4.243 0 5.121-.879C21 20.243 21 18.828 21 16v-1"
+        }
+      ),
+      /* @__PURE__ */ import_react2.default.createElement(
+        "path",
+        {
+          stroke: "#1C274C",
+          strokeLinecap: "round",
+          strokeWidth: "1.5",
+          d: "M3 10v6a3 3 0 0 0 3 3M18 5a3 3 0 0 0-3-3h-4C7.229 2 5.343 2 4.172 3.172 3.518 3.825 3.229 4.7 3.102 6"
+        }
+      )
+    )
+  );
+};
+
+// src/pages/app/popup.tsx
 var App = () => {
-  const [password, setPassword] = (0, import_react2.useState)("");
-  const [passwords, setPasswords] = (0, import_react2.useState)([]);
-  const passwordRef = (0, import_react2.useRef)(null);
+  const [password, setPassword] = (0, import_react3.useState)("");
+  const [passwords, setPasswords] = (0, import_react3.useState)([]);
+  const passwordRef = (0, import_react3.useRef)(null);
   const navigate = (0, import_react_router_dom2.useNavigate)();
-  (0, import_react2.useEffect)(() => {
+  (0, import_react3.useEffect)(() => {
     chrome.storage.local.get("passwords", async (result) => {
       if (Object.keys(result).length !== 0) {
         setPasswords(JSON.parse(result.passwords));
@@ -38782,7 +38831,7 @@ var App = () => {
     setPasswords(updatedPasswords);
     chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
   };
-  return /* @__PURE__ */ import_react2.default.createElement("div", null, /* @__PURE__ */ import_react2.default.createElement(Container, null, "password:", " ", /* @__PURE__ */ import_react2.default.createElement(
+  return /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement(Container, null, "password:", " ", /* @__PURE__ */ import_react3.default.createElement(
     "input",
     {
       onChange: (e2) => {
@@ -38791,16 +38840,25 @@ var App = () => {
       ref: passwordRef,
       defaultValue: password
     }
-  ), passwords.map((password2, index) => /* @__PURE__ */ import_react2.default.createElement(Row, { key: index, columns: "1fr auto 2fr" }, password2.password, /* @__PURE__ */ import_react2.default.createElement(
-    "div",
+  ), passwords.map((password2, index) => /* @__PURE__ */ import_react3.default.createElement(Row, { key: index, columns: "1fr auto auto 2fr" }, password2.password, /* @__PURE__ */ import_react3.default.createElement(
+    SVGHover,
+    {
+      onClick: () => {
+        navigator.clipboard.writeText(password2.password).catch((error) => {
+          console.error("Unable to copy to clipboard:", error);
+        });
+      }
+    },
+    /* @__PURE__ */ import_react3.default.createElement(IconCopy, null)
+  ), /* @__PURE__ */ import_react3.default.createElement(
+    SVGHover,
     {
       onClick: () => {
         navigate(`/qr/${password2.password}`);
       }
     },
-    /* @__PURE__ */ import_react2.default.createElement(IconComponent, { onClickHandler: () => {
-    } })
-  ), /* @__PURE__ */ import_react2.default.createElement(
+    /* @__PURE__ */ import_react3.default.createElement(IconQR, null)
+  ), /* @__PURE__ */ import_react3.default.createElement(
     NoteCell,
     {
       type: "text",
@@ -38808,11 +38866,11 @@ var App = () => {
       value: password2.note,
       onChange: (e2) => updateNote(e2, index)
     }
-  )))), /* @__PURE__ */ import_react2.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react2.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react2.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react2.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react2.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react2.default.createElement(import_react_router_dom.Link, { to: "/settings" }, /* @__PURE__ */ import_react2.default.createElement(Button, null, "Settings"))));
+  )))), /* @__PURE__ */ import_react3.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react3.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react3.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react3.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react3.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react3.default.createElement(import_react_router_dom.Link, { to: "/settings" }, /* @__PURE__ */ import_react3.default.createElement(Button, null, "Settings"))));
 };
 
 // src/pages/settings/index.tsx
-var import_react3 = __toESM(require_react());
+var import_react4 = __toESM(require_react());
 var import_react_router_dom3 = __toESM(require_main2());
 var defaultSettings = {
   minLength: 3,
@@ -38829,8 +38887,8 @@ function setDefaultSettings(setFunc) {
   });
 }
 function Settings() {
-  const [settings, setSettings] = (0, import_react3.useState)(defaultSettings);
-  (0, import_react3.useEffect)(() => {
+  const [settings, setSettings] = (0, import_react4.useState)(defaultSettings);
+  (0, import_react4.useEffect)(() => {
     chrome.storage.local.get("settings", (result) => {
       if (result.settings && Object.keys(result.settings).length > 0) {
         setSettings(result.settings);
@@ -38852,7 +38910,7 @@ function Settings() {
     e2.preventDefault();
     chrome.storage.local.set({ settings });
   };
-  return /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement(import_react_router_dom3.Link, { to: "/" }, /* @__PURE__ */ import_react3.default.createElement(Button, null, "Back")), /* @__PURE__ */ import_react3.default.createElement(Form, { onSubmit: handleFormSubmit }, /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "Min Length:"), /* @__PURE__ */ import_react3.default.createElement(
+  return /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement(import_react_router_dom3.Link, { to: "/" }, /* @__PURE__ */ import_react4.default.createElement(Button, null, "Back")), /* @__PURE__ */ import_react4.default.createElement(Form, { onSubmit: handleFormSubmit }, /* @__PURE__ */ import_react4.default.createElement(Row, null, /* @__PURE__ */ import_react4.default.createElement(FormLabel, null, "Min Length:"), /* @__PURE__ */ import_react4.default.createElement(
     FormInput,
     {
       type: "number",
@@ -38864,7 +38922,7 @@ function Settings() {
         handleInputChange(e2, "number");
       }
     }
-  )), /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "Max Length:"), /* @__PURE__ */ import_react3.default.createElement(
+  )), /* @__PURE__ */ import_react4.default.createElement(Row, null, /* @__PURE__ */ import_react4.default.createElement(FormLabel, null, "Max Length:"), /* @__PURE__ */ import_react4.default.createElement(
     FormInput,
     {
       type: "number",
@@ -38876,7 +38934,7 @@ function Settings() {
         handleInputChange(e2, "number");
       }
     }
-  )), /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "Number of Words:"), /* @__PURE__ */ import_react3.default.createElement(
+  )), /* @__PURE__ */ import_react4.default.createElement(Row, null, /* @__PURE__ */ import_react4.default.createElement(FormLabel, null, "Number of Words:"), /* @__PURE__ */ import_react4.default.createElement(
     FormInput,
     {
       type: "number",
@@ -38888,7 +38946,7 @@ function Settings() {
         handleInputChange(e2, "number");
       }
     }
-  )), /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "Delimiter:"), /* @__PURE__ */ import_react3.default.createElement(
+  )), /* @__PURE__ */ import_react4.default.createElement(Row, null, /* @__PURE__ */ import_react4.default.createElement(FormLabel, null, "Delimiter:"), /* @__PURE__ */ import_react4.default.createElement(
     FormInput,
     {
       type: "text",
@@ -38899,7 +38957,7 @@ function Settings() {
         handleInputChange(e2, "string");
       }
     }
-  )), /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "Prepend:"), /* @__PURE__ */ import_react3.default.createElement(
+  )), /* @__PURE__ */ import_react4.default.createElement(Row, null, /* @__PURE__ */ import_react4.default.createElement(FormLabel, null, "Prepend:"), /* @__PURE__ */ import_react4.default.createElement(
     FormInput,
     {
       type: "text",
@@ -38910,7 +38968,7 @@ function Settings() {
         handleInputChange(e2, "string");
       }
     }
-  )), /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "Append:"), /* @__PURE__ */ import_react3.default.createElement(
+  )), /* @__PURE__ */ import_react4.default.createElement(Row, null, /* @__PURE__ */ import_react4.default.createElement(FormLabel, null, "Append:"), /* @__PURE__ */ import_react4.default.createElement(
     FormInput,
     {
       type: "text",
@@ -38921,39 +38979,39 @@ function Settings() {
         handleInputChange(e2, "string");
       }
     }
-  )), /* @__PURE__ */ import_react3.default.createElement(SaveButton, null, /* @__PURE__ */ import_react3.default.createElement(Button, { type: "submit" }, "Save Settings"))));
+  )), /* @__PURE__ */ import_react4.default.createElement(SaveButton, null, /* @__PURE__ */ import_react4.default.createElement(Button, { type: "submit" }, "Save Settings"))));
 }
 
 // src/pages/qr/index.tsx
-var import_react4 = __toESM(require_react());
+var import_react5 = __toESM(require_react());
 var import_qrcode = __toESM(require_lib());
 var import_react_router_dom4 = __toESM(require_main2());
 var import_react_router_dom5 = __toESM(require_main2());
 function PasswordQRCode() {
   const { param } = (0, import_react_router_dom5.useParams)();
-  return /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement(Container, null, /* @__PURE__ */ import_react4.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react4.default.createElement(import_react_router_dom4.Link, { to: "/" }, /* @__PURE__ */ import_react4.default.createElement(Button, null, "Back"))), /* @__PURE__ */ import_react4.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react4.default.createElement(import_qrcode.QRCodeSVG, { value: param || "NO PASSWORD SET", width: "100%", height: "200px" }))));
+  return /* @__PURE__ */ import_react5.default.createElement("div", null, /* @__PURE__ */ import_react5.default.createElement(Container, null, /* @__PURE__ */ import_react5.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react5.default.createElement(import_react_router_dom4.Link, { to: "/" }, /* @__PURE__ */ import_react5.default.createElement(Button, null, "Back"))), /* @__PURE__ */ import_react5.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react5.default.createElement(import_qrcode.QRCodeSVG, { value: param || "NO PASSWORD SET", width: "100%", height: "200px" }))));
 }
 
 // src/index.tsx
-m(import_react5.default.createElement);
+m(import_react6.default.createElement);
 var domNode = document.getElementById("root");
 var root = (0, import_client.createRoot)(domNode);
 var router = (0, import_react_router_dom6.createBrowserRouter)([
   {
     path: "*",
-    element: /* @__PURE__ */ import_react5.default.createElement(App, null)
+    element: /* @__PURE__ */ import_react6.default.createElement(App, null)
   },
   {
     path: "/settings",
-    element: /* @__PURE__ */ import_react5.default.createElement(Settings, null)
+    element: /* @__PURE__ */ import_react6.default.createElement(Settings, null)
   },
   {
     path: "/qr/:param",
-    element: /* @__PURE__ */ import_react5.default.createElement(PasswordQRCode, null)
+    element: /* @__PURE__ */ import_react6.default.createElement(PasswordQRCode, null)
   }
 ]);
 root.render(
-  /* @__PURE__ */ import_react5.default.createElement(import_react5.default.StrictMode, null, /* @__PURE__ */ import_react5.default.createElement(import_react_router_dom6.RouterProvider, { router }))
+  /* @__PURE__ */ import_react6.default.createElement(import_react6.default.StrictMode, null, /* @__PURE__ */ import_react6.default.createElement(import_react_router_dom6.RouterProvider, { router }))
 );
 /*! Bundled license information:
 

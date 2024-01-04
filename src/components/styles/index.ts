@@ -17,11 +17,21 @@ export const Row = styled('div') <{ columns?: string; rows?: string }>`
   margin: 0.25em;
 `;
 
-export const PasswordCell = styled('div')`
+export const SVGHover = styled('div')`
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #bbb;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
 `;
 
-export const NoteCell = styled('input')`
-`;
+export const PasswordCell = styled('div')``;
+
+export const NoteCell = styled('input')``;
 
 export const SettingsButton = styled('div')`
   position: fixed;

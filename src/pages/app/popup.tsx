@@ -8,10 +8,12 @@ import {
   Row,
   NoteCell,
   SettingsButton,
-  ButtonGroup
+  ButtonGroup,
+  SVGHover
 } from '../../components/styles';
-import { IconComponent } from './qr';
+import { IconQR } from './qr';
 import { useNavigate } from 'react-router-dom';
+import { IconCopy } from './copy';
 
 const App = () => {
   const [password, setPassword] = useState('');
@@ -80,15 +82,24 @@ const App = () => {
           defaultValue={password}
         />
         {passwords.map((password, index) => (
-          <Row key={index} columns="1fr auto 2fr">
+          <Row key={index} columns="1fr auto auto 2fr">
             {password.password}
-            <div
+            <SVGHover
+              onClick={() => {
+                navigator.clipboard.writeText(password.password).catch((error) => {
+                  console.error('Unable to copy to clipboard:', error);
+                });
+              }}
+            >
+              <IconCopy />
+            </SVGHover>
+            <SVGHover
               onClick={() => {
                 navigate(`/qr/${password.password}`);
               }}
             >
-              <IconComponent onClickHandler={() => { }} />
-            </div>
+              <IconQR />
+            </SVGHover>
             <NoteCell
               type="text"
               placeholder="note"

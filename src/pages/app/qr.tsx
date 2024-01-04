@@ -1,14 +1,9 @@
 import React from 'react';
 
-interface Props {
-  onClickHandler: () => void;
-}
-
-const IconComponent = (props: Props) => {
+const IconQR = () => {
   return (
     <div
       style={{ padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-      onClick={props.onClickHandler}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -41,4 +36,4 @@ const IconComponent = (props: Props) => {
   );
 };
 
-export { IconComponent };
+export { IconQR };
