@@ -1,11 +1,17 @@
 import { styled } from 'goober';
 
-export const Container = styled('div')``;
+export const Form = styled('form')``;
+export const FormLabel = styled('div')``;
+export const FormInput = styled('input')``;
+
+export const Container = styled('div')`
+  margin: 10px 0px;
+`;
 
 export const PasswordRow = styled('div')`
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 10px; 
+  gap: 10px;
   align-items: center;
   margin: 0.25em;
 `;

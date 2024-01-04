@@ -24,7 +24,7 @@ const App = () => {
       if (Object.keys(result).length !== 0) {
         setPasswords(JSON.parse(result.passwords));
       }
-      setPassword(await genpw());
+      generate();
     });
   }, []);
 
@@ -41,7 +41,11 @@ const App = () => {
   };
 
   const generate = async () => {
-    setPassword(await genpw());
+    chrome.storage.local.get('settings', async (result) => {
+      if (result.settings && Object.keys(result.settings).length > 0) {
+        setPassword(await genpw(result.settings));
+      }
+    });
   };
 
   const clear = () => {
