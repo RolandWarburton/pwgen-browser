@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { genpw } from '@rolandwarburton/pwgen';
 import {
   ButtonGroupButton,
@@ -71,11 +72,16 @@ const App = () => {
           </PasswordRow>
         ))}
       </Container>
-      <div>
-        <button onClick={generate}>generate</button>
-        <button onClick={pushNewPassword}>Add to list</button>
-        <button onClick={clear}>clear</button>
-      </div>
+      <ButtonGroup>
+        <ButtonGroupButton onClick={generate}>generate</ButtonGroupButton>
+        <ButtonGroupButton onClick={pushNewPassword}>Add to list</ButtonGroupButton>
+        <ButtonGroupButton onClick={clear}>clear</ButtonGroupButton>
+      </ButtonGroup>
+      <SettingsButton>
+        <Link to="/settings">
+          <Button>Settings</Button>
+        </Link>
+      </SettingsButton>
     </div>
   );
 };
