@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { genpw } from '@rolandwarburton/pwgen';
 import {
@@ -14,6 +14,7 @@ import {
 const App = () => {
   const [password, setPassword] = useState('');
   const [passwords, setPasswords] = useState<{ password: string; note: string }[]>([]);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // get the password from storage (set if its not stored)
@@ -39,10 +40,15 @@ const App = () => {
 
   const generate = async () => {
     chrome.storage.local.get('settings', async (result) => {
+      let newPassword = '';
       if (result.settings && Object.keys(result.settings).length > 0) {
-        setPassword(await genpw(result.settings));
+        newPassword = await genpw(result.settings);
       } else {
-        setPassword(await genpw());
+        newPassword = await genpw();
+      }
+      setPassword(newPassword);
+      if (passwordRef.current) {
+        passwordRef.current.value = newPassword;
       }
     });
   };
@@ -62,7 +68,14 @@ const App = () => {
   return (
     <div>
       <Container>
-        password: <input readOnly defaultValue={password} />
+        password:{' '}
+        <input
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+          ref={passwordRef}
+          defaultValue={password}
+        />
         {passwords.map((password, index) => (
           <Row key={index}>
             {password.password}

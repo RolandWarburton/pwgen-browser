@@ -1091,7 +1091,7 @@ var require_react_development = __commonJS({
           var dispatcher = resolveDispatcher();
           return dispatcher.useReducer(reducer, initialArg, init);
         }
-        function useRef(initialValue) {
+        function useRef2(initialValue) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useRef(initialValue);
         }
@@ -1884,7 +1884,7 @@ var require_react_development = __commonJS({
         exports.useLayoutEffect = useLayoutEffect;
         exports.useMemo = useMemo;
         exports.useReducer = useReducer;
-        exports.useRef = useRef;
+        exports.useRef = useRef2;
         exports.useState = useState3;
         exports.useSyncExternalStore = useSyncExternalStore;
         exports.useTransition = useTransition;
@@ -37807,6 +37807,7 @@ var Button = j("button")`
 var App = () => {
   const [password, setPassword] = (0, import_react.useState)("");
   const [passwords, setPasswords] = (0, import_react.useState)([]);
+  const passwordRef = (0, import_react.useRef)(null);
   (0, import_react.useEffect)(() => {
     chrome.storage.local.get("passwords", async (result) => {
       if (Object.keys(result).length !== 0) {
@@ -37827,10 +37828,15 @@ var App = () => {
   };
   const generate = async () => {
     chrome.storage.local.get("settings", async (result) => {
+      let newPassword = "";
       if (result.settings && Object.keys(result.settings).length > 0) {
-        setPassword(await genpw(result.settings));
+        newPassword = await genpw(result.settings);
       } else {
-        setPassword(await genpw());
+        newPassword = await genpw();
+      }
+      setPassword(newPassword);
+      if (passwordRef.current) {
+        passwordRef.current.value = newPassword;
       }
     });
   };
@@ -37844,7 +37850,16 @@ var App = () => {
     setPasswords(updatedPasswords);
     chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
   };
-  return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement(Container, null, "password: ", /* @__PURE__ */ import_react.default.createElement("input", { readOnly: true, defaultValue: password }), passwords.map((password2, index) => /* @__PURE__ */ import_react.default.createElement(Row, { key: index }, password2.password, /* @__PURE__ */ import_react.default.createElement(
+  return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement(Container, null, "password:", " ", /* @__PURE__ */ import_react.default.createElement(
+    "input",
+    {
+      onChange: (e2) => {
+        setPassword(e2.target.value);
+      },
+      ref: passwordRef,
+      defaultValue: password
+    }
+  ), passwords.map((password2, index) => /* @__PURE__ */ import_react.default.createElement(Row, { key: index }, password2.password, /* @__PURE__ */ import_react.default.createElement(
     NoteCell,
     {
       type: "text",
