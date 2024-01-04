@@ -98,17 +98,6 @@ function Settings() {
           />
         </div>
         <div>
-          <FormLabel>Count:</FormLabel>
-          <FormInput
-            type="number"
-            name="count"
-            value={settings.count}
-            onChange={(e) => {
-              handleInputChange(e, 'number');
-            }}
-          />
-        </div>
-        <div>
           <FormLabel>Delimiter:</FormLabel>
           <FormInput
             type="text"
