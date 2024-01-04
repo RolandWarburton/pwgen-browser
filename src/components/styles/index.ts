@@ -17,11 +17,9 @@ export const Row = styled('div')`
 `;
 
 export const PasswordCell = styled('div')`
-  grid-column: 1 / 2;
 `;
 
 export const NoteCell = styled('input')`
-  grid-column: 2 / 3;
 `;
 
 export const SettingsButton = styled('div')`
