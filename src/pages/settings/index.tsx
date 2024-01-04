@@ -55,7 +55,7 @@ function Settings() {
 
   const handleFormSubmit = (e: any) => {
     e.preventDefault();
-    chrome.storage.local.set({settings});
+    chrome.storage.local.set({ settings });
   };
 
   return (
@@ -69,6 +69,8 @@ function Settings() {
           <FormInput
             type="number"
             name="minLength"
+            min={1}
+            max={15}
             value={settings.minLength}
             onChange={(e) => {
               handleInputChange(e, 'number');
@@ -80,6 +82,8 @@ function Settings() {
           <FormInput
             type="number"
             name="maxLength"
+            min={1}
+            max={15}
             value={settings.maxLength}
             onChange={(e) => {
               handleInputChange(e, 'number');
@@ -91,6 +95,8 @@ function Settings() {
           <FormInput
             type="number"
             name="numberOfWords"
+            min={1}
+            max={6}
             value={settings.numberOfWords}
             onChange={(e) => {
               handleInputChange(e, 'number');
@@ -102,6 +108,7 @@ function Settings() {
           <FormInput
             type="text"
             name="delimiter"
+            max={15}
             value={settings.delimiter}
             onChange={(e) => {
               handleInputChange(e, 'string');
@@ -113,6 +120,7 @@ function Settings() {
           <FormInput
             type="text"
             name="prepend"
+            maxLength={15}
             value={settings.prepend}
             onChange={(e) => {
               handleInputChange(e, 'string');
@@ -124,6 +132,7 @@ function Settings() {
           <FormInput
             type="text"
             name="append"
+            maxLength={15}
             value={settings.append}
             onChange={(e) => {
               handleInputChange(e, 'string');
@@ -132,7 +141,6 @@ function Settings() {
         </div>
         <Button type="submit">Save Settings</Button>
       </Form>
-      {settings['minLength']}
     </div>
   );
 }
