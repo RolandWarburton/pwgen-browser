@@ -1,6 +1,7 @@
 import React, { useEffect, useState, FormEventHandler } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, FormLabel, FormInput, Form } from '../../components/styles';
+import { Button, FormLabel, FormInput, Form, SaveButton } from '../../components/styles';
+import { Row } from '../../components/styles';
 
 const defaultSettings = {
   minLength: 3,
@@ -64,7 +65,7 @@ function Settings() {
         <Button>Back</Button>
       </Link>
       <Form onSubmit={handleFormSubmit}>
-        <div>
+        <Row>
           <FormLabel>Min Length:</FormLabel>
           <FormInput
             type="number"
@@ -76,8 +77,8 @@ function Settings() {
               handleInputChange(e, 'number');
             }}
           />
-        </div>
-        <div>
+        </Row>
+        <Row>
           <FormLabel>Max Length:</FormLabel>
           <FormInput
             type="number"
@@ -89,8 +90,8 @@ function Settings() {
               handleInputChange(e, 'number');
             }}
           />
-        </div>
-        <div>
+        </Row>
+        <Row>
           <FormLabel>Number of Words:</FormLabel>
           <FormInput
             type="number"
@@ -102,8 +103,8 @@ function Settings() {
               handleInputChange(e, 'number');
             }}
           />
-        </div>
-        <div>
+        </Row>
+        <Row>
           <FormLabel>Delimiter:</FormLabel>
           <FormInput
             type="text"
@@ -114,8 +115,8 @@ function Settings() {
               handleInputChange(e, 'string');
             }}
           />
-        </div>
-        <div>
+        </Row>
+        <Row>
           <FormLabel>Prepend:</FormLabel>
           <FormInput
             type="text"
@@ -126,8 +127,8 @@ function Settings() {
               handleInputChange(e, 'string');
             }}
           />
-        </div>
-        <div>
+        </Row>
+        <Row>
           <FormLabel>Append:</FormLabel>
           <FormInput
             type="text"
@@ -138,8 +139,10 @@ function Settings() {
               handleInputChange(e, 'string');
             }}
           />
-        </div>
-        <Button type="submit">Save Settings</Button>
+        </Row>
+        <SaveButton>
+          <Button type="submit">Save Settings</Button>
+        </SaveButton>
       </Form>
     </div>
   );

@@ -8,7 +8,7 @@ export const Container = styled('div')`
   margin: 10px 0px;
 `;
 
-export const PasswordRow = styled('div')`
+export const Row = styled('div')`
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 10px;
@@ -28,6 +28,12 @@ export const SettingsButton = styled('div')`
   position: fixed;
   bottom: 10px;
   right: 10px;
+`;
+
+export const SaveButton = styled('div')`
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
 `;
 
 const baseButton = `

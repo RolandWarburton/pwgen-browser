@@ -5,7 +5,7 @@ import {
   ButtonGroupButton,
   Button,
   Container,
-  PasswordRow,
+  Row,
   NoteCell,
   SettingsButton,
   ButtonGroup
@@ -65,7 +65,7 @@ const App = () => {
       <Container>
         password: <input readOnly defaultValue={password} />
         {passwords.map((password, index) => (
-          <PasswordRow key={index}>
+          <Row key={index}>
             {password.password}
             <NoteCell
               type="text"
@@ -73,7 +73,7 @@ const App = () => {
               value={password.note}
               onChange={(e) => updateNote(e, index)}
             />
-          </PasswordRow>
+          </Row>
         ))}
       </Container>
       <ButtonGroup>
