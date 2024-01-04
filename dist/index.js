@@ -37808,7 +37808,6 @@ var App = () => {
   const [password, setPassword] = (0, import_react.useState)("");
   const [passwords, setPasswords] = (0, import_react.useState)([]);
   (0, import_react.useEffect)(() => {
-    setPassword("");
     chrome.storage.local.get("passwords", async (result) => {
       if (Object.keys(result).length !== 0) {
         setPasswords(JSON.parse(result.passwords));
@@ -37830,6 +37829,8 @@ var App = () => {
     chrome.storage.local.get("settings", async (result) => {
       if (result.settings && Object.keys(result.settings).length > 0) {
         setPassword(await genpw(result.settings));
+      } else {
+        setPassword(await genpw());
       }
     });
   };
