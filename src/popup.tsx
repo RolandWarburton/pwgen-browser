@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { genpw } from '@rolandwarburton/pwgen';
+import { Container, PasswordRow, PasswordCell, NoteCell } from './style';
 
 const App = () => {
   const [password, setPassword] = useState('');
@@ -9,18 +10,15 @@ const App = () => {
     // set the temp password
     setPassword('');
 
+    console.log('resetting');
+
     // get the password from storage (set if its not stored)
     chrome.storage.local.get('passwords', async (result) => {
       if (Object.keys(result).length !== 0) {
-        // JSON.parse(result.passwords);
+        console.log(JSON.parse(result.passwords));
         setPasswords(JSON.parse(result.passwords));
-      } else {
-        const newPassword = await genpw();
-        const updatedPasswords = [{ password: newPassword, note: '' }, ...passwords];
-        chrome.storage.local.set({ passwords: JSON.stringify(updatedPasswords) }, () => {
-          setPasswords(updatedPasswords);
-        });
       }
+      setPassword(await genpw());
     });
   }, []);
 
@@ -30,8 +28,10 @@ const App = () => {
     }
 
     chrome.storage.local.remove('passwords');
-    setPasswords([{ password, note: '' }, ...passwords].slice(0, 5));
-    chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
+    setPasswords([{ password: password, note: '' }, ...passwords].slice(0, 5));
+    chrome.storage.local.set({
+      passwords: JSON.stringify([{ password: password, note: '' }, ...passwords])
+    });
   };
 
   const generate = async () => {
@@ -52,13 +52,20 @@ const App = () => {
 
   return (
     <div>
-      password: {password}
-      {passwords.map((password, index) => (
-        <div key={index}>
-          {password.password}
-          <input type="text" placeholder="note" value={password.note} onChange={(e) => updateNote(e, index)}></input>
-        </div>
-      ))}
+      <Container>
+        password: <input readOnly defaultValue={password} />
+        {passwords.map((password, index) => (
+          <PasswordRow key={index}>
+            {password.password}
+            <NoteCell
+              type="text"
+              placeholder="note"
+              value={password.note}
+              onChange={(e) => updateNote(e, index)}
+            />
+          </PasswordRow>
+        ))}
+      </Container>
       <div>
         <button onClick={generate}>generate</button>
         <button onClick={pushNewPassword}>Add to list</button>
