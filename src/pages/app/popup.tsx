@@ -41,6 +41,8 @@ const App = () => {
     chrome.storage.local.get('settings', async (result) => {
       if (result.settings && Object.keys(result.settings).length > 0) {
         setPassword(await genpw(result.settings));
+      } else {
+        setPassword(await genpw());
       }
     });
   };
