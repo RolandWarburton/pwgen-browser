@@ -16,9 +16,6 @@ const App = () => {
   const [passwords, setPasswords] = useState<{ password: string; note: string }[]>([]);
 
   useEffect(() => {
-    // set the temp password
-    setPassword('');
-
     // get the password from storage (set if its not stored)
     chrome.storage.local.get('passwords', async (result) => {
       if (Object.keys(result).length !== 0) {
