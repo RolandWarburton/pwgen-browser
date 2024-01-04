@@ -8,9 +8,9 @@ export const Container = styled('div')`
   margin: 10px 0px;
 `;
 
-export const Row = styled('div')`
+export const Row = styled('div') <{ columns?: string }>`
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: ${(props) => (props.columns ? props.columns : '1fr 2fr')};
   gap: 10px;
   align-items: center;
   margin: 0.25em;
