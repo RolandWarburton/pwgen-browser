@@ -10,12 +10,9 @@ const App = () => {
     // set the temp password
     setPassword('');
 
-    console.log('resetting');
-
     // get the password from storage (set if its not stored)
     chrome.storage.local.get('passwords', async (result) => {
       if (Object.keys(result).length !== 0) {
-        console.log(JSON.parse(result.passwords));
         setPasswords(JSON.parse(result.passwords));
       }
       setPassword(await genpw());
