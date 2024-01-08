@@ -18,3 +18,9 @@ Rebuild the source using `node build.js`.
 
 Load under `chrome://extensions/`. Enable developer mode and then click on `Load unpacked`.
 Package the dist folder, not the root of the repository.
+
+## TODO
+
+Keep a history of all passwords generated in addition to the saved list.
+
+Add setting to retain last password generated instead of generating a new one each time the popup is opened.
