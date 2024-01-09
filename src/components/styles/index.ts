@@ -81,4 +81,5 @@ export const ButtonGroup = styled('div')`
 export const Button = styled('button')`
   ${baseButton}
   border-radius: 5px;
+  margin: 0.25em;
 `;

@@ -3,29 +3,31 @@ import { Link } from 'react-router-dom';
 import { Button, FormLabel, FormInput, Form, SaveButton } from '../../components/styles';
 import { Row } from '../../components/styles';
 
-const defaultSettings = {
+interface ISettings {
+  minLength: number;
+  maxLength: number;
+  numberOfWords: number;
+  count: number;
+  delimiter: string;
+  prepend: string;
+  append: string;
+  retainLastPassword: boolean;
+  storePasswordHistory: boolean;
+}
+
+const defaultSettings: ISettings = {
   minLength: 3,
   maxLength: 5,
   numberOfWords: 2,
   count: 1,
   delimiter: '-',
   prepend: '',
-  append: '-secret'
+  append: '-secret',
+  retainLastPassword: true,
+  storePasswordHistory: true
 };
 
-function setDefaultSettings(
-  setFunc: React.Dispatch<
-    React.SetStateAction<{
-      minLength: number;
-      maxLength: number;
-      numberOfWords: number;
-      count: number;
-      delimiter: string;
-      prepend: string;
-      append: string;
-    }>
-  >
-) {
+function setDefaultSettings(setFunc: React.Dispatch<ISettings>) {
   chrome.storage.local.set({ settings: defaultSettings }, () => {
     setFunc(defaultSettings);
   });
@@ -44,13 +46,18 @@ function Settings() {
     });
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'number' | 'string') => {
-    const { name, value } = e.target;
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: 'number' | 'string' | 'boolean'
+  ) => {
+    const { name, value, checked } = e.target;
     if (type === 'number') {
       const valueNumber = parseInt(value);
       setSettings({ ...settings, [name]: valueNumber });
-    } else {
+    } else if (type === 'string') {
       setSettings({ ...settings, [name]: value });
+    } else {
+      setSettings({ ...settings, [name]: checked });
     }
   };
 
@@ -140,6 +147,30 @@ function Settings() {
             }}
           />
         </Row>
+        <Row>
+          <FormLabel>Retain password:</FormLabel>
+          <FormInput
+            type="checkbox"
+            name="retainLastPassword"
+            checked={settings.retainLastPassword}
+            onChange={(e) => {
+              // handleInputChange(e, 'boolean');
+              setSettings({...settings, retainLastPassword: e.target.checked, storePasswordHistory: e.target.checked})
+            }}
+          />
+        </Row>
+        <Row>
+          <FormLabel>Password History:</FormLabel>
+          <FormInput
+            type="checkbox"
+            name="storePasswordHistory"
+            checked={settings.storePasswordHistory}
+            onChange={(e) => {
+              // handleInputChange(e, 'boolean');
+              setSettings({...settings, storePasswordHistory: e.target.checked, retainLastPassword: e.target.checked})
+            }}
+          />
+        </Row>
         <SaveButton>
           <Button type="submit">Save Settings</Button>
         </SaveButton>
@@ -148,4 +179,15 @@ function Settings() {
   );
 }
 
-export { Settings };
+function getSettings(cb: (settings: ISettings) => void): void {
+  return chrome.storage.local.get('settings', async (result) => {
+    if (result.settings) {
+      const settings = result.settings as ISettings;
+      cb(settings);
+    } else {
+      cb(defaultSettings);
+    }
+  });
+}
+
+export { Settings, ISettings, defaultSettings, getSettings };

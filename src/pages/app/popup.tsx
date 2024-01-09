@@ -14,22 +14,35 @@ import {
 import { IconQR } from './qr';
 import { useNavigate } from 'react-router-dom';
 import { IconCopy } from './copy';
+import { getSettings } from '../settings';
 
 const App = () => {
   const [password, setPassword] = useState('');
   const [passwords, setPasswords] = useState<{ password: string; note: string }[]>([]);
+  const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
   const passwordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // get the password from storage (set if its not stored)
-    chrome.storage.local.get('passwords', async (result) => {
-      if (Object.keys(result).length !== 0) {
-        setPasswords(JSON.parse(result.passwords));
+    // set the password password history
+    chrome.storage.local.get('passwordHistory', (result) => {
+      if (Object.keys(result).length !== 0 && result.passwordHistory) {
+        console.log('setting password history');
+        setPasswordHistory(JSON.parse(result.passwordHistory));
       }
-      generate();
     });
   }, []);
+
+  useEffect(() => {
+    if (passwordHistory.length === 0) {
+      return;
+    }
+
+    getSettings((settings) => {
+      if (settings.retainLastPassword) setPassword(passwordHistory.at(-1) || 'no password set');
+      else if (password === '') generate();
+    });
+  }, [passwordHistory]);
 
   const pushNewPassword = async () => {
     if (password === '') {
@@ -44,16 +57,15 @@ const App = () => {
   };
 
   const generate = async () => {
-    chrome.storage.local.get('settings', async (result) => {
+    getSettings(async (settings) => {
       let newPassword = '';
-      if (result.settings && Object.keys(result.settings).length > 0) {
-        newPassword = await genpw(result.settings);
-      } else {
-        newPassword = await genpw();
-      }
+      newPassword = await genpw(settings);
       setPassword(newPassword);
       if (passwordRef.current) {
         passwordRef.current.value = newPassword;
+      }
+      if (settings.storePasswordHistory) {
+        setPasswordHistory([newPassword, ...passwordHistory].slice(0, 50));
       }
     });
   };
@@ -117,6 +129,9 @@ const App = () => {
       <SettingsButton>
         <Link to="/settings">
           <Button>Settings</Button>
+        </Link>
+        <Link to="/history">
+          <Button>History ({passwordHistory.length})</Button>
         </Link>
       </SettingsButton>
     </div>
