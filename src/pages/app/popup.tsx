@@ -14,34 +14,53 @@ import {
 import { IconQR } from './qr';
 import { useNavigate } from 'react-router-dom';
 import { IconCopy } from './copy';
-import { getSettings } from '../settings';
+import { ISettings, defaultSettings, getSettings } from '../settings';
 
 const App = () => {
   const [password, setPassword] = useState('');
   const [passwords, setPasswords] = useState<{ password: string; note: string }[]>([]);
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
+  const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     // set the password password history
-    chrome.storage.local.get('passwordHistory', (result) => {
-      if (Object.keys(result).length !== 0 && result.passwordHistory) {
-        console.log('setting password history');
-        setPasswordHistory(JSON.parse(result.passwordHistory));
-      }
+    getSettings((settings) => {
+      setSettings(settings);
     });
   }, []);
+
+  useEffect(() => {
+    if (!settings) {
+      return;
+    }
+
+    if (!settings.retainLastPassword) {
+      generate();
+    }
+
+    if (settings.storePasswordHistory) {
+      chrome.storage.local.get('passwordHistory', (result) => {
+        if (Object.keys(result).length !== 0 && result.passwordHistory) {
+          console.log('setting password history');
+          setPasswordHistory(JSON.parse(result.passwordHistory));
+        }
+      });
+    }
+  }, [settings]);
 
   useEffect(() => {
     if (passwordHistory.length === 0) {
       return;
     }
 
-    getSettings((settings) => {
-      if (settings.retainLastPassword) setPassword(passwordHistory.at(-1) || 'no password set');
-      else if (password === '') generate();
-    });
+    if (settings && settings.storePasswordHistory) {
+      setPassword(passwordHistory.at(-1) || 'no password set');
+      chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
+    } else if (password === '') {
+      generate();
+    }
   }, [passwordHistory]);
 
   const pushNewPassword = async () => {
@@ -130,9 +149,13 @@ const App = () => {
         <Link to="/settings">
           <Button>Settings</Button>
         </Link>
-        <Link to="/history">
-          <Button>History ({passwordHistory.length})</Button>
-        </Link>
+        {settings && settings.storePasswordHistory ? (
+          <Link to="/history">
+            <Button>History ({passwordHistory.length})</Button>
+          </Link>
+        ) : (
+          ''
+        )}
       </SettingsButton>
     </div>
   );

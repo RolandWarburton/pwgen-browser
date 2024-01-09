@@ -154,8 +154,17 @@ function Settings() {
             name="retainLastPassword"
             checked={settings.retainLastPassword}
             onChange={(e) => {
-              // handleInputChange(e, 'boolean');
-              setSettings({...settings, retainLastPassword: e.target.checked, storePasswordHistory: e.target.checked})
+            // if retain password is checked then history needs to be enabled
+              if (e.target.checked) {
+                console.log('checked');
+                setSettings({ ...settings, storePasswordHistory: true, retainLastPassword: true });
+              } else {
+                setSettings({
+                  ...settings,
+                  storePasswordHistory: false,
+                  retainLastPassword: false
+                });
+              }
             }}
           />
         </Row>
@@ -166,8 +175,13 @@ function Settings() {
             name="storePasswordHistory"
             checked={settings.storePasswordHistory}
             onChange={(e) => {
-              // handleInputChange(e, 'boolean');
-              setSettings({...settings, storePasswordHistory: e.target.checked, retainLastPassword: e.target.checked})
+              // if (e.target.checked) {}
+              handleInputChange(e, 'boolean');
+              // setSettings({
+              //   ...settings,
+              //   storePasswordHistory: e.target.checked,
+              //   retainLastPassword: e.target.checked
+              // });
             }}
           />
         </Row>

@@ -38905,7 +38905,16 @@ function Settings() {
       name: "retainLastPassword",
       checked: settings.retainLastPassword,
       onChange: (e2) => {
-        setSettings({ ...settings, retainLastPassword: e2.target.checked, storePasswordHistory: e2.target.checked });
+        if (e2.target.checked) {
+          console.log("checked");
+          setSettings({ ...settings, storePasswordHistory: true, retainLastPassword: true });
+        } else {
+          setSettings({
+            ...settings,
+            storePasswordHistory: false,
+            retainLastPassword: false
+          });
+        }
       }
     }
   )), /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "Password History:"), /* @__PURE__ */ import_react3.default.createElement(
@@ -38915,7 +38924,7 @@ function Settings() {
       name: "storePasswordHistory",
       checked: settings.storePasswordHistory,
       onChange: (e2) => {
-        setSettings({ ...settings, storePasswordHistory: e2.target.checked, retainLastPassword: e2.target.checked });
+        handleInputChange(e2, "boolean");
       }
     }
   )), /* @__PURE__ */ import_react3.default.createElement(SaveButton, null, /* @__PURE__ */ import_react3.default.createElement(Button, { type: "submit" }, "Save Settings"))));
@@ -38936,26 +38945,40 @@ var App = () => {
   const [password, setPassword] = (0, import_react4.useState)("");
   const [passwords, setPasswords] = (0, import_react4.useState)([]);
   const [passwordHistory, setPasswordHistory] = (0, import_react4.useState)([]);
+  const [settings, setSettings] = (0, import_react4.useState)(false);
   const passwordRef = (0, import_react4.useRef)(null);
   const navigate = (0, import_react_router_dom3.useNavigate)();
   (0, import_react4.useEffect)(() => {
-    chrome.storage.local.get("passwordHistory", (result) => {
-      if (Object.keys(result).length !== 0 && result.passwordHistory) {
-        console.log("setting password history");
-        setPasswordHistory(JSON.parse(result.passwordHistory));
-      }
+    getSettings((settings2) => {
+      setSettings(settings2);
     });
   }, []);
+  (0, import_react4.useEffect)(() => {
+    if (!settings) {
+      return;
+    }
+    if (!settings.retainLastPassword) {
+      generate();
+    }
+    if (settings.storePasswordHistory) {
+      chrome.storage.local.get("passwordHistory", (result) => {
+        if (Object.keys(result).length !== 0 && result.passwordHistory) {
+          console.log("setting password history");
+          setPasswordHistory(JSON.parse(result.passwordHistory));
+        }
+      });
+    }
+  }, [settings]);
   (0, import_react4.useEffect)(() => {
     if (passwordHistory.length === 0) {
       return;
     }
-    getSettings((settings) => {
-      if (settings.retainLastPassword)
-        setPassword(passwordHistory.at(-1) || "no password set");
-      else if (password === "")
-        generate();
-    });
+    if (settings && settings.storePasswordHistory) {
+      setPassword(passwordHistory.at(-1) || "no password set");
+      chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
+    } else if (password === "") {
+      generate();
+    }
   }, [passwordHistory]);
   const pushNewPassword = async () => {
     if (password === "") {
@@ -38968,14 +38991,15 @@ var App = () => {
     });
   };
   const generate = async () => {
-    getSettings(async (settings) => {
+    getSettings(async (settings2) => {
       let newPassword = "";
-      newPassword = await genpw(settings);
+      newPassword = await genpw(settings2);
       setPassword(newPassword);
       if (passwordRef.current) {
         passwordRef.current.value = newPassword;
       }
-      if (settings.storePasswordHistory) {
+      debugger;
+      if (settings2.storePasswordHistory) {
         setPasswordHistory([newPassword, ...passwordHistory].slice(0, 50));
       }
     });
@@ -39025,7 +39049,7 @@ var App = () => {
       value: password2.note,
       onChange: (e2) => updateNote(e2, index)
     }
-  )))), /* @__PURE__ */ import_react4.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react4.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react4.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react4.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react4.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react4.default.createElement(import_react_router_dom2.Link, { to: "/settings" }, /* @__PURE__ */ import_react4.default.createElement(Button, null, "Settings")), /* @__PURE__ */ import_react4.default.createElement(import_react_router_dom2.Link, { to: "/history" }, /* @__PURE__ */ import_react4.default.createElement(Button, null, "History (", passwordHistory.length, ")"))));
+  )))), /* @__PURE__ */ import_react4.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react4.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react4.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react4.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react4.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react4.default.createElement(import_react_router_dom2.Link, { to: "/settings" }, /* @__PURE__ */ import_react4.default.createElement(Button, null, "Settings")), settings && settings.storePasswordHistory ? /* @__PURE__ */ import_react4.default.createElement(import_react_router_dom2.Link, { to: "/history" }, /* @__PURE__ */ import_react4.default.createElement(Button, null, "History (", passwordHistory.length, ")")) : ""));
 };
 
 // src/pages/qr/index.tsx
@@ -39036,7 +39060,7 @@ var import_react_router_dom5 = __toESM(require_main2());
 var import_react_router_dom6 = __toESM(require_main2());
 function PasswordQRCode() {
   const { param } = (0, import_react_router_dom5.useParams)();
-  const [searchParams, setSearchParams] = (0, import_react_router_dom6.useSearchParams)();
+  const [searchParams, _] = (0, import_react_router_dom6.useSearchParams)();
   const back = searchParams.get("back");
   console.log(back);
   return /* @__PURE__ */ import_react5.default.createElement("div", null, /* @__PURE__ */ import_react5.default.createElement(Container, null, /* @__PURE__ */ import_react5.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react5.default.createElement(import_react_router_dom4.Link, { to: `/${back || ""}` }, /* @__PURE__ */ import_react5.default.createElement(Button, null, "Back"))), /* @__PURE__ */ import_react5.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react5.default.createElement(import_qrcode.QRCodeSVG, { value: param || "NO PASSWORD SET", width: "100%", height: "200px" }))));
