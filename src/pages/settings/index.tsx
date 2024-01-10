@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button, FormLabel, FormInput, Form, SaveButton } from '../../components/styles';
 import { Row } from '../../components/styles';
 
+type IPasswords = { passwords: string; note: string }[];
+
 interface ISettings {
   minLength: number;
   maxLength: number;
@@ -154,15 +156,14 @@ function Settings() {
             name="retainLastPassword"
             checked={settings.retainLastPassword}
             onChange={(e) => {
-            // if retain password is checked then history needs to be enabled
-              if (e.target.checked) {
-                console.log('checked');
-                setSettings({ ...settings, storePasswordHistory: true, retainLastPassword: true });
+              // if retain password is checked then history needs to be enabled
+              if (!e.target.checked) {
+                handleInputChange(e, 'boolean');
               } else {
                 setSettings({
                   ...settings,
-                  storePasswordHistory: false,
-                  retainLastPassword: false
+                  retainLastPassword: true,
+                  storePasswordHistory: true
                 });
               }
             }}
@@ -175,13 +176,15 @@ function Settings() {
             name="storePasswordHistory"
             checked={settings.storePasswordHistory}
             onChange={(e) => {
-              // if (e.target.checked) {}
-              handleInputChange(e, 'boolean');
-              // setSettings({
-              //   ...settings,
-              //   storePasswordHistory: e.target.checked,
-              //   retainLastPassword: e.target.checked
-              // });
+              if (!e.target.checked) {
+                setSettings({
+                  ...settings,
+                  storePasswordHistory: false,
+                  retainLastPassword: false
+                });
+              } else {
+                handleInputChange(e, 'boolean');
+              }
             }}
           />
         </Row>
@@ -193,15 +196,50 @@ function Settings() {
   );
 }
 
-function getSettings(cb: (settings: ISettings) => void): void {
-  return chrome.storage.local.get('settings', async (result) => {
-    if (result.settings) {
-      const settings = result.settings as ISettings;
-      cb(settings);
-    } else {
-      cb(defaultSettings);
-    }
+function getSettings(): Promise<ISettings> {
+  return new Promise((resolve) => {
+    chrome.storage.local.get('settings', async (result) => {
+      if (result.settings) {
+        const settings = result.settings as ISettings;
+        resolve(settings);
+      } else {
+        resolve(defaultSettings);
+      }
+    });
   });
 }
 
-export { Settings, ISettings, defaultSettings, getSettings };
+function getPasswords(): Promise<IPasswords> {
+  return new Promise((resolve) => {
+    chrome.storage.local.get('passwords', async (result) => {
+      if (result.passwords) {
+        const passwords = JSON.parse(result.passwords) as IPasswords;
+        resolve(passwords);
+      } else {
+        resolve([]);
+      }
+    });
+  });
+}
+
+function getPasswordHistory(): Promise<string[]> {
+  return new Promise((resolve) => {
+    chrome.storage.local.get('passwordHistory', async (result) => {
+      if (result.passwordHistory) {
+        const passwordHistory = JSON.parse(result.passwordHistory) as string[];
+        resolve(passwordHistory);
+      } else {
+        resolve([]);
+      }
+    });
+  });
+}
+
+export {
+  Settings,
+  ISettings,
+  IPasswords,
+  getSettings,
+  getPasswords,
+  getPasswordHistory
+};

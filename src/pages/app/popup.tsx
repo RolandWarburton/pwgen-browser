@@ -14,39 +14,46 @@ import {
 import { IconQR } from './qr';
 import { useNavigate } from 'react-router-dom';
 import { IconCopy } from './copy';
-import { ISettings, defaultSettings, getSettings } from '../settings';
+import {
+  IPasswords,
+  ISettings,
+  getPasswordHistory,
+  getPasswords,
+  getSettings
+} from '../settings';
 
 const App = () => {
   const [password, setPassword] = useState('');
-  const [passwords, setPasswords] = useState<{ password: string; note: string }[]>([]);
+  const [passwords, setPasswords] = useState<IPasswords>([]);
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
   const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const isMounted = useRef(false);
 
   useEffect(() => {
-    // set the password password history
-    getSettings((settings) => {
-      setSettings(settings);
-    });
+    // const doAsync = async () => {
+    Promise.all([getSettings(), getPasswords(), getPasswordHistory()])
+      .then((result) => {
+        const [settings, passwords, passwordHistory] = result;
+        setSettings(settings);
+        setPasswords(passwords);
+
+        if (settings.storePasswordHistory && passwordHistory.length > 0) {
+          setPasswordHistory(passwordHistory);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   useEffect(() => {
-    if (!settings) {
-      return;
-    }
-
-    if (!settings.retainLastPassword) {
+    if (!settings) return;
+    if (settings.retainLastPassword) {
+      setPassword(passwordHistory.at(-1) || 'no password set');
+    } else {
       generate();
-    }
-
-    if (settings.storePasswordHistory) {
-      chrome.storage.local.get('passwordHistory', (result) => {
-        if (Object.keys(result).length !== 0 && result.passwordHistory) {
-          console.log('setting password history');
-          setPasswordHistory(JSON.parse(result.passwordHistory));
-        }
-      });
     }
   }, [settings]);
 
@@ -54,51 +61,45 @@ const App = () => {
     if (passwordHistory.length === 0) {
       return;
     }
-
-    if (settings && settings.storePasswordHistory) {
-      setPassword(passwordHistory.at(-1) || 'no password set');
-      chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
-    } else if (password === '') {
-      generate();
-    }
+    chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
   }, [passwordHistory]);
 
   const pushNewPassword = async () => {
+    console.log('pushing new password');
     if (password === '') {
       return;
     }
 
-    chrome.storage.local.remove('passwords');
-    setPasswords([{ password: password, note: '' }, ...passwords].slice(0, 5));
-    chrome.storage.local.set({
-      passwords: JSON.stringify([{ password: password, note: '' }, ...passwords])
-    });
+    const newPasswords = [{ password: password, note: '' }, ...passwords].slice(0, 5) as IPasswords;
+    setPasswords(newPasswords);
   };
 
   const generate = async () => {
-    getSettings(async (settings) => {
-      let newPassword = '';
-      newPassword = await genpw(settings);
-      setPassword(newPassword);
-      if (passwordRef.current) {
-        passwordRef.current.value = newPassword;
-      }
-      if (settings.storePasswordHistory) {
-        setPasswordHistory([newPassword, ...passwordHistory].slice(0, 50));
-      }
-    });
+    if (!settings) {
+      return;
+    }
+    let newPassword = '';
+    newPassword = await genpw(settings);
+    setPassword(newPassword);
+    if (passwordRef.current) {
+      passwordRef.current.value = newPassword;
+    }
+    if (settings.storePasswordHistory) {
+      setPasswordHistory([newPassword, ...passwordHistory].slice(0, 50));
+    }
   };
 
   const clear = () => {
+    console.log('clearing');
     chrome.storage.local.remove('passwords');
     setPasswords([]);
   };
 
   const updateNote = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    console.log('updating note');
     const updatedPasswords = [...passwords];
     updatedPasswords[index].note = event.target.value;
     setPasswords(updatedPasswords);
-    chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
   };
 
   return (

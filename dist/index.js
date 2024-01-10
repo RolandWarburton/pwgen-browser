@@ -38905,14 +38905,13 @@ function Settings() {
       name: "retainLastPassword",
       checked: settings.retainLastPassword,
       onChange: (e2) => {
-        if (e2.target.checked) {
-          console.log("checked");
-          setSettings({ ...settings, storePasswordHistory: true, retainLastPassword: true });
+        if (!e2.target.checked) {
+          handleInputChange(e2, "boolean");
         } else {
           setSettings({
             ...settings,
-            storePasswordHistory: false,
-            retainLastPassword: false
+            retainLastPassword: true,
+            storePasswordHistory: true
           });
         }
       }
@@ -38924,19 +38923,53 @@ function Settings() {
       name: "storePasswordHistory",
       checked: settings.storePasswordHistory,
       onChange: (e2) => {
-        handleInputChange(e2, "boolean");
+        if (!e2.target.checked) {
+          setSettings({
+            ...settings,
+            storePasswordHistory: false,
+            retainLastPassword: false
+          });
+        } else {
+          handleInputChange(e2, "boolean");
+        }
       }
     }
   )), /* @__PURE__ */ import_react3.default.createElement(SaveButton, null, /* @__PURE__ */ import_react3.default.createElement(Button, { type: "submit" }, "Save Settings"))));
 }
-function getSettings(cb) {
-  return chrome.storage.local.get("settings", async (result) => {
-    if (result.settings) {
-      const settings = result.settings;
-      cb(settings);
-    } else {
-      cb(defaultSettings);
-    }
+function getSettings() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get("settings", async (result) => {
+      if (result.settings) {
+        const settings = result.settings;
+        resolve(settings);
+      } else {
+        resolve(defaultSettings);
+      }
+    });
+  });
+}
+function getPasswords() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get("passwords", async (result) => {
+      if (result.passwords) {
+        const passwords = JSON.parse(result.passwords);
+        resolve(passwords);
+      } else {
+        resolve([]);
+      }
+    });
+  });
+}
+function getPasswordHistory() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get("passwordHistory", async (result) => {
+      if (result.passwordHistory) {
+        const passwordHistory = JSON.parse(result.passwordHistory);
+        resolve(passwordHistory);
+      } else {
+        resolve([]);
+      }
+    });
   });
 }
 
@@ -38948,71 +38981,67 @@ var App = () => {
   const [settings, setSettings] = (0, import_react4.useState)(false);
   const passwordRef = (0, import_react4.useRef)(null);
   const navigate = (0, import_react_router_dom3.useNavigate)();
+  const isMounted = (0, import_react4.useRef)(false);
   (0, import_react4.useEffect)(() => {
-    getSettings((settings2) => {
+    Promise.all([getSettings(), getPasswords(), getPasswordHistory()]).then((result) => {
+      const [settings2, passwords2, passwordHistory2] = result;
       setSettings(settings2);
+      setPasswords(passwords2);
+      if (settings2.storePasswordHistory && passwordHistory2.length > 0) {
+        setPasswordHistory(passwordHistory2);
+      }
+    }).catch((error) => {
+      console.log(error);
     });
   }, []);
   (0, import_react4.useEffect)(() => {
-    if (!settings) {
+    if (!settings)
       return;
-    }
-    if (!settings.retainLastPassword) {
+    if (settings.retainLastPassword) {
+      setPassword(passwordHistory.at(-1) || "no password set");
+    } else {
       generate();
-    }
-    if (settings.storePasswordHistory) {
-      chrome.storage.local.get("passwordHistory", (result) => {
-        if (Object.keys(result).length !== 0 && result.passwordHistory) {
-          console.log("setting password history");
-          setPasswordHistory(JSON.parse(result.passwordHistory));
-        }
-      });
     }
   }, [settings]);
   (0, import_react4.useEffect)(() => {
     if (passwordHistory.length === 0) {
       return;
     }
-    if (settings && settings.storePasswordHistory) {
-      setPassword(passwordHistory.at(-1) || "no password set");
-      chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
-    } else if (password === "") {
-      generate();
-    }
+    chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
   }, [passwordHistory]);
   const pushNewPassword = async () => {
+    console.log("pushing new password");
     if (password === "") {
       return;
     }
-    chrome.storage.local.remove("passwords");
-    setPasswords([{ password, note: "" }, ...passwords].slice(0, 5));
-    chrome.storage.local.set({
-      passwords: JSON.stringify([{ password, note: "" }, ...passwords])
-    });
+    const newPasswords = [{ password, note: "" }, ...passwords].slice(0, 5);
+    setPasswords(newPasswords);
   };
   const generate = async () => {
-    getSettings(async (settings2) => {
-      let newPassword = "";
-      newPassword = await genpw(settings2);
-      setPassword(newPassword);
-      if (passwordRef.current) {
-        passwordRef.current.value = newPassword;
-      }
-      debugger;
-      if (settings2.storePasswordHistory) {
-        setPasswordHistory([newPassword, ...passwordHistory].slice(0, 50));
-      }
-    });
+    debugger;
+    if (!settings) {
+      return;
+    }
+    let newPassword = "";
+    newPassword = await genpw(settings);
+    setPassword(newPassword);
+    if (passwordRef.current) {
+      passwordRef.current.value = newPassword;
+    }
+    if (settings.storePasswordHistory) {
+      setPasswordHistory([newPassword, ...passwordHistory].slice(0, 50));
+    }
   };
   const clear = () => {
+    console.log("clearing");
     chrome.storage.local.remove("passwords");
     setPasswords([]);
   };
   const updateNote = (event, index) => {
+    console.log("updating note");
     const updatedPasswords = [...passwords];
     updatedPasswords[index].note = event.target.value;
     setPasswords(updatedPasswords);
-    chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
   };
   return /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement(Container, null, "password:", " ", /* @__PURE__ */ import_react4.default.createElement(
     "input",
