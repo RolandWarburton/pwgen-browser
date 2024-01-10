@@ -14,13 +14,7 @@ import {
 import { IconQR } from './qr';
 import { useNavigate } from 'react-router-dom';
 import { IconCopy } from './copy';
-import {
-  IPasswords,
-  ISettings,
-  getPasswordHistory,
-  getPasswords,
-  getSettings
-} from '../settings';
+import { IPasswords, ISettings, getPasswordHistory, getPasswords, getSettings } from '../settings';
 
 const App = () => {
   const [password, setPassword] = useState('');
@@ -64,8 +58,13 @@ const App = () => {
     chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
   }, [passwordHistory]);
 
+  useEffect(() => {
+    if (passwords.length > 0) {
+      chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
+    }
+  }, [passwords]);
+
   const pushNewPassword = async () => {
-    console.log('pushing new password');
     if (password === '') {
       return;
     }

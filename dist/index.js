@@ -39009,8 +39009,12 @@ var App = () => {
     }
     chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
   }, [passwordHistory]);
+  (0, import_react4.useEffect)(() => {
+    if (passwords.length > 0) {
+      chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
+    }
+  }, [passwords]);
   const pushNewPassword = async () => {
-    console.log("pushing new password");
     if (password === "") {
       return;
     }
@@ -39018,7 +39022,6 @@ var App = () => {
     setPasswords(newPasswords);
   };
   const generate = async () => {
-    debugger;
     if (!settings) {
       return;
     }
