@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button, FormLabel, FormInput, Form, SaveButton } from '../../components/styles';
 import { Row } from '../../components/styles';
 
-type IPasswords = { passwords: string; note: string }[];
+type IPasswords = { password: string; note: string }[];
 
 interface ISettings {
   minLength: number;
