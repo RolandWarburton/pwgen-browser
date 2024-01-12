@@ -39013,7 +39013,7 @@ var IconTrash = () => {
 // src/pages/app/popup.tsx
 var App = () => {
   const [password, setPassword] = (0, import_react5.useState)("");
-  const [passwords, setPasswords] = (0, import_react5.useState)([]);
+  const [passwords, setPasswords] = (0, import_react5.useState)(false);
   const [passwordHistory, setPasswordHistory] = (0, import_react5.useState)([]);
   const [settings, setSettings] = (0, import_react5.useState)(false);
   const passwordRef = (0, import_react5.useRef)(null);
@@ -39047,12 +39047,12 @@ var App = () => {
     chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
   }, [passwordHistory]);
   (0, import_react5.useEffect)(() => {
-    if (passwords.length > 0) {
+    if (passwords) {
       chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
     }
   }, [passwords]);
   const pushNewPassword = async () => {
-    if (password === "") {
+    if (password === "" || !passwords) {
       return;
     }
     const passwordListLength = settings ? settings.passwordsListMaxLength : 5;
@@ -39082,12 +39082,18 @@ var App = () => {
     setPasswords([]);
   };
   const updateNote = (event, index) => {
+    if (!passwords) {
+      return;
+    }
     console.log("updating note");
     const updatedPasswords = [...passwords];
     updatedPasswords[index].note = event.target.value;
     setPasswords(updatedPasswords);
   };
   const deletePassword = (index) => {
+    if (!passwords) {
+      return;
+    }
     console.log("deleting password");
     const updatedPasswords = [...passwords];
     updatedPasswords.splice(index, 1);
@@ -39102,7 +39108,7 @@ var App = () => {
       ref: passwordRef,
       defaultValue: password
     }
-  ), passwords.map((password2, index) => /* @__PURE__ */ import_react5.default.createElement(Row, { key: index, columns: "1fr auto auto 2fr auto" }, password2.password, /* @__PURE__ */ import_react5.default.createElement(
+  ), passwords && passwords.map((password2, index) => /* @__PURE__ */ import_react5.default.createElement(Row, { key: index, columns: "1fr auto auto 2fr auto" }, password2.password, /* @__PURE__ */ import_react5.default.createElement(
     SVGHover,
     {
       onClick: () => {

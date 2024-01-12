@@ -19,7 +19,7 @@ import { IconTrash } from './trash';
 
 const App = () => {
   const [password, setPassword] = useState('');
-  const [passwords, setPasswords] = useState<IPasswords>([]);
+  const [passwords, setPasswords] = useState<IPasswords | false>(false);
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
   const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -60,13 +60,13 @@ const App = () => {
   }, [passwordHistory]);
 
   useEffect(() => {
-    if (passwords.length > 0) {
+    if (passwords) {
       chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
     }
   }, [passwords]);
 
   const pushNewPassword = async () => {
-    if (password === '') {
+    if (password === '' || !passwords) {
       return;
     }
 
@@ -100,6 +100,9 @@ const App = () => {
   };
 
   const updateNote = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    if (!passwords) {
+      return;
+    }
     console.log('updating note');
     const updatedPasswords = [...passwords];
     updatedPasswords[index].note = event.target.value;
@@ -107,6 +110,9 @@ const App = () => {
   };
 
   const deletePassword = (index: number) => {
+    if (!passwords) {
+      return;
+    }
     console.log('deleting password');
     const updatedPasswords = [...passwords];
     updatedPasswords.splice(index, 1);
@@ -124,40 +130,41 @@ const App = () => {
           ref={passwordRef}
           defaultValue={password}
         />
-        {passwords.map((password, index) => (
-          <Row key={index} columns="1fr auto auto 2fr auto">
-            {password.password}
-            <SVGHover
-              onClick={() => {
-                navigator.clipboard.writeText(password.password).catch((error) => {
-                  console.error('Unable to copy to clipboard:', error);
-                });
-              }}
-            >
-              <IconCopy />
-            </SVGHover>
-            <SVGHover
-              onClick={() => {
-                navigate(`/qr/${password.password}`);
-              }}
-            >
-              <IconQR />
-            </SVGHover>
-            <NoteCell
-              type="text"
-              placeholder="note"
-              value={password.note}
-              onChange={(e) => updateNote(e, index)}
-            />
-            <SVGHover
-              onClick={() => {
-                deletePassword(index);
-              }}
-            >
-              <IconTrash />
-            </SVGHover>
-          </Row>
-        ))}
+        {passwords &&
+          passwords.map((password, index) => (
+            <Row key={index} columns="1fr auto auto 2fr auto">
+              {password.password}
+              <SVGHover
+                onClick={() => {
+                  navigator.clipboard.writeText(password.password).catch((error) => {
+                    console.error('Unable to copy to clipboard:', error);
+                  });
+                }}
+              >
+                <IconCopy />
+              </SVGHover>
+              <SVGHover
+                onClick={() => {
+                  navigate(`/qr/${password.password}`);
+                }}
+              >
+                <IconQR />
+              </SVGHover>
+              <NoteCell
+                type="text"
+                placeholder="note"
+                value={password.note}
+                onChange={(e) => updateNote(e, index)}
+              />
+              <SVGHover
+                onClick={() => {
+                  deletePassword(index);
+                }}
+              >
+                <IconTrash />
+              </SVGHover>
+            </Row>
+          ))}
       </Container>
       <ButtonGroup>
         <ButtonGroupButton onClick={generate}>generate</ButtonGroupButton>
