@@ -38795,6 +38795,7 @@ var defaultSettings = {
   delimiter: "-",
   prepend: "",
   append: "-secret",
+  passwordsListMaxLength: 5,
   retainLastPassword: true,
   storePasswordHistory: true
 };
@@ -38896,6 +38897,18 @@ function Settings() {
       value: settings.append,
       onChange: (e2) => {
         handleInputChange(e2, "string");
+      }
+    }
+  )), /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "passwords list length:"), /* @__PURE__ */ import_react3.default.createElement(
+    FormInput,
+    {
+      type: "number",
+      name: "passwordsListMaxLength",
+      min: 0,
+      max: 10,
+      value: settings.passwordsListMaxLength,
+      onChange: (e2) => {
+        handleInputChange(e2, "number");
       }
     }
   )), /* @__PURE__ */ import_react3.default.createElement(Row, null, /* @__PURE__ */ import_react3.default.createElement(FormLabel, null, "Retain password:"), /* @__PURE__ */ import_react3.default.createElement(
@@ -39042,7 +39055,11 @@ var App = () => {
     if (password === "") {
       return;
     }
-    const newPasswords = [{ password, note: "" }, ...passwords].slice(0, 5);
+    const passwordListLength = settings ? settings.passwordsListMaxLength : 5;
+    const newPasswords = [{ password, note: "" }, ...passwords].slice(
+      0,
+      passwordListLength
+    );
     setPasswords(newPasswords);
   };
   const generate = async () => {

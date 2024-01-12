@@ -70,7 +70,11 @@ const App = () => {
       return;
     }
 
-    const newPasswords = [{ password: password, note: '' }, ...passwords].slice(0, 5) as IPasswords;
+    const passwordListLength = settings ? settings.passwordsListMaxLength : 5;
+    const newPasswords = [{ password: password, note: '' }, ...passwords].slice(
+      0,
+      passwordListLength
+    ) as IPasswords;
     setPasswords(newPasswords);
   };
 

@@ -13,6 +13,7 @@ interface ISettings {
   delimiter: string;
   prepend: string;
   append: string;
+  passwordsListMaxLength: number;
   retainLastPassword: boolean;
   storePasswordHistory: boolean;
 }
@@ -25,6 +26,7 @@ const defaultSettings: ISettings = {
   delimiter: '-',
   prepend: '',
   append: '-secret',
+  passwordsListMaxLength: 5,
   retainLastPassword: true,
   storePasswordHistory: true
 };
@@ -150,6 +152,19 @@ function Settings() {
           />
         </Row>
         <Row>
+          <FormLabel>passwords list length:</FormLabel>
+          <FormInput
+            type="number"
+            name="passwordsListMaxLength"
+            min={0}
+            max={10}
+            value={settings.passwordsListMaxLength}
+            onChange={(e) => {
+              handleInputChange(e, 'number');
+            }}
+          />
+        </Row>
+        <Row>
           <FormLabel>Retain password:</FormLabel>
           <FormInput
             type="checkbox"
@@ -235,11 +250,4 @@ function getPasswordHistory(): Promise<string[]> {
   });
 }
 
-export {
-  Settings,
-  ISettings,
-  IPasswords,
-  getSettings,
-  getPasswords,
-  getPasswordHistory
-};
+export { Settings, ISettings, IPasswords, getSettings, getPasswords, getPasswordHistory };
