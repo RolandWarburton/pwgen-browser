@@ -45,7 +45,7 @@ const App = () => {
   useEffect(() => {
     if (!settings) return;
     if (settings.retainLastPassword) {
-      setPassword(passwordHistory.at(-1) || 'no password set');
+      setPassword(passwordHistory.at(0) || 'no password set');
     } else {
       generate();
     }

@@ -39018,7 +39018,6 @@ var App = () => {
   const [settings, setSettings] = (0, import_react5.useState)(false);
   const passwordRef = (0, import_react5.useRef)(null);
   const navigate = (0, import_react_router_dom3.useNavigate)();
-  const isMounted = (0, import_react5.useRef)(false);
   (0, import_react5.useEffect)(() => {
     Promise.all([getSettings(), getPasswords(), getPasswordHistory()]).then((result) => {
       const [settings2, passwords2, passwordHistory2] = result;
@@ -39035,7 +39034,7 @@ var App = () => {
     if (!settings)
       return;
     if (settings.retainLastPassword) {
-      setPassword(passwordHistory.at(-1) || "no password set");
+      setPassword(passwordHistory.at(0) || "no password set");
     } else {
       generate();
     }
