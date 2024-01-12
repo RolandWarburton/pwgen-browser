@@ -15,6 +15,7 @@ import { IconQR } from './qr';
 import { useNavigate } from 'react-router-dom';
 import { IconCopy } from './copy';
 import { IPasswords, ISettings, getPasswordHistory, getPasswords, getSettings } from '../settings';
+import { IconTrash } from './trash';
 
 const App = () => {
   const [password, setPassword] = useState('');
@@ -101,6 +102,13 @@ const App = () => {
     setPasswords(updatedPasswords);
   };
 
+  const deletePassword = (index: number) => {
+    console.log('deleting password');
+    const updatedPasswords = [...passwords];
+    updatedPasswords.splice(index, 1);
+    setPasswords(updatedPasswords);
+  };
+
   return (
     <div>
       <Container>
@@ -113,7 +121,7 @@ const App = () => {
           defaultValue={password}
         />
         {passwords.map((password, index) => (
-          <Row key={index} columns="1fr auto auto 2fr">
+          <Row key={index} columns="1fr auto auto 2fr auto">
             {password.password}
             <SVGHover
               onClick={() => {
@@ -137,6 +145,13 @@ const App = () => {
               value={password.note}
               onChange={(e) => updateNote(e, index)}
             />
+            <SVGHover
+              onClick={() => {
+                deletePassword(index);
+              }}
+            >
+              <IconTrash />
+            </SVGHover>
           </Row>
         ))}
       </Container>
