@@ -24,7 +24,6 @@ const App = () => {
   const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const isMounted = useRef(false);
 
   useEffect(() => {
     // const doAsync = async () => {
