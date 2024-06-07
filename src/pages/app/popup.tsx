@@ -5,18 +5,12 @@ import {
   ButtonGroupButton,
   Button,
   Container,
-  Row,
-  NoteCell,
   SettingsButton,
-  ButtonGroup,
-  SVGHover
+  ButtonGroup
 } from '../../components/styles';
-import { IconQR } from './qr';
-import { useNavigate } from 'react-router-dom';
-import { IconCopy } from './copy';
 import { getPasswordHistory, getPasswords, getSettings } from '../settings';
-import { IconTrash } from './trash';
 import { IPassword, ISettings } from '../../types';
+import Password from '../../components/password-row';
 
 const App = () => {
   const [password, setPassword] = useState('');
@@ -24,7 +18,6 @@ const App = () => {
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
   const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([getSettings(), getPasswords(), getPasswordHistory()])
@@ -98,26 +91,6 @@ const App = () => {
     setPasswords([]);
   };
 
-  const updateNote = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    if (!passwords) {
-      return;
-    }
-    console.log('updating note');
-    const updatedPasswords = [...passwords];
-    updatedPasswords[index].note = event.target.value;
-    setPasswords(updatedPasswords);
-  };
-
-  const deletePassword = (index: number) => {
-    if (!passwords) {
-      return;
-    }
-    console.log('deleting password');
-    const updatedPasswords = [...passwords];
-    updatedPasswords.splice(index, 1);
-    setPasswords(updatedPasswords);
-  };
-
   return (
     <div>
       <Container>
@@ -131,38 +104,7 @@ const App = () => {
         />
         {passwords &&
           passwords.map((password, index) => (
-            <Row key={index} columns="1fr auto auto 2fr auto">
-              {password.password}
-              <SVGHover
-                onClick={() => {
-                  navigator.clipboard.writeText(password.password).catch((error) => {
-                    console.error('Unable to copy to clipboard:', error);
-                  });
-                }}
-              >
-                <IconCopy />
-              </SVGHover>
-              <SVGHover
-                onClick={() => {
-                  navigate(`/qr/${password.password}`);
-                }}
-              >
-                <IconQR />
-              </SVGHover>
-              <NoteCell
-                type="text"
-                placeholder="note"
-                value={password.note}
-                onChange={(e) => updateNote(e, index)}
-              />
-              <SVGHover
-                onClick={() => {
-                  deletePassword(index);
-                }}
-              >
-                <IconTrash />
-              </SVGHover>
-            </Row>
+            <Password index={index} passwords={passwords} setPasswords={setPasswords} />
           ))}
       </Container>
       <ButtonGroup>
