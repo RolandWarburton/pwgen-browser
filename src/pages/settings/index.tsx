@@ -2,21 +2,7 @@ import React, { useEffect, useState, FormEventHandler } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, FormLabel, FormInput, Form, SaveButton } from '../../components/styles';
 import { Row } from '../../components/styles';
-
-type IPasswords = { password: string; note: string }[];
-
-interface ISettings {
-  minLength: number;
-  maxLength: number;
-  numberOfWords: number;
-  count: number;
-  delimiter: string;
-  prepend: string;
-  append: string;
-  passwordsListMaxLength: number;
-  retainLastPassword: boolean;
-  storePasswordHistory: boolean;
-}
+import { ISettings } from '../../types';
 
 const defaultSettings: ISettings = {
   minLength: 3,

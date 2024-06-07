@@ -14,8 +14,9 @@ import {
 import { IconQR } from './qr';
 import { useNavigate } from 'react-router-dom';
 import { IconCopy } from './copy';
-import { IPasswords, ISettings, getPasswordHistory, getPasswords, getSettings } from '../settings';
+import { getPasswordHistory, getPasswords, getSettings } from '../settings';
 import { IconTrash } from './trash';
+import { IPasswords, ISettings } from '../../types';
 
 const App = () => {
   const [password, setPassword] = useState('');
@@ -26,7 +27,6 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // const doAsync = async () => {
     Promise.all([getSettings(), getPasswords(), getPasswordHistory()])
       .then((result) => {
         const [settings, passwords, passwordHistory] = result;
