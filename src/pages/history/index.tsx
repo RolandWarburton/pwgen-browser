@@ -19,10 +19,10 @@ function History() {
     });
   }, []);
 
-const clearHistory = () => {
-  chrome.storage.local.remove('passwordHistory');
-  setPasswordHistory([])
-};
+  const clearHistory = () => {
+    chrome.storage.local.remove('passwordHistory');
+    setPasswordHistory([]);
+  };
 
   return (
     <div>
