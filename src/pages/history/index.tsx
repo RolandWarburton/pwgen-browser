@@ -9,8 +9,9 @@ import { IconQR } from '../app/qr';
 function History() {
   const navigate = useNavigate();
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
+
   useEffect(() => {
-    // set the password password history
+    // get the password password history
     chrome.storage.local.get('passwordHistory', (result) => {
       if (Object.keys(result).length !== 0 && result.passwordHistory) {
         console.log('setting password history');
