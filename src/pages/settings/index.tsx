@@ -2,7 +2,7 @@ import React, { useEffect, useState, FormEventHandler } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, FormLabel, FormInput, Form, SaveButton } from '../../components/styles';
 import { Row } from '../../components/styles';
-import { ISettings } from '../../types';
+import { IPassword, ISettings } from '../../types';
 
 const defaultSettings: ISettings = {
   minLength: 3,
@@ -210,11 +210,11 @@ function getSettings(): Promise<ISettings> {
   });
 }
 
-function getPasswords(): Promise<IPasswords> {
+function getPasswords(): Promise<IPassword[]> {
   return new Promise((resolve) => {
     chrome.storage.local.get('passwords', async (result) => {
       if (result.passwords) {
-        const passwords = JSON.parse(result.passwords) as IPasswords;
+        const passwords = JSON.parse(result.passwords) as IPassword[];
         resolve(passwords);
       } else {
         resolve([]);
@@ -236,4 +236,4 @@ function getPasswordHistory(): Promise<string[]> {
   });
 }
 
-export { Settings, ISettings, IPasswords, getSettings, getPasswords, getPasswordHistory };
+export { Settings, getSettings, getPasswords, getPasswordHistory };

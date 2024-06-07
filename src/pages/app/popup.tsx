@@ -16,11 +16,11 @@ import { useNavigate } from 'react-router-dom';
 import { IconCopy } from './copy';
 import { getPasswordHistory, getPasswords, getSettings } from '../settings';
 import { IconTrash } from './trash';
-import { IPasswords, ISettings } from '../../types';
+import { IPassword, ISettings } from '../../types';
 
 const App = () => {
   const [password, setPassword] = useState('');
-  const [passwords, setPasswords] = useState<IPasswords | false>(false);
+  const [passwords, setPasswords] = useState<IPassword[] | false>(false);
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
   const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -73,7 +73,7 @@ const App = () => {
     const newPasswords = [{ password: password, note: '' }, ...passwords].slice(
       0,
       passwordListLength
-    ) as IPasswords;
+    ) as IPassword[];
     setPasswords(newPasswords);
   };
 

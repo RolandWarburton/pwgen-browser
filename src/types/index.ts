@@ -11,6 +11,9 @@ interface ISettings {
   storePasswordHistory: boolean;
 }
 
-type IPasswords = { password: string; note: string }[];
+interface IPassword {
+  password: string;
+  note: string;
+}
 
-export { ISettings, IPasswords };
+export { ISettings, IPassword };
