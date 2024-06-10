@@ -19,6 +19,7 @@ const App = () => {
   const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
 
+  // load stuff for app to function (settings, passwords, password history)
   useEffect(() => {
     Promise.all([getSettings(), getPasswords(), getPasswordHistory()])
       .then((result) => {
@@ -35,6 +36,7 @@ const App = () => {
       });
   }, []);
 
+  // when the settings are changed
   useEffect(() => {
     if (!settings) return;
     if (settings.retainLastPassword) {
@@ -44,6 +46,7 @@ const App = () => {
     }
   }, [settings]);
 
+  // when the password history changes update it
   useEffect(() => {
     if (passwordHistory.length === 0) {
       return;
@@ -51,12 +54,14 @@ const App = () => {
     chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
   }, [passwordHistory]);
 
+  // when passwords list changes update it
   useEffect(() => {
     if (passwords) {
       chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
     }
   }, [passwords]);
 
+  // add a password to the list
   const pushNewPassword = async () => {
     if (password === '' || !passwords) {
       return;
@@ -70,6 +75,7 @@ const App = () => {
     setPasswords(newPasswords);
   };
 
+  // create a new password
   const generate = async () => {
     if (!settings) {
       return;
@@ -85,10 +91,33 @@ const App = () => {
     }
   };
 
+  // clear the passwords list
   const clear = () => {
     console.log('clearing');
     chrome.storage.local.remove('passwords');
     setPasswords([]);
+  };
+
+  // delete a password from the passwords list
+  const deletePassword = (index: number) => {
+    if (!passwords) {
+      return;
+    }
+    console.log('deleting password');
+    const updatedPasswords = [...passwords];
+    updatedPasswords.splice(index, 1);
+    setPasswords(updatedPasswords);
+  };
+
+  // update a note for a password
+  const updateNote = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    if (!passwords) {
+      return;
+    }
+    console.log('updating note');
+    const updatedPasswords = [...passwords];
+    updatedPasswords[index].note = event.target.value;
+    setPasswords(updatedPasswords);
   };
 
   return (
@@ -104,7 +133,12 @@ const App = () => {
         />
         {passwords &&
           passwords.map((password, index) => (
-            <Password index={index} passwords={passwords} setPasswords={setPasswords} />
+            <Password
+              index={index}
+              passwords={passwords}
+              deletePassword={deletePassword}
+              updateNote={updateNote}
+            />
           ))}
       </Container>
       <ButtonGroup>

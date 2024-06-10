@@ -10,35 +10,17 @@ interface IProps {
   passwords: IPassword[];
   index: number;
   // password: IPassword;
-  setPasswords: React.Dispatch<React.SetStateAction<false | IPassword[]>>;
+  // setPasswords: React.Dispatch<React.SetStateAction<false | IPassword[]>>;
+  deletePassword: (index: number) => void;
+  updateNote: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
   // deletePassword: (index: number) => void;
   // updateNote: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
 }
 
 function Password(props: IProps) {
   const navigate = useNavigate();
-  const { passwords, index, setPasswords } = props;
+  const { passwords, index, updateNote, deletePassword } = props;
   const password = passwords[index];
-
-  const deletePassword = (index: number) => {
-    if (!passwords) {
-      return;
-    }
-    console.log('deleting password');
-    const updatedPasswords = [...passwords];
-    updatedPasswords.splice(index, 1);
-    setPasswords(updatedPasswords);
-  };
-
-  const updateNote = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    if (!passwords) {
-      return;
-    }
-    console.log('updating note');
-    const updatedPasswords = [...passwords];
-    updatedPasswords[index].note = event.target.value;
-    setPasswords(updatedPasswords);
-  };
 
   return (
     <Row key={index} columns="1fr auto auto 2fr auto">
