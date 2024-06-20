@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FormEventHandler } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, FormLabel, FormInput, Form, SaveButton } from '../../components/styles';
 import { Row } from '../../components/styles';
@@ -31,23 +31,21 @@ const defaultSettings: ISettings = {
   storePasswordHistory: true
 };
 
-function setDefaultSettings(setFunc: React.Dispatch<ISettings>) {
-  chrome.storage.local.set({ settings: defaultSettings }, () => {
-    setFunc(defaultSettings);
-  });
-}
+// function setDefaultSettings(setFunc: React.Dispatch<ISettings>) {
+//   chrome.storage.local.set({ settings: defaultSettings }, () => {
+//     setFunc(defaultSettings);
+//   });
+// }
 
 function Settings() {
   const [settings, setSettings] = useState(defaultSettings);
 
   useEffect(() => {
-    chrome.storage.local.get('settings', (result) => {
-      if (result.settings && Object.keys(result.settings).length > 0) {
-        setSettings(result.settings);
-      } else {
-        setDefaultSettings(setSettings);
-      }
-    });
+    const doAsync = async () => {
+      const settings = await getSettings();
+      setSettings(settings);
+    };
+    doAsync();
   }, []);
 
   const handleInputChange = (
