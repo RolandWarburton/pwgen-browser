@@ -1,6 +1,6 @@
-import React, { useEffect, useState, FormEventHandler } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, FormLabel, FormInput, Form, SaveButton, SVGHover } from '../../components/styles';
+import { Button, SVGHover } from '../../components/styles';
 import { Row } from '../../components/styles';
 import { IconCopy } from '../app/copy';
 import { useNavigate } from 'react-router-dom';
@@ -19,10 +19,10 @@ function History() {
     });
   }, []);
 
-const clearHistory = () => {
-  chrome.storage.local.remove('passwordHistory');
-  setPasswordHistory([])
-};
+  const clearHistory = () => {
+    chrome.storage.local.remove('passwordHistory');
+    setPasswordHistory([]);
+  };
 
   return (
     <div>
