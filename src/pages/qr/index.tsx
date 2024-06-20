@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 
 function PasswordQRCode() {
   const { param } = useParams();
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const back = searchParams.get('back');
   console.log(back);
   return (

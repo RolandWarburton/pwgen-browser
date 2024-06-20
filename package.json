@@ -1,4 +1,6 @@
 {
+  "name": "pwgen-browser",
+  "type": "module",
   "devDependencies": {
     "@types/chrome": "^0.0.254",
     "@types/react-dom": "^18.2.18",

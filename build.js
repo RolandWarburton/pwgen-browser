@@ -1,22 +1,22 @@
-const fs = require('fs');
-const path = require('path');
-const { build } = require('esbuild');
+import { existsSync, mkdirSync, readdirSync, statSync, copyFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import { build as esbuild } from 'esbuild';
 
 function copyFolderSync(source, target) {
-  if (!fs.existsSync(target)) {
-    fs.mkdirSync(target);
+  if (!existsSync(target)) {
+    mkdirSync(target);
   }
 
-  const files = fs.readdirSync(source);
+  const files = readdirSync(source);
 
   files.forEach((file) => {
-    const sourcePath = path.join(source, file);
-    const targetPath = path.join(target, file);
+    const sourcePath = join(source, file);
+    const targetPath = join(target, file);
 
-    const stats = fs.statSync(sourcePath);
+    const stats = statSync(sourcePath);
 
     if (stats.isFile()) {
-      fs.copyFileSync(sourcePath, targetPath);
+      copyFileSync(sourcePath, targetPath);
     } else if (stats.isDirectory()) {
       copyFolderSync(sourcePath, targetPath);
     }
@@ -24,37 +24,45 @@ function copyFolderSync(source, target) {
 }
 
 function makeTemp(name) {
-  if (!fs.existsSync(`./${name}`)) {
-    fs.mkdirSync(`./${name}`);
+  if (!existsSync(`./${name}`)) {
+    mkdirSync(`./${name}`);
   }
+}
+
+const buildSettings = {
+  entryPoints: ['src/index.tsx'],
+  outdir: './dist',
+  platform: 'node',
+  bundle: true,
+  write: false,
+  format: 'esm',
+  jsx: 'automatic',
+  loader: {
+    '.js': 'jsx',
+    '.ts': 'tsx'
+  },
+  globalName: 'React',
+  define: { 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development') }
+};
+
+async function build() {
+  const result = await esbuild(buildSettings).catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
+  return result;
 }
 
 async function main() {
   makeTemp('dist');
+  const result = await build();
 
-  const result = await build({
-    entryPoints: ['src/index.tsx'],
-    platform: 'node',
-    bundle: true,
-    write: false,
-    format: 'esm',
-    jsx: 'automatic',
-    loader: {
-      '.js': 'jsx',
-      '.ts': 'tsx'
-    },
-    globalName: 'React',
-    define: { 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development') }
-  }).catch((err) => {
-    console.log(err);
-    process.exit(1);
-  });
+  let content = '';
+  content = result.outputFiles[0].text;
+  writeFileSync('dist/index.js', content);
 
-  const content = result.outputFiles[0].text;
-  fs.writeFileSync('dist/index.js', content);
-
-  fs.copyFileSync('manifest.json', 'dist/manifest.json');
-  fs.copyFileSync('./src/popup.html', './dist/popup.html');
+  copyFileSync('manifest.json', 'dist/manifest.json');
+  copyFileSync('./static/popup.html', './dist/popup.html');
   copyFolderSync('./images/', './dist/images');
 }
 main();
