@@ -5,28 +5,22 @@ import {
   ButtonGroupButton,
   Button,
   Container,
-  Row,
-  NoteCell,
   SettingsButton,
-  ButtonGroup,
-  SVGHover
+  ButtonGroup
 } from '../../components/styles';
-import { IconQR } from './qr';
-import { useNavigate } from 'react-router-dom';
-import { IconCopy } from './copy';
-import { IPasswords, ISettings, getPasswordHistory, getPasswords, getSettings } from '../settings';
-import { IconTrash } from './trash';
+import { getPasswordHistory, getPasswords, getSettings } from '../settings';
+import { IPassword, ISettings } from '../../types';
+import Password from '../../components/password-row';
 
 const App = () => {
   const [password, setPassword] = useState('');
-  const [passwords, setPasswords] = useState<IPasswords | false>(false);
+  const [passwords, setPasswords] = useState<IPassword[] | false>(false);
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
   const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
 
+  // load stuff for app to function (settings, passwords, password history)
   useEffect(() => {
-    // const doAsync = async () => {
     Promise.all([getSettings(), getPasswords(), getPasswordHistory()])
       .then((result) => {
         const [settings, passwords, passwordHistory] = result;
@@ -42,6 +36,7 @@ const App = () => {
       });
   }, []);
 
+  // when the settings are changed
   useEffect(() => {
     if (!settings) return;
     if (settings.retainLastPassword) {
@@ -51,6 +46,7 @@ const App = () => {
     }
   }, [settings]);
 
+  // when the password history changes update it
   useEffect(() => {
     if (passwordHistory.length === 0) {
       return;
@@ -58,12 +54,14 @@ const App = () => {
     chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
   }, [passwordHistory]);
 
+  // when passwords list changes update it
   useEffect(() => {
     if (passwords) {
       chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
     }
   }, [passwords]);
 
+  // add a password to the list
   const pushNewPassword = async () => {
     if (password === '' || !passwords) {
       return;
@@ -73,10 +71,11 @@ const App = () => {
     const newPasswords = [{ password: password, note: '' }, ...passwords].slice(
       0,
       passwordListLength
-    ) as IPasswords;
+    ) as IPassword[];
     setPasswords(newPasswords);
   };
 
+  // create a new password
   const generate = async () => {
     if (!settings) {
       return;
@@ -92,22 +91,14 @@ const App = () => {
     }
   };
 
+  // clear the passwords list
   const clear = () => {
     console.log('clearing');
     chrome.storage.local.remove('passwords');
     setPasswords([]);
   };
 
-  const updateNote = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    if (!passwords) {
-      return;
-    }
-    console.log('updating note');
-    const updatedPasswords = [...passwords];
-    updatedPasswords[index].note = event.target.value;
-    setPasswords(updatedPasswords);
-  };
-
+  // delete a password from the passwords list
   const deletePassword = (index: number) => {
     if (!passwords) {
       return;
@@ -115,6 +106,17 @@ const App = () => {
     console.log('deleting password');
     const updatedPasswords = [...passwords];
     updatedPasswords.splice(index, 1);
+    setPasswords(updatedPasswords);
+  };
+
+  // update a note for a password
+  const updateNote = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    if (!passwords) {
+      return;
+    }
+    console.log('updating note');
+    const updatedPasswords = [...passwords];
+    updatedPasswords[index].note = event.target.value;
     setPasswords(updatedPasswords);
   };
 
@@ -131,38 +133,12 @@ const App = () => {
         />
         {passwords &&
           passwords.map((password, index) => (
-            <Row key={index} columns="1fr auto auto 2fr auto">
-              {password.password}
-              <SVGHover
-                onClick={() => {
-                  navigator.clipboard.writeText(password.password).catch((error) => {
-                    console.error('Unable to copy to clipboard:', error);
-                  });
-                }}
-              >
-                <IconCopy />
-              </SVGHover>
-              <SVGHover
-                onClick={() => {
-                  navigate(`/qr/${password.password}`);
-                }}
-              >
-                <IconQR />
-              </SVGHover>
-              <NoteCell
-                type="text"
-                placeholder="note"
-                value={password.note}
-                onChange={(e) => updateNote(e, index)}
-              />
-              <SVGHover
-                onClick={() => {
-                  deletePassword(index);
-                }}
-              >
-                <IconTrash />
-              </SVGHover>
-            </Row>
+            <Password
+              index={index}
+              passwords={passwords}
+              deletePassword={deletePassword}
+              updateNote={updateNote}
+            />
           ))}
       </Container>
       <ButtonGroup>
