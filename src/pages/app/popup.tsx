@@ -10,7 +10,7 @@ import {
 } from '../../components/styles';
 import { getPasswordHistory, getPasswords, getSettings } from '../settings';
 import { IPassword, ISettings } from '../../types';
-import Password from '../../components/password-row';
+import Password from '@components/password-row';
 
 const App = () => {
   const [password, setPassword] = useState('');

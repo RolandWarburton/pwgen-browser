@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, FormLabel, FormInput, Form, SaveButton } from '../../components/styles';
-import { Row } from '../../components/styles';
+import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles';
 import { IPassword, ISettings } from '../../types';
 
 const defaultSettings: ISettings = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Link } from 'react-router-dom';
-import { Button, Container, Row } from '../../components/styles';
+import { Button, Container, Row } from '@components/styles';
 import { useParams } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 

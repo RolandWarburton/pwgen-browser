@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, SVGHover } from '../../components/styles';
-import { Row } from '../../components/styles';
-import { IconCopy } from '../app/copy';
+import { Button, SVGHover, Row } from '@components/styles';
+import { IconCopy } from '@components/icons/copy';
 import { useNavigate } from 'react-router-dom';
 import { IconQR } from '../app/qr';
 

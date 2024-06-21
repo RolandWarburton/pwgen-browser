@@ -1,9 +1,9 @@
 import React from 'react';
 import { IPassword } from '../../types';
 import { NoteCell, Row, SVGHover } from '../styles';
-import { IconCopy } from '../../pages/app/copy';
+import { IconCopy } from '@components/icons/copy';
 import { IconQR } from '../../pages/app/qr';
-import { IconTrash } from '../../pages/app/trash';
+import { IconTrash } from '@components/icons/trash';
 import { useNavigate } from 'react-router-dom';
 
 interface IProps {
