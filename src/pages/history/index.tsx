@@ -13,9 +13,10 @@ function History() {
   useEffect(() => {
     // get the password password history
     chrome.storage.local.get('passwordHistory', (result) => {
-      if (Object.keys(result).length !== 0 && result.passwordHistory) {
+      if (Object.keys(result).length !== 0 && typeof result.passwordHistory == 'string') {
         console.log('setting password history');
-        setPasswordHistory(JSON.parse(result.passwordHistory));
+        const temp = JSON.parse(result.passwordHistory) as string[];
+        setPasswordHistory(temp);
       }
     });
   }, []);

@@ -80,8 +80,7 @@ const App = () => {
     if (!settings) {
       return;
     }
-    let newPassword = '';
-    newPassword = await genpw(settings);
+    const newPassword = await genpw(settings);
     setPassword(newPassword);
     if (passwordRef.current) {
       passwordRef.current.value = newPassword;
@@ -132,7 +131,7 @@ const App = () => {
           defaultValue={password}
         />
         {passwords &&
-          passwords.map((password, index) => (
+          passwords.map((_, index) => (
             <Password
               index={index}
               passwords={passwords}

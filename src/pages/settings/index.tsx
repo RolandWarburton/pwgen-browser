@@ -49,7 +49,7 @@ function Settings() {
     }
   };
 
-  const handleFormSubmit = (e: any) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     chrome.storage.local.set({ settings });
   };
@@ -211,7 +211,7 @@ function getSettings(): Promise<ISettings> {
 function getPasswords(): Promise<IPassword[]> {
   return new Promise((resolve) => {
     chrome.storage.local.get('passwords', async (result) => {
-      if (result.passwords) {
+      if (typeof result.passwords == 'string') {
         const passwords = JSON.parse(result.passwords) as IPassword[];
         resolve(passwords);
       } else {
@@ -224,7 +224,7 @@ function getPasswords(): Promise<IPassword[]> {
 function getPasswordHistory(): Promise<string[]> {
   return new Promise((resolve) => {
     chrome.storage.local.get('passwordHistory', async (result) => {
-      if (result.passwordHistory) {
+      if (typeof result.passwordHistory == 'string') {
         const passwordHistory = JSON.parse(result.passwordHistory) as string[];
         resolve(passwordHistory);
       } else {
