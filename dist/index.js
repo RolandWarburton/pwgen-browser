@@ -28994,7 +28994,7 @@ var require_react_router_dom_development = __commonJS({
       {
         NavLink.displayName = "NavLink";
       }
-      const Form3 = /* @__PURE__ */ React__namespace.forwardRef((_ref9, forwardedRef) => {
+      const Form2 = /* @__PURE__ */ React__namespace.forwardRef((_ref9, forwardedRef) => {
         let {
           fetcherKey,
           navigate,
@@ -29039,7 +29039,7 @@ var require_react_router_dom_development = __commonJS({
         }, props));
       });
       {
-        Form3.displayName = "Form";
+        Form2.displayName = "Form";
       }
       function ScrollRestoration(_ref10) {
         let {
@@ -29252,7 +29252,7 @@ var require_react_router_dom_development = __commonJS({
         }, [fetcherKey, submitImpl]);
         let FetcherForm = React__namespace.useMemo(() => {
           let FetcherForm2 = /* @__PURE__ */ React__namespace.forwardRef((props, ref) => {
-            return /* @__PURE__ */ React__namespace.createElement(Form3, _extends({}, props, {
+            return /* @__PURE__ */ React__namespace.createElement(Form2, _extends({}, props, {
               navigate: false,
               fetcherKey,
               ref
@@ -29740,7 +29740,7 @@ var require_react_router_dom_development = __commonJS({
         }
       });
       exports2.BrowserRouter = BrowserRouter;
-      exports2.Form = Form3;
+      exports2.Form = Form2;
       exports2.HashRouter = HashRouter;
       exports2.Link = Link5;
       exports2.NavLink = NavLink;
@@ -30658,7 +30658,7 @@ var require_lib = __commonJS({
 });
 
 // src/index.tsx
-var import_react8 = __toESM(require_react());
+var import_react8 = __toESM(require_react(), 1);
 
 // node_modules/goober/dist/goober.modern.js
 var e = { data: "" };
@@ -30740,12 +30740,12 @@ function j(e2, t2) {
 }
 
 // src/index.tsx
-var import_client = __toESM(require_client());
-var import_react_router_dom9 = __toESM(require_main2());
+var import_client = __toESM(require_client(), 1);
+var import_react_router_dom9 = __toESM(require_main2(), 1);
 
 // src/pages/app/popup.tsx
-var import_react5 = __toESM(require_react());
-var import_react_router_dom2 = __toESM(require_main2());
+var import_react5 = __toESM(require_react(), 1);
+var import_react_router_dom2 = __toESM(require_main2(), 1);
 
 // node_modules/@rolandwarburton/pwgen/src/libpwgen/wordlist.js
 var wordList = [
@@ -38691,7 +38691,7 @@ var Button = j("button")`
 `;
 
 // src/pages/app/qr.tsx
-var import_react = __toESM(require_react());
+var import_react = __toESM(require_react(), 1);
 var IconQR = () => {
   return /* @__PURE__ */ import_react.default.createElement(
     "div",
@@ -38743,10 +38743,10 @@ var IconQR = () => {
 };
 
 // src/pages/app/popup.tsx
-var import_react_router_dom3 = __toESM(require_main2());
+var import_react_router_dom3 = __toESM(require_main2(), 1);
 
 // src/pages/app/copy.tsx
-var import_react2 = __toESM(require_react());
+var import_react2 = __toESM(require_react(), 1);
 var IconCopy = () => {
   return /* @__PURE__ */ import_react2.default.createElement(
     "div",
@@ -38785,8 +38785,8 @@ var IconCopy = () => {
 };
 
 // src/pages/settings/index.tsx
-var import_react3 = __toESM(require_react());
-var import_react_router_dom = __toESM(require_main2());
+var import_react3 = __toESM(require_react(), 1);
+var import_react_router_dom = __toESM(require_main2(), 1);
 var defaultSettings = {
   minLength: 3,
   maxLength: 5,
@@ -38799,21 +38799,14 @@ var defaultSettings = {
   retainLastPassword: true,
   storePasswordHistory: true
 };
-function setDefaultSettings(setFunc) {
-  chrome.storage.local.set({ settings: defaultSettings }, () => {
-    setFunc(defaultSettings);
-  });
-}
 function Settings() {
   const [settings, setSettings] = (0, import_react3.useState)(defaultSettings);
   (0, import_react3.useEffect)(() => {
-    chrome.storage.local.get("settings", (result) => {
-      if (result.settings && Object.keys(result.settings).length > 0) {
-        setSettings(result.settings);
-      } else {
-        setDefaultSettings(setSettings);
-      }
-    });
+    const doAsync = async () => {
+      const settings2 = await getSettings();
+      setSettings(settings2);
+    };
+    doAsync();
   }, []);
   const handleInputChange = (e2, type) => {
     const { name, value, checked } = e2.target;
@@ -38965,7 +38958,7 @@ function getPasswords() {
   return new Promise((resolve) => {
     chrome.storage.local.get("passwords", async (result) => {
       if (result.passwords) {
-        const passwords = JSON.parse(result.passwords);
+        const passwords = JSON.parse(result["passwords"]);
         resolve(passwords);
       } else {
         resolve([]);
@@ -38987,7 +38980,7 @@ function getPasswordHistory() {
 }
 
 // src/pages/app/trash.tsx
-var import_react4 = __toESM(require_react());
+var import_react4 = __toESM(require_react(), 1);
 var IconTrash = () => {
   return /* @__PURE__ */ import_react4.default.createElement(
     "div",
@@ -39145,23 +39138,23 @@ var App = () => {
 };
 
 // src/pages/qr/index.tsx
-var import_react6 = __toESM(require_react());
-var import_qrcode = __toESM(require_lib());
-var import_react_router_dom4 = __toESM(require_main2());
-var import_react_router_dom5 = __toESM(require_main2());
-var import_react_router_dom6 = __toESM(require_main2());
+var import_react6 = __toESM(require_react(), 1);
+var import_qrcode = __toESM(require_lib(), 1);
+var import_react_router_dom4 = __toESM(require_main2(), 1);
+var import_react_router_dom5 = __toESM(require_main2(), 1);
+var import_react_router_dom6 = __toESM(require_main2(), 1);
 function PasswordQRCode() {
   const { param } = (0, import_react_router_dom5.useParams)();
-  const [searchParams, _] = (0, import_react_router_dom6.useSearchParams)();
+  const [searchParams] = (0, import_react_router_dom6.useSearchParams)();
   const back = searchParams.get("back");
   console.log(back);
   return /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement(Container, null, /* @__PURE__ */ import_react6.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react6.default.createElement(import_react_router_dom4.Link, { to: `/${back || ""}` }, /* @__PURE__ */ import_react6.default.createElement(Button, null, "Back"))), /* @__PURE__ */ import_react6.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react6.default.createElement(import_qrcode.QRCodeSVG, { value: param || "NO PASSWORD SET", width: "100%", height: "200px" }))));
 }
 
 // src/pages/history/index.tsx
-var import_react7 = __toESM(require_react());
-var import_react_router_dom7 = __toESM(require_main2());
-var import_react_router_dom8 = __toESM(require_main2());
+var import_react7 = __toESM(require_react(), 1);
+var import_react_router_dom7 = __toESM(require_main2(), 1);
+var import_react_router_dom8 = __toESM(require_main2(), 1);
 function History() {
   const navigate = (0, import_react_router_dom8.useNavigate)();
   const [passwordHistory, setPasswordHistory] = (0, import_react7.useState)([]);
