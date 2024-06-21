@@ -2,7 +2,7 @@ import React from 'react';
 import { IPassword } from '../../types';
 import { NoteCell, Row, SVGHover } from '../styles';
 import { IconCopy } from '@components/icons/copy';
-import { IconQR } from '../../pages/app/qr';
+import { IconQR } from '@components/icons/qr';
 import { IconTrash } from '@components/icons/trash';
 import { useNavigate } from 'react-router-dom';
 

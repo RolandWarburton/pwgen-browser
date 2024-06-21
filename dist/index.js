@@ -38927,7 +38927,7 @@ var IconCopy = () => {
   );
 };
 
-// src/pages/app/qr.tsx
+// src/components/icons/qr.tsx
 var import_react3 = __toESM(require_react(), 1);
 var IconQR = () => {
   return /* @__PURE__ */ import_react3.default.createElement(

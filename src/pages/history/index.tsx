@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button, SVGHover, Row } from '@components/styles';
 import { IconCopy } from '@components/icons/copy';
 import { useNavigate } from 'react-router-dom';
-import { IconQR } from '../app/qr';
+import { IconQR } from '@components/icons/qr';
 
 function History() {
   const navigate = useNavigate();
