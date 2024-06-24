@@ -14,6 +14,7 @@ interface ISettings {
 interface IPassword {
   password: string;
   note: string;
+  flagged: boolean;
 }
 
 export { ISettings, IPassword };

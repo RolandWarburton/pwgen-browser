@@ -8,13 +8,15 @@ export const Container = styled('div')`
   margin: 10px 0px;
 `;
 
-export const Row = styled('div') <{ columns?: string }>`
+export const Row = styled('div') <{ columns?: string; background?: string }>`
   display: grid;
   grid-template-columns: ${(props) => (props.columns ? props.columns : '1fr 2fr')};
   grid-template-rows: 1fr;
   gap: 10px;
   align-items: center;
   margin: 0.25em;
+  padding: 0px 5px;
+  ${(props) => (props.background ? 'background-color: ' + props.background + ';' : '')}
 `;
 
 export const SVGHover = styled('div')`

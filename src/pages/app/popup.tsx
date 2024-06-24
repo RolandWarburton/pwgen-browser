@@ -68,10 +68,10 @@ const App = () => {
     }
 
     const passwordListLength = settings ? settings.passwordsListMaxLength : 5;
-    const newPasswords = [{ password: password, note: '' }, ...passwords].slice(
-      0,
-      passwordListLength
-    ) as IPassword[];
+    const newPasswords = [
+      { password: password, note: '', hidden: false, flagged: false },
+      ...passwords
+    ].slice(0, passwordListLength) as IPassword[];
     setPasswords(newPasswords);
   };
 
@@ -119,6 +119,16 @@ const App = () => {
     setPasswords(updatedPasswords);
   };
 
+  const flagPassword = (index: number) => {
+    if (!passwords) {
+      return;
+    }
+    console.log('updating note');
+    const updatedPasswords = [...passwords];
+    updatedPasswords[index].flagged = !updatedPasswords[index].flagged;
+    setPasswords(updatedPasswords);
+  };
+
   return (
     <div>
       <Container>
@@ -137,6 +147,7 @@ const App = () => {
               passwords={passwords}
               deletePassword={deletePassword}
               updateNote={updateNote}
+              flagPassword={flagPassword}
             />
           ))}
       </Container>

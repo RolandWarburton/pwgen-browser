@@ -3,6 +3,7 @@ import { IPassword } from '../../types';
 import { NoteCell, Row, SVGHover } from '../styles';
 import { IconCopy } from '@components/icons/copy';
 import { IconQR } from '@components/icons/qr';
+import { IconFlag } from '@components/icons/flag';
 import { IconTrash } from '@components/icons/trash';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +13,7 @@ interface IProps {
   // password: IPassword;
   // setPasswords: React.Dispatch<React.SetStateAction<false | IPassword[]>>;
   deletePassword: (index: number) => void;
+  flagPassword: (index: number) => void;
   updateNote: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
   // deletePassword: (index: number) => void;
   // updateNote: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
@@ -19,11 +21,15 @@ interface IProps {
 
 function Password(props: IProps) {
   const navigate = useNavigate();
-  const { passwords, index, updateNote, deletePassword } = props;
+  const { passwords, index, updateNote, deletePassword, flagPassword } = props;
   const password = passwords[index];
 
   return (
-    <Row key={index} columns="1fr auto auto 2fr auto">
+    <Row
+      key={index}
+      columns="1fr auto auto auto 2fr auto"
+      background={password.flagged ? 'yellow' : ''}
+    >
       {password.password}
       <SVGHover
         onClick={() => {
@@ -40,6 +46,13 @@ function Password(props: IProps) {
         }}
       >
         <IconQR />
+      </SVGHover>
+      <SVGHover
+        onClick={() => {
+          flagPassword(index);
+        }}
+      >
+        <IconFlag />
       </SVGHover>
       <NoteCell
         type="text"
