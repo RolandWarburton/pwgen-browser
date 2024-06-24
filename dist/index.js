@@ -2381,9 +2381,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React10 = require_react();
+        var React11 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React10.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React11.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -3988,7 +3988,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React10.Children.forEach(props.children, function(child) {
+                React11.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -12435,7 +12435,7 @@ var require_react_dom_development = __commonJS({
           }
         }
         var fakeInternalInstance = {};
-        var emptyRefsObject = new React10.Component().refs;
+        var emptyRefsObject = new React11.Component().refs;
         var didWarnAboutStateAssignmentForComponent;
         var didWarnAboutUninitializedState;
         var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -27060,7 +27060,7 @@ var require_react_router_development = __commonJS({
   "node_modules/react-router/dist/umd/react-router.development.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require_react(), require_router_cjs()) : typeof define === "function" && define.amd ? define(["exports", "react", "@remix-run/router"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.ReactRouter = {}, global.React, global.RemixRouter));
-    })(exports, function(exports2, React10, router2) {
+    })(exports, function(exports2, React11, router2) {
       "use strict";
       function _interopNamespace(e2) {
         if (e2 && e2.__esModule)
@@ -27082,7 +27082,7 @@ var require_react_router_development = __commonJS({
         n2["default"] = e2;
         return Object.freeze(n2);
       }
-      var React__namespace = /* @__PURE__ */ _interopNamespace(React10);
+      var React__namespace = /* @__PURE__ */ _interopNamespace(React11);
       function _extends() {
         _extends = Object.assign ? Object.assign.bind() : function(target) {
           for (var i2 = 1; i2 < arguments.length; i2++) {
@@ -28281,7 +28281,7 @@ var require_react_router_dom_development = __commonJS({
   "node_modules/react-router-dom/dist/umd/react-router-dom.development.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require_react(), require_react_dom(), require_main(), require_router_cjs()) : typeof define === "function" && define.amd ? define(["exports", "react", "react-dom", "react-router", "@remix-run/router"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.ReactRouterDOM = {}, global.React, global.ReactDOM, global.ReactRouter, global.RemixRouter));
-    })(exports, function(exports2, React10, ReactDOM, reactRouter, router2) {
+    })(exports, function(exports2, React11, ReactDOM, reactRouter, router2) {
       "use strict";
       function _interopNamespace(e2) {
         if (e2 && e2.__esModule)
@@ -28303,7 +28303,7 @@ var require_react_router_dom_development = __commonJS({
         n2["default"] = e2;
         return Object.freeze(n2);
       }
-      var React__namespace = /* @__PURE__ */ _interopNamespace(React10);
+      var React__namespace = /* @__PURE__ */ _interopNamespace(React11);
       var ReactDOM__namespace = /* @__PURE__ */ _interopNamespace(ReactDOM);
       function _extends() {
         _extends = Object.assign ? Object.assign.bind() : function(target) {
@@ -29835,7 +29835,7 @@ var require_lib = __commonJS({
       default: () => QRCode
     });
     module.exports = __toCommonJS(src_exports);
-    var import_react10 = __toESM2(require_react());
+    var import_react11 = __toESM2(require_react());
     var qrcodegen;
     ((qrcodegen2) => {
       const _QrCode = class {
@@ -30529,10 +30529,10 @@ var require_lib = __commonJS({
         "imageSettings"
       ]);
       const imgSrc = imageSettings == null ? void 0 : imageSettings.src;
-      const _canvas = (0, import_react10.useRef)(null);
-      const _image = (0, import_react10.useRef)(null);
-      const [isImgLoaded, setIsImageLoaded] = (0, import_react10.useState)(false);
-      (0, import_react10.useEffect)(() => {
+      const _canvas = (0, import_react11.useRef)(null);
+      const _image = (0, import_react11.useRef)(null);
+      const [isImgLoaded, setIsImageLoaded] = (0, import_react11.useState)(false);
+      (0, import_react11.useEffect)(() => {
         if (_canvas.current != null) {
           const canvas = _canvas.current;
           const ctx = canvas.getContext("2d");
@@ -30573,13 +30573,13 @@ var require_lib = __commonJS({
           }
         }
       });
-      (0, import_react10.useEffect)(() => {
+      (0, import_react11.useEffect)(() => {
         setIsImageLoaded(false);
       }, [imgSrc]);
       const canvasStyle = __spreadValues({ height: size, width: size }, style);
       let img = null;
       if (imgSrc != null) {
-        img = /* @__PURE__ */ import_react10.default.createElement("img", {
+        img = /* @__PURE__ */ import_react11.default.createElement("img", {
           src: imgSrc,
           key: imgSrc,
           style: { display: "none" },
@@ -30589,7 +30589,7 @@ var require_lib = __commonJS({
           ref: _image
         });
       }
-      return /* @__PURE__ */ import_react10.default.createElement(import_react10.default.Fragment, null, /* @__PURE__ */ import_react10.default.createElement("canvas", __spreadValues({
+      return /* @__PURE__ */ import_react11.default.createElement(import_react11.default.Fragment, null, /* @__PURE__ */ import_react11.default.createElement("canvas", __spreadValues({
         style: canvasStyle,
         height: size,
         width: size,
@@ -30623,7 +30623,7 @@ var require_lib = __commonJS({
         if (calculatedImageSettings.excavation != null) {
           cells = excavateModules(cells, calculatedImageSettings.excavation);
         }
-        image = /* @__PURE__ */ import_react10.default.createElement("image", {
+        image = /* @__PURE__ */ import_react11.default.createElement("image", {
           xlinkHref: imageSettings.src,
           height: calculatedImageSettings.h,
           width: calculatedImageSettings.w,
@@ -30633,15 +30633,15 @@ var require_lib = __commonJS({
         });
       }
       const fgPath = generatePath(cells, margin);
-      return /* @__PURE__ */ import_react10.default.createElement("svg", __spreadValues({
+      return /* @__PURE__ */ import_react11.default.createElement("svg", __spreadValues({
         height: size,
         width: size,
         viewBox: `0 0 ${numCells} ${numCells}`
-      }, otherProps), /* @__PURE__ */ import_react10.default.createElement("path", {
+      }, otherProps), /* @__PURE__ */ import_react11.default.createElement("path", {
         fill: bgColor,
         d: `M0,0 h${numCells}v${numCells}H0z`,
         shapeRendering: "crispEdges"
-      }), /* @__PURE__ */ import_react10.default.createElement("path", {
+      }), /* @__PURE__ */ import_react11.default.createElement("path", {
         fill: fgColor,
         d: fgPath,
         shapeRendering: "crispEdges"
@@ -30650,15 +30650,15 @@ var require_lib = __commonJS({
     var QRCode = (props) => {
       const _a = props, { renderAs } = _a, otherProps = __objRest(_a, ["renderAs"]);
       if (renderAs === "svg") {
-        return /* @__PURE__ */ import_react10.default.createElement(QRCodeSVG2, __spreadValues({}, otherProps));
+        return /* @__PURE__ */ import_react11.default.createElement(QRCodeSVG2, __spreadValues({}, otherProps));
       }
-      return /* @__PURE__ */ import_react10.default.createElement(QRCodeCanvas, __spreadValues({}, otherProps));
+      return /* @__PURE__ */ import_react11.default.createElement(QRCodeCanvas, __spreadValues({}, otherProps));
     };
   }
 });
 
 // src/index.tsx
-var import_react9 = __toESM(require_react(), 1);
+var import_react10 = __toESM(require_react(), 1);
 
 // node_modules/goober/dist/goober.modern.js
 var e = { data: "" };
@@ -30744,7 +30744,7 @@ var import_client = __toESM(require_client(), 1);
 var import_react_router_dom9 = __toESM(require_main2(), 1);
 
 // src/pages/app/popup.tsx
-var import_react6 = __toESM(require_react(), 1);
+var import_react7 = __toESM(require_react(), 1);
 var import_react_router_dom3 = __toESM(require_main2(), 1);
 
 // node_modules/@rolandwarburton/pwgen/src/libpwgen/wordlist.js
@@ -38626,10 +38626,12 @@ var Container = j("div")`
 var Row = j("div")`
   display: grid;
   grid-template-columns: ${(props) => props.columns ? props.columns : "1fr 2fr"};
-  grid-template-rows: ${(props) => props.rows ? props.rows : "1fr"};
+  grid-template-rows: 1fr;
   gap: 10px;
   align-items: center;
   margin: 0.25em;
+  padding: 0px 5px;
+  ${(props) => props.background ? "background-color: " + props.background + ";" : ""}
 `;
 var SVGHover = j("div")`
   border-radius: 5px;
@@ -38886,7 +38888,7 @@ function getPasswordHistory() {
 }
 
 // src/components/password-row/index.tsx
-var import_react5 = __toESM(require_react(), 1);
+var import_react6 = __toESM(require_react(), 1);
 
 // src/components/icons/copy.tsx
 var import_react2 = __toESM(require_react(), 1);
@@ -38979,21 +38981,51 @@ var IconQR = () => {
   );
 };
 
-// src/components/icons/trash.tsx
+// src/components/icons/flag.tsx
 var import_react4 = __toESM(require_react(), 1);
-var IconTrash = () => {
+var IconFlag = () => {
   return /* @__PURE__ */ import_react4.default.createElement(
     "div",
     {
       style: { padding: "2px", display: "flex", alignItems: "center", justifyContent: "center" }
     },
-    /* @__PURE__ */ import_react4.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "25", height: "25", viewBox: "0 0 1024 1024" }, /* @__PURE__ */ import_react4.default.createElement(
+    /* @__PURE__ */ import_react4.default.createElement(
+      "svg",
+      {
+        xmlns: "http://www.w3.org/2000/svg",
+        width: "25",
+        height: "25",
+        fill: "none",
+        viewBox: "0 0 24 24"
+      },
+      /* @__PURE__ */ import_react4.default.createElement(
+        "path",
+        {
+          d: "M5 22V14M5 14L7.47067 13.5059C9.1212 13.1758 10.8321 13.3328 12.3949 13.958C14.0885 14.6354 15.9524 14.7619 17.722 14.3195L17.8221 14.2945C18.4082 14.148 18.6861 13.4769 18.3753 12.9589L16.8147 10.3578C16.4732 9.78863 16.3024 9.50405 16.2619 9.19451C16.2451 9.06539 16.2451 8.93461 16.2619 8.80549C16.3024 8.49595 16.4732 8.21137 16.8147 7.64221L18.0932 5.51132C18.4278 4.9536 17.9211 4.26972 17.2901 4.42746C15.8013 4.79967 14.2331 4.69323 12.8082 4.12329L12.3949 3.95797C10.8321 3.33284 9.1212 3.17576 7.47067 3.50587L5 4M5 14V11M5 4V2M5 4V7",
+          stroke: "#1C274C",
+          "stroke-width": "1.5",
+          "stroke-linecap": "round"
+        }
+      )
+    )
+  );
+};
+
+// src/components/icons/trash.tsx
+var import_react5 = __toESM(require_react(), 1);
+var IconTrash = () => {
+  return /* @__PURE__ */ import_react5.default.createElement(
+    "div",
+    {
+      style: { padding: "2px", display: "flex", alignItems: "center", justifyContent: "center" }
+    },
+    /* @__PURE__ */ import_react5.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "25", height: "25", viewBox: "0 0 1024 1024" }, /* @__PURE__ */ import_react5.default.createElement(
       "path",
       {
         fill: "#231815",
         d: "M960 160H668.8a160 160 0 0 0-313.6 0H64a32 32 0 0 0 0 64h896a32 32 0 0 0 0-64M512 96a96 96 0 0 1 90.24 64H421.76A96 96 0 0 1 512 96m332.16 194.56a32 32 0 0 0-34.88 6.72A32 32 0 0 0 800 320a32 32 0 1 0 64 0 33.6 33.6 0 0 0-9.28-22.72 32 32 0 0 0-10.56-6.72M832 416a32 32 0 0 0-32 32v96a32 32 0 0 0 64 0v-96a32 32 0 0 0-32-32m0 224a32 32 0 0 0-32 32v224a32 32 0 0 1-32 32H256a32 32 0 0 1-32-32V320a32 32 0 0 0-64 0v576a96 96 0 0 0 96 96h512a96 96 0 0 0 96-96V672a32 32 0 0 0-32-32"
       }
-    ), /* @__PURE__ */ import_react4.default.createElement(
+    ), /* @__PURE__ */ import_react5.default.createElement(
       "path",
       {
         fill: "#231815",
@@ -39007,54 +39039,75 @@ var IconTrash = () => {
 var import_react_router_dom2 = __toESM(require_main2(), 1);
 function Password(props) {
   const navigate = (0, import_react_router_dom2.useNavigate)();
-  const { passwords, index, updateNote, deletePassword } = props;
+  const { passwords, index, updateNote, deletePassword, flagPassword } = props;
   const password = passwords[index];
-  return /* @__PURE__ */ import_react5.default.createElement(Row, { key: index, columns: "1fr auto auto 2fr auto" }, password.password, /* @__PURE__ */ import_react5.default.createElement(
-    SVGHover,
+  return /* @__PURE__ */ import_react6.default.createElement(
+    Row,
     {
-      onClick: () => {
-        navigator.clipboard.writeText(password.password).catch((error) => {
-          console.error("Unable to copy to clipboard:", error);
-        });
-      }
+      key: index,
+      columns: "1fr auto auto auto 2fr auto",
+      background: password.flagged ? "yellow" : ""
     },
-    /* @__PURE__ */ import_react5.default.createElement(IconCopy, null)
-  ), /* @__PURE__ */ import_react5.default.createElement(
-    SVGHover,
-    {
-      onClick: () => {
-        navigate(`/qr/${password.password}`);
+    password.password,
+    /* @__PURE__ */ import_react6.default.createElement(
+      SVGHover,
+      {
+        onClick: () => {
+          navigator.clipboard.writeText(password.password).catch((error) => {
+            console.error("Unable to copy to clipboard:", error);
+          });
+        }
+      },
+      /* @__PURE__ */ import_react6.default.createElement(IconCopy, null)
+    ),
+    /* @__PURE__ */ import_react6.default.createElement(
+      SVGHover,
+      {
+        onClick: () => {
+          navigate(`/qr/${password.password}`);
+        }
+      },
+      /* @__PURE__ */ import_react6.default.createElement(IconQR, null)
+    ),
+    /* @__PURE__ */ import_react6.default.createElement(
+      SVGHover,
+      {
+        onClick: () => {
+          flagPassword(index);
+        }
+      },
+      /* @__PURE__ */ import_react6.default.createElement(IconFlag, null)
+    ),
+    /* @__PURE__ */ import_react6.default.createElement(
+      NoteCell,
+      {
+        type: "text",
+        placeholder: "note",
+        value: password.note,
+        onChange: (e2) => updateNote(e2, index)
       }
-    },
-    /* @__PURE__ */ import_react5.default.createElement(IconQR, null)
-  ), /* @__PURE__ */ import_react5.default.createElement(
-    NoteCell,
-    {
-      type: "text",
-      placeholder: "note",
-      value: password.note,
-      onChange: (e2) => updateNote(e2, index)
-    }
-  ), /* @__PURE__ */ import_react5.default.createElement(
-    SVGHover,
-    {
-      onClick: () => {
-        deletePassword(index);
-      }
-    },
-    /* @__PURE__ */ import_react5.default.createElement(IconTrash, null)
-  ));
+    ),
+    /* @__PURE__ */ import_react6.default.createElement(
+      SVGHover,
+      {
+        onClick: () => {
+          deletePassword(index);
+        }
+      },
+      /* @__PURE__ */ import_react6.default.createElement(IconTrash, null)
+    )
+  );
 }
 var password_row_default = Password;
 
 // src/pages/app/popup.tsx
 var App = () => {
-  const [password, setPassword] = (0, import_react6.useState)("");
-  const [passwords, setPasswords] = (0, import_react6.useState)(false);
-  const [passwordHistory, setPasswordHistory] = (0, import_react6.useState)([]);
-  const [settings, setSettings] = (0, import_react6.useState)(false);
-  const passwordRef = (0, import_react6.useRef)(null);
-  (0, import_react6.useEffect)(() => {
+  const [password, setPassword] = (0, import_react7.useState)("");
+  const [passwords, setPasswords] = (0, import_react7.useState)(false);
+  const [passwordHistory, setPasswordHistory] = (0, import_react7.useState)([]);
+  const [settings, setSettings] = (0, import_react7.useState)(false);
+  const passwordRef = (0, import_react7.useRef)(null);
+  (0, import_react7.useEffect)(() => {
     Promise.all([getSettings(), getPasswords(), getPasswordHistory()]).then((result) => {
       const [settings2, passwords2, passwordHistory2] = result;
       setSettings(settings2);
@@ -39066,7 +39119,7 @@ var App = () => {
       console.log(error);
     });
   }, []);
-  (0, import_react6.useEffect)(() => {
+  (0, import_react7.useEffect)(() => {
     if (!settings)
       return;
     if (settings.retainLastPassword) {
@@ -39075,13 +39128,13 @@ var App = () => {
       generate();
     }
   }, [settings]);
-  (0, import_react6.useEffect)(() => {
+  (0, import_react7.useEffect)(() => {
     if (passwordHistory.length === 0) {
       return;
     }
     chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
   }, [passwordHistory]);
-  (0, import_react6.useEffect)(() => {
+  (0, import_react7.useEffect)(() => {
     if (passwords) {
       chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
     }
@@ -39091,10 +39144,10 @@ var App = () => {
       return;
     }
     const passwordListLength = settings ? settings.passwordsListMaxLength : 5;
-    const newPasswords = [{ password, note: "" }, ...passwords].slice(
-      0,
-      passwordListLength
-    );
+    const newPasswords = [
+      { password, note: "", hidden: false, flagged: false },
+      ...passwords
+    ].slice(0, passwordListLength);
     setPasswords(newPasswords);
   };
   const generate = async () => {
@@ -39133,7 +39186,16 @@ var App = () => {
     updatedPasswords[index].note = event.target.value;
     setPasswords(updatedPasswords);
   };
-  return /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement(Container, null, "password:", " ", /* @__PURE__ */ import_react6.default.createElement(
+  const flagPassword = (index) => {
+    if (!passwords) {
+      return;
+    }
+    console.log("updating note");
+    const updatedPasswords = [...passwords];
+    updatedPasswords[index].flagged = !updatedPasswords[index].flagged;
+    setPasswords(updatedPasswords);
+  };
+  return /* @__PURE__ */ import_react7.default.createElement("div", null, /* @__PURE__ */ import_react7.default.createElement(Container, null, "password:", " ", /* @__PURE__ */ import_react7.default.createElement(
     "input",
     {
       onChange: (e2) => {
@@ -39142,19 +39204,20 @@ var App = () => {
       ref: passwordRef,
       defaultValue: password
     }
-  ), passwords && passwords.map((_, index) => /* @__PURE__ */ import_react6.default.createElement(
+  ), passwords && passwords.map((_, index) => /* @__PURE__ */ import_react7.default.createElement(
     password_row_default,
     {
       index,
       passwords,
       deletePassword,
-      updateNote
+      updateNote,
+      flagPassword
     }
-  ))), /* @__PURE__ */ import_react6.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react6.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react6.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react6.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react6.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react6.default.createElement(import_react_router_dom3.Link, { to: "/settings" }, /* @__PURE__ */ import_react6.default.createElement(Button, null, "Settings")), settings && settings.storePasswordHistory ? /* @__PURE__ */ import_react6.default.createElement(import_react_router_dom3.Link, { to: "/history" }, /* @__PURE__ */ import_react6.default.createElement(Button, null, "History (", passwordHistory.length, ")")) : ""));
+  ))), /* @__PURE__ */ import_react7.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react7.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react7.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react7.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react7.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react7.default.createElement(import_react_router_dom3.Link, { to: "/settings" }, /* @__PURE__ */ import_react7.default.createElement(Button, null, "Settings")), settings && settings.storePasswordHistory ? /* @__PURE__ */ import_react7.default.createElement(import_react_router_dom3.Link, { to: "/history" }, /* @__PURE__ */ import_react7.default.createElement(Button, null, "History (", passwordHistory.length, ")")) : ""));
 };
 
 // src/pages/qr/index.tsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react8 = __toESM(require_react(), 1);
 var import_qrcode = __toESM(require_lib(), 1);
 var import_react_router_dom4 = __toESM(require_main2(), 1);
 var import_react_router_dom5 = __toESM(require_main2(), 1);
@@ -39164,17 +39227,17 @@ function PasswordQRCode() {
   const [searchParams] = (0, import_react_router_dom6.useSearchParams)();
   const back = searchParams.get("back");
   console.log(back);
-  return /* @__PURE__ */ import_react7.default.createElement("div", null, /* @__PURE__ */ import_react7.default.createElement(Container, null, /* @__PURE__ */ import_react7.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react7.default.createElement(import_react_router_dom4.Link, { to: `/${back || ""}` }, /* @__PURE__ */ import_react7.default.createElement(Button, null, "Back"))), /* @__PURE__ */ import_react7.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react7.default.createElement(import_qrcode.QRCodeSVG, { value: param || "NO PASSWORD SET", width: "100%", height: "200px" }))));
+  return /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement(Container, null, /* @__PURE__ */ import_react8.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom4.Link, { to: `/${back || ""}` }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Back"))), /* @__PURE__ */ import_react8.default.createElement(Row, { columns: "1fr" }, /* @__PURE__ */ import_react8.default.createElement(import_qrcode.QRCodeSVG, { value: param || "NO PASSWORD SET", width: "100%", height: "200px" }))));
 }
 
 // src/pages/history/index.tsx
-var import_react8 = __toESM(require_react(), 1);
+var import_react9 = __toESM(require_react(), 1);
 var import_react_router_dom7 = __toESM(require_main2(), 1);
 var import_react_router_dom8 = __toESM(require_main2(), 1);
 function History() {
   const navigate = (0, import_react_router_dom8.useNavigate)();
-  const [passwordHistory, setPasswordHistory] = (0, import_react8.useState)([]);
-  (0, import_react8.useEffect)(() => {
+  const [passwordHistory, setPasswordHistory] = (0, import_react9.useState)([]);
+  (0, import_react9.useEffect)(() => {
     chrome.storage.local.get("passwordHistory", (result) => {
       if (Object.keys(result).length !== 0 && typeof result.passwordHistory == "string") {
         console.log("setting password history");
@@ -39187,8 +39250,8 @@ function History() {
     chrome.storage.local.remove("passwordHistory");
     setPasswordHistory([]);
   };
-  return /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom7.Link, { to: "/" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Back")), /* @__PURE__ */ import_react8.default.createElement(Button, { onClick: clearHistory }, "clear history"), passwordHistory.length > 0 ? passwordHistory.map((password, index) => {
-    return /* @__PURE__ */ import_react8.default.createElement(Row, { key: index, columns: "1fr auto auto 2fr" }, password, /* @__PURE__ */ import_react8.default.createElement(
+  return /* @__PURE__ */ import_react9.default.createElement("div", null, /* @__PURE__ */ import_react9.default.createElement(import_react_router_dom7.Link, { to: "/" }, /* @__PURE__ */ import_react9.default.createElement(Button, null, "Back")), /* @__PURE__ */ import_react9.default.createElement(Button, { onClick: clearHistory }, "clear history"), passwordHistory.length > 0 ? passwordHistory.map((password, index) => {
+    return /* @__PURE__ */ import_react9.default.createElement(Row, { key: index, columns: "1fr auto auto 2fr" }, password, /* @__PURE__ */ import_react9.default.createElement(
       SVGHover,
       {
         onClick: () => {
@@ -39197,43 +39260,43 @@ function History() {
           });
         }
       },
-      /* @__PURE__ */ import_react8.default.createElement(IconCopy, null)
-    ), /* @__PURE__ */ import_react8.default.createElement(
+      /* @__PURE__ */ import_react9.default.createElement(IconCopy, null)
+    ), /* @__PURE__ */ import_react9.default.createElement(
       SVGHover,
       {
         onClick: () => {
           navigate(`/qr/${password}?back=history`);
         }
       },
-      /* @__PURE__ */ import_react8.default.createElement(IconQR, null)
+      /* @__PURE__ */ import_react9.default.createElement(IconQR, null)
     ));
   }) : "no passwords generated yet");
 }
 
 // src/index.tsx
-m(import_react9.default.createElement);
+m(import_react10.default.createElement);
 var domNode = document.getElementById("root");
 var root = (0, import_client.createRoot)(domNode);
 var router = (0, import_react_router_dom9.createBrowserRouter)([
   {
     path: "*",
-    element: /* @__PURE__ */ import_react9.default.createElement(App, null)
+    element: /* @__PURE__ */ import_react10.default.createElement(App, null)
   },
   {
     path: "/settings",
-    element: /* @__PURE__ */ import_react9.default.createElement(Settings, null)
+    element: /* @__PURE__ */ import_react10.default.createElement(Settings, null)
   },
   {
     path: "/history",
-    element: /* @__PURE__ */ import_react9.default.createElement(History, null)
+    element: /* @__PURE__ */ import_react10.default.createElement(History, null)
   },
   {
     path: "/qr/:param",
-    element: /* @__PURE__ */ import_react9.default.createElement(PasswordQRCode, null)
+    element: /* @__PURE__ */ import_react10.default.createElement(PasswordQRCode, null)
   }
 ]);
 root.render(
-  /* @__PURE__ */ import_react9.default.createElement(import_react9.default.StrictMode, null, /* @__PURE__ */ import_react9.default.createElement(import_react_router_dom9.RouterProvider, { router }))
+  /* @__PURE__ */ import_react10.default.createElement(import_react10.default.StrictMode, null, /* @__PURE__ */ import_react10.default.createElement(import_react_router_dom9.RouterProvider, { router }))
 );
 /*! Bundled license information:
 
