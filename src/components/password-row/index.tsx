@@ -56,7 +56,7 @@ function Password(props: IProps) {
         type={password.hidden ? 'password' : 'text'}
         placeholder="note"
         value={password.note}
-        onChange={(e) => updateNote(e, index)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateNote(e, index)}
       />
       <SVGHover onClick={() => hidePassword(index)}>
         <IconEye open={password.hidden} />

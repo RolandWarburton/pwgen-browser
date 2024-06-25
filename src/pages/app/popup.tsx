@@ -178,6 +178,9 @@ const App = () => {
         <ButtonGroupButton onClick={clear}>clear</ButtonGroupButton>
       </ButtonGroup>
       <SettingsButton>
+        <Link to="/generator">
+          <Button>Generator</Button>
+        </Link>
         <Link to="/settings">
           <Button>Settings</Button>
         </Link>

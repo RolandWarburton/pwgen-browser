@@ -2381,9 +2381,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React12 = require_react();
+        var React13 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React12.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React13.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -3988,7 +3988,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React12.Children.forEach(props.children, function(child) {
+                React13.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -12435,7 +12435,7 @@ var require_react_dom_development = __commonJS({
           }
         }
         var fakeInternalInstance = {};
-        var emptyRefsObject = new React12.Component().refs;
+        var emptyRefsObject = new React13.Component().refs;
         var didWarnAboutStateAssignmentForComponent;
         var didWarnAboutUninitializedState;
         var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -27060,7 +27060,7 @@ var require_react_router_development = __commonJS({
   "node_modules/react-router/dist/umd/react-router.development.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require_react(), require_router_cjs()) : typeof define === "function" && define.amd ? define(["exports", "react", "@remix-run/router"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.ReactRouter = {}, global.React, global.RemixRouter));
-    })(exports, function(exports2, React12, router2) {
+    })(exports, function(exports2, React13, router2) {
       "use strict";
       function _interopNamespace(e2) {
         if (e2 && e2.__esModule)
@@ -27082,7 +27082,7 @@ var require_react_router_development = __commonJS({
         n2["default"] = e2;
         return Object.freeze(n2);
       }
-      var React__namespace = /* @__PURE__ */ _interopNamespace(React12);
+      var React__namespace = /* @__PURE__ */ _interopNamespace(React13);
       function _extends() {
         _extends = Object.assign ? Object.assign.bind() : function(target) {
           for (var i2 = 1; i2 < arguments.length; i2++) {
@@ -28281,7 +28281,7 @@ var require_react_router_dom_development = __commonJS({
   "node_modules/react-router-dom/dist/umd/react-router-dom.development.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require_react(), require_react_dom(), require_main(), require_router_cjs()) : typeof define === "function" && define.amd ? define(["exports", "react", "react-dom", "react-router", "@remix-run/router"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.ReactRouterDOM = {}, global.React, global.ReactDOM, global.ReactRouter, global.RemixRouter));
-    })(exports, function(exports2, React12, ReactDOM, reactRouter, router2) {
+    })(exports, function(exports2, React13, ReactDOM, reactRouter, router2) {
       "use strict";
       function _interopNamespace(e2) {
         if (e2 && e2.__esModule)
@@ -28303,7 +28303,7 @@ var require_react_router_dom_development = __commonJS({
         n2["default"] = e2;
         return Object.freeze(n2);
       }
-      var React__namespace = /* @__PURE__ */ _interopNamespace(React12);
+      var React__namespace = /* @__PURE__ */ _interopNamespace(React13);
       var ReactDOM__namespace = /* @__PURE__ */ _interopNamespace(ReactDOM);
       function _extends() {
         _extends = Object.assign ? Object.assign.bind() : function(target) {
@@ -29835,7 +29835,7 @@ var require_lib = __commonJS({
       default: () => QRCode
     });
     module.exports = __toCommonJS(src_exports);
-    var import_react12 = __toESM2(require_react());
+    var import_react13 = __toESM2(require_react());
     var qrcodegen;
     ((qrcodegen2) => {
       const _QrCode = class {
@@ -30529,10 +30529,10 @@ var require_lib = __commonJS({
         "imageSettings"
       ]);
       const imgSrc = imageSettings == null ? void 0 : imageSettings.src;
-      const _canvas = (0, import_react12.useRef)(null);
-      const _image = (0, import_react12.useRef)(null);
-      const [isImgLoaded, setIsImageLoaded] = (0, import_react12.useState)(false);
-      (0, import_react12.useEffect)(() => {
+      const _canvas = (0, import_react13.useRef)(null);
+      const _image = (0, import_react13.useRef)(null);
+      const [isImgLoaded, setIsImageLoaded] = (0, import_react13.useState)(false);
+      (0, import_react13.useEffect)(() => {
         if (_canvas.current != null) {
           const canvas = _canvas.current;
           const ctx = canvas.getContext("2d");
@@ -30573,13 +30573,13 @@ var require_lib = __commonJS({
           }
         }
       });
-      (0, import_react12.useEffect)(() => {
+      (0, import_react13.useEffect)(() => {
         setIsImageLoaded(false);
       }, [imgSrc]);
       const canvasStyle = __spreadValues({ height: size, width: size }, style);
       let img = null;
       if (imgSrc != null) {
-        img = /* @__PURE__ */ import_react12.default.createElement("img", {
+        img = /* @__PURE__ */ import_react13.default.createElement("img", {
           src: imgSrc,
           key: imgSrc,
           style: { display: "none" },
@@ -30589,7 +30589,7 @@ var require_lib = __commonJS({
           ref: _image
         });
       }
-      return /* @__PURE__ */ import_react12.default.createElement(import_react12.default.Fragment, null, /* @__PURE__ */ import_react12.default.createElement("canvas", __spreadValues({
+      return /* @__PURE__ */ import_react13.default.createElement(import_react13.default.Fragment, null, /* @__PURE__ */ import_react13.default.createElement("canvas", __spreadValues({
         style: canvasStyle,
         height: size,
         width: size,
@@ -30623,7 +30623,7 @@ var require_lib = __commonJS({
         if (calculatedImageSettings.excavation != null) {
           cells = excavateModules(cells, calculatedImageSettings.excavation);
         }
-        image = /* @__PURE__ */ import_react12.default.createElement("image", {
+        image = /* @__PURE__ */ import_react13.default.createElement("image", {
           xlinkHref: imageSettings.src,
           height: calculatedImageSettings.h,
           width: calculatedImageSettings.w,
@@ -30633,15 +30633,15 @@ var require_lib = __commonJS({
         });
       }
       const fgPath = generatePath(cells, margin);
-      return /* @__PURE__ */ import_react12.default.createElement("svg", __spreadValues({
+      return /* @__PURE__ */ import_react13.default.createElement("svg", __spreadValues({
         height: size,
         width: size,
         viewBox: `0 0 ${numCells} ${numCells}`
-      }, otherProps), /* @__PURE__ */ import_react12.default.createElement("path", {
+      }, otherProps), /* @__PURE__ */ import_react13.default.createElement("path", {
         fill: bgColor,
         d: `M0,0 h${numCells}v${numCells}H0z`,
         shapeRendering: "crispEdges"
-      }), /* @__PURE__ */ import_react12.default.createElement("path", {
+      }), /* @__PURE__ */ import_react13.default.createElement("path", {
         fill: fgColor,
         d: fgPath,
         shapeRendering: "crispEdges"
@@ -30650,15 +30650,15 @@ var require_lib = __commonJS({
     var QRCode = (props) => {
       const _a = props, { renderAs } = _a, otherProps = __objRest(_a, ["renderAs"]);
       if (renderAs === "svg") {
-        return /* @__PURE__ */ import_react12.default.createElement(QRCodeSVG2, __spreadValues({}, otherProps));
+        return /* @__PURE__ */ import_react13.default.createElement(QRCodeSVG2, __spreadValues({}, otherProps));
       }
-      return /* @__PURE__ */ import_react12.default.createElement(QRCodeCanvas, __spreadValues({}, otherProps));
+      return /* @__PURE__ */ import_react13.default.createElement(QRCodeCanvas, __spreadValues({}, otherProps));
     };
   }
 });
 
 // src/index.tsx
-var import_react11 = __toESM(require_react(), 1);
+var import_react12 = __toESM(require_react(), 1);
 
 // node_modules/goober/dist/goober.modern.js
 var e = { data: "" };
@@ -39322,7 +39322,7 @@ var App = () => {
       flagPassword,
       hidePassword
     }
-  ))), /* @__PURE__ */ import_react8.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react8.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/settings" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Settings")), settings && settings.storePasswordHistory ? /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/history" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "History (", passwordHistory.length, ")")) : ""));
+  ))), /* @__PURE__ */ import_react8.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react8.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/generator" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Generator")), /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/settings" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Settings")), settings && settings.storePasswordHistory ? /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/history" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "History (", passwordHistory.length, ")")) : ""));
 };
 
 // src/pages/qr/index.tsx
@@ -39382,30 +39382,65 @@ function History() {
   }) : "no passwords generated yet");
 }
 
+// src/pages/generator/index.tsx
+var import_react11 = __toESM(require_react(), 1);
+function Generator() {
+  const passwordRef = import_react11.default.useRef(null);
+  const [settings, setSettings] = import_react11.default.useState(false);
+  import_react11.default.useEffect(() => {
+    Promise.all([getSettings()]).then((result) => {
+      const [settings2] = result;
+      setSettings(settings2);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, []);
+  const generate = async () => {
+    if (!settings) {
+      return;
+    }
+    const newPassword = await genpw(settings);
+    if (passwordRef.current?.innerHTML) {
+      passwordRef.current.innerText = newPassword;
+    }
+    if (passwordRef.current) {
+      passwordRef.current.value = newPassword;
+    }
+  };
+  const copy = async () => {
+  };
+  return /* @__PURE__ */ import_react11.default.createElement(Container, null, /* @__PURE__ */ import_react11.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react11.default.createElement(ButtonGroupButton, { onClick: generate }, "Generate"), /* @__PURE__ */ import_react11.default.createElement(ButtonGroupButton, { onClick: copy }, "Copy")), /* @__PURE__ */ import_react11.default.createElement("div", { ref: passwordRef }, "Nothing generated yet"));
+}
+var generator_default = Generator;
+
 // src/index.tsx
-m(import_react11.default.createElement);
+m(import_react12.default.createElement);
 var domNode = document.getElementById("root");
 var root = (0, import_client.createRoot)(domNode);
 var router = (0, import_react_router_dom9.createBrowserRouter)([
   {
     path: "*",
-    element: /* @__PURE__ */ import_react11.default.createElement(App, null)
+    element: /* @__PURE__ */ import_react12.default.createElement(App, null)
   },
   {
     path: "/settings",
-    element: /* @__PURE__ */ import_react11.default.createElement(Settings, null)
+    element: /* @__PURE__ */ import_react12.default.createElement(Settings, null)
   },
   {
     path: "/history",
-    element: /* @__PURE__ */ import_react11.default.createElement(History, null)
+    element: /* @__PURE__ */ import_react12.default.createElement(History, null)
   },
   {
     path: "/qr/:param",
-    element: /* @__PURE__ */ import_react11.default.createElement(PasswordQRCode, null)
+    element: /* @__PURE__ */ import_react12.default.createElement(PasswordQRCode, null)
+  },
+  {
+    path: "/generator",
+    element: /* @__PURE__ */ import_react12.default.createElement(generator_default, null)
   }
 ]);
 root.render(
-  /* @__PURE__ */ import_react11.default.createElement(import_react11.default.StrictMode, null, /* @__PURE__ */ import_react11.default.createElement(import_react_router_dom9.RouterProvider, { router }))
+  /* @__PURE__ */ import_react12.default.createElement(import_react12.default.StrictMode, null, /* @__PURE__ */ import_react12.default.createElement(import_react_router_dom9.RouterProvider, { router }))
 );
 /*! Bundled license information:
 
