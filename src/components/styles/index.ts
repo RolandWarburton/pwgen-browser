@@ -20,6 +20,12 @@ export const Row = styled('div') <{ columns?: string; background?: string }>`
 `;
 
 export const SVGHover = styled('div')`
+  /* center SVG icons */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* make the icon look nice */
   border-radius: 5px;
   transition: background-color 0.3s ease;
   &:hover {

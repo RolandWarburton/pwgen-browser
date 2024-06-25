@@ -6,31 +6,29 @@ import { IconQR } from '@components/icons/qr';
 import { IconFlag } from '@components/icons/flag';
 import { IconTrash } from '@components/icons/trash';
 import { useNavigate } from 'react-router-dom';
+import { IconEye } from '@components/icons/eye';
 
 interface IProps {
   passwords: IPassword[];
   index: number;
-  // password: IPassword;
-  // setPasswords: React.Dispatch<React.SetStateAction<false | IPassword[]>>;
   deletePassword: (index: number) => void;
   flagPassword: (index: number) => void;
   updateNote: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
-  // deletePassword: (index: number) => void;
-  // updateNote: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+  hidePassword: (index: number) => void;
 }
 
 function Password(props: IProps) {
   const navigate = useNavigate();
-  const { passwords, index, updateNote, deletePassword, flagPassword } = props;
+  const { passwords, index, updateNote, deletePassword, flagPassword, hidePassword } = props;
   const password = passwords[index];
 
   return (
     <Row
       key={index}
-      columns="1fr auto auto auto 2fr auto"
+      columns="1fr auto auto auto 2fr auto auto"
       background={password.flagged ? 'yellow' : ''}
     >
-      {password.password}
+      {password.hidden ? '*'.repeat(password.password.length) : password.password}
       <SVGHover
         onClick={() => {
           navigator.clipboard.writeText(password.password).catch((error) => {
@@ -55,11 +53,14 @@ function Password(props: IProps) {
         <IconFlag />
       </SVGHover>
       <NoteCell
-        type="text"
+        type={password.hidden ? 'password' : 'text'}
         placeholder="note"
         value={password.note}
         onChange={(e) => updateNote(e, index)}
       />
+      <SVGHover onClick={() => hidePassword(index)}>
+        <IconEye open={password.hidden} />
+      </SVGHover>
       <SVGHover
         onClick={() => {
           deletePassword(index);

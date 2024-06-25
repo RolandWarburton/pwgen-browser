@@ -6,11 +6,19 @@ import {
   Button,
   Container,
   SettingsButton,
-  ButtonGroup
+  ButtonGroup,
+  Row
 } from '../../components/styles';
 import { getPasswordHistory, getPasswords, getSettings } from '../settings';
 import { IPassword, ISettings } from '../../types';
 import Password from '@components/password-row';
+
+// async function getLastPasswordFromHistory() {
+//   const history = await getPasswordHistory();
+//   if (history.at(0)) {
+//     return history.at(0);
+//   }
+// }
 
 const App = () => {
   const [password, setPassword] = useState('');
@@ -123,23 +131,35 @@ const App = () => {
     if (!passwords) {
       return;
     }
-    console.log('updating note');
+    console.log('flagging password');
     const updatedPasswords = [...passwords];
     updatedPasswords[index].flagged = !updatedPasswords[index].flagged;
+    setPasswords(updatedPasswords);
+  };
+
+  const hidePassword = (index: number) => {
+    if (!passwords) {
+      return;
+    }
+    console.log('hiding password');
+    const updatedPasswords = [...passwords];
+    updatedPasswords[index].hidden = !updatedPasswords[index].hidden;
     setPasswords(updatedPasswords);
   };
 
   return (
     <div>
       <Container>
-        password:{' '}
-        <input
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          ref={passwordRef}
-          defaultValue={password}
-        />
+        <Row columns="auto 1fr">
+          password:{' '}
+          <input
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            ref={passwordRef}
+            defaultValue={password}
+          />
+        </Row>
         {passwords &&
           passwords.map((_, index) => (
             <Password
@@ -148,6 +168,7 @@ const App = () => {
               deletePassword={deletePassword}
               updateNote={updateNote}
               flagPassword={flagPassword}
+              hidePassword={hidePassword}
             />
           ))}
       </Container>
