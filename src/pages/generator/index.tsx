@@ -68,10 +68,10 @@ function Generator() {
   return (
     <Container>
       <GeneratorContainer>
-      <ButtonGroup>
-        <ButtonGroupButton onClick={generate}>Generate</ButtonGroupButton>
-        <ButtonGroupButton onClick={copy}>Copy</ButtonGroupButton>
-      </ButtonGroup>
+        <ButtonGroup>
+          <ButtonGroupButton onClick={generate}>Generate</ButtonGroupButton>
+          <ButtonGroupButton onClick={copy}>Copy</ButtonGroupButton>
+        </ButtonGroup>
         <Password>
           <span ref={passwordRef}>Nothing generated yet</span>
         </Password>
