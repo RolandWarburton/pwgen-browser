@@ -28871,7 +28871,7 @@ var require_react_router_dom_development = __commonJS({
       }
       const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined";
       const ABSOLUTE_URL_REGEX = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i;
-      const Link5 = /* @__PURE__ */ React__namespace.forwardRef(function LinkWithRef(_ref7, ref) {
+      const Link6 = /* @__PURE__ */ React__namespace.forwardRef(function LinkWithRef(_ref7, ref) {
         let {
           onClick,
           relative,
@@ -28934,7 +28934,7 @@ var require_react_router_dom_development = __commonJS({
         );
       });
       {
-        Link5.displayName = "Link";
+        Link6.displayName = "Link";
       }
       const NavLink = /* @__PURE__ */ React__namespace.forwardRef(function NavLinkWithRef(_ref8, ref) {
         let {
@@ -28982,7 +28982,7 @@ var require_react_router_dom_development = __commonJS({
           className = [classNameProp, isActive ? "active" : null, isPending ? "pending" : null, isTransitioning ? "transitioning" : null].filter(Boolean).join(" ");
         }
         let style = typeof styleProp === "function" ? styleProp(renderProps) : styleProp;
-        return /* @__PURE__ */ React__namespace.createElement(Link5, _extends({}, rest, {
+        return /* @__PURE__ */ React__namespace.createElement(Link6, _extends({}, rest, {
           "aria-current": ariaCurrent,
           className,
           ref,
@@ -29110,7 +29110,7 @@ var require_react_router_dom_development = __commonJS({
           }
         }, [location, navigate, path, replaceProp, state, target, to, preventScrollReset, relative, unstable_viewTransition]);
       }
-      function useSearchParams2(defaultInit) {
+      function useSearchParams3(defaultInit) {
         router2.UNSAFE_warning(typeof URLSearchParams !== "undefined", "You cannot use the `useSearchParams` hook in a browser that does not support the URLSearchParams API. If you need to support Internet Explorer 11, we recommend you load a polyfill such as https://github.com/ungap/url-search-params\n\nIf you're unsure how to load polyfills, we recommend you check out https://polyfill.io/v3/ which provides some recommendations about how to load polyfills only for users that need them, instead of for every user.");
         let defaultSearchParamsRef = React__namespace.useRef(createSearchParams(defaultInit));
         let hasSetSearchParamsRef = React__namespace.useRef(false);
@@ -29742,7 +29742,7 @@ var require_react_router_dom_development = __commonJS({
       exports2.BrowserRouter = BrowserRouter;
       exports2.Form = Form2;
       exports2.HashRouter = HashRouter;
-      exports2.Link = Link5;
+      exports2.Link = Link6;
       exports2.NavLink = NavLink;
       exports2.RouterProvider = RouterProvider2;
       exports2.ScrollRestoration = ScrollRestoration;
@@ -29760,7 +29760,7 @@ var require_react_router_dom_development = __commonJS({
       exports2.useFetchers = useFetchers;
       exports2.useFormAction = useFormAction;
       exports2.useLinkClickHandler = useLinkClickHandler;
-      exports2.useSearchParams = useSearchParams2;
+      exports2.useSearchParams = useSearchParams3;
       exports2.useSubmit = useSubmit;
       Object.defineProperty(exports2, "__esModule", { value: true });
     });
@@ -30741,7 +30741,7 @@ function j(e2, t2) {
 
 // src/index.tsx
 var import_client = __toESM(require_client(), 1);
-var import_react_router_dom9 = __toESM(require_main2(), 1);
+var import_react_router_dom10 = __toESM(require_main2(), 1);
 
 // src/pages/app/popup.tsx
 var import_react8 = __toESM(require_react(), 1);
@@ -39322,7 +39322,7 @@ var App = () => {
       flagPassword,
       hidePassword
     }
-  ))), /* @__PURE__ */ import_react8.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react8.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/generator" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Generator")), /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/settings" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Settings")), settings && settings.storePasswordHistory ? /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/history" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "History (", passwordHistory.length, ")")) : ""));
+  ))), /* @__PURE__ */ import_react8.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: generate }, "generate"), /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: pushNewPassword }, "Add to list"), /* @__PURE__ */ import_react8.default.createElement(ButtonGroupButton, { onClick: clear }, "clear")), /* @__PURE__ */ import_react8.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/generator" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Generator")), settings && settings.storePasswordHistory ? /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/history" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "History (", passwordHistory.length, ")")) : "", /* @__PURE__ */ import_react8.default.createElement(import_react_router_dom3.Link, { to: "/settings" }, /* @__PURE__ */ import_react8.default.createElement(Button, null, "Settings"))));
 };
 
 // src/pages/qr/index.tsx
@@ -39384,32 +39384,80 @@ function History() {
 
 // src/pages/generator/index.tsx
 var import_react11 = __toESM(require_react(), 1);
+
+// src/pages/generator/styles.tsx
+var GeneratorContainer = j("div")`
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
+var Password2 = j("div")`
+  font-size: 2em;
+  width: 20ch;
+  text-align: center;
+`;
+var Container2 = j("div")`
+  height: 350px;
+  ${Container}
+`;
+
+// src/pages/generator/index.tsx
+var import_react_router_dom9 = __toESM(require_main2(), 1);
 function Generator() {
   const passwordRef = import_react11.default.useRef(null);
   const [settings, setSettings] = import_react11.default.useState(false);
+  const [passwordHistory, setPasswordHistory] = import_react11.default.useState([]);
+  const [searchParams] = (0, import_react_router_dom9.useSearchParams)();
+  const back = searchParams.get("back");
   import_react11.default.useEffect(() => {
-    Promise.all([getSettings()]).then((result) => {
-      const [settings2] = result;
+    Promise.all([getSettings(), getPasswordHistory()]).then((result) => {
+      const [settings2, passwordHistory2] = result;
       setSettings(settings2);
+      if (settings2.storePasswordHistory && passwordHistory2.length > 0) {
+        setPasswordHistory(passwordHistory2);
+      }
+      if (passwordRef.current?.innerText) {
+        passwordRef.current.innerText = passwordHistory2.at(0) || "Nothing generated yet";
+      }
     }).catch((error) => {
       console.log(error);
     });
   }, []);
+  import_react11.default.useEffect(() => {
+    console.log(passwordHistory);
+    if (passwordHistory.length === 0) {
+      return;
+    }
+    chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
+    console.log(`saved ${passwordHistory.length} items to password history`);
+  }, [passwordHistory]);
   const generate = async () => {
     if (!settings) {
       return;
     }
     const newPassword = await genpw(settings);
-    if (passwordRef.current?.innerHTML) {
+    if (passwordRef.current?.innerText) {
       passwordRef.current.innerText = newPassword;
     }
-    if (passwordRef.current) {
-      passwordRef.current.value = newPassword;
+    if (settings.storePasswordHistory) {
+      setPasswordHistory([newPassword, ...passwordHistory].slice(0, 50));
     }
   };
   const copy = async () => {
+    if (passwordRef.current?.innerText) {
+      const newPassword = passwordRef.current.innerText;
+      navigator.clipboard.writeText(newPassword).catch((error) => {
+        console.error("Unable to copy to clipboard:", error);
+      });
+      if (settings && settings.storePasswordHistory) {
+        setPasswordHistory([newPassword, ...passwordHistory].slice(0, 50));
+      }
+    }
   };
-  return /* @__PURE__ */ import_react11.default.createElement(Container, null, /* @__PURE__ */ import_react11.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react11.default.createElement(ButtonGroupButton, { onClick: generate }, "Generate"), /* @__PURE__ */ import_react11.default.createElement(ButtonGroupButton, { onClick: copy }, "Copy")), /* @__PURE__ */ import_react11.default.createElement("div", { ref: passwordRef }, "Nothing generated yet"));
+  return /* @__PURE__ */ import_react11.default.createElement(Container2, null, /* @__PURE__ */ import_react11.default.createElement(GeneratorContainer, null, /* @__PURE__ */ import_react11.default.createElement(ButtonGroup, null, /* @__PURE__ */ import_react11.default.createElement(ButtonGroupButton, { onClick: generate }, "Generate"), /* @__PURE__ */ import_react11.default.createElement(ButtonGroupButton, { onClick: copy }, "Copy")), /* @__PURE__ */ import_react11.default.createElement(Password2, null, /* @__PURE__ */ import_react11.default.createElement("span", { ref: passwordRef }, "Nothing generated yet"))), /* @__PURE__ */ import_react11.default.createElement(SettingsButton, null, /* @__PURE__ */ import_react11.default.createElement(import_react_router_dom9.Link, { to: `/${back || ""}` }, /* @__PURE__ */ import_react11.default.createElement(Button, null, "Back")), /* @__PURE__ */ import_react11.default.createElement(import_react_router_dom9.Link, { to: "/settings" }, /* @__PURE__ */ import_react11.default.createElement(Button, null, "Settings"))));
 }
 var generator_default = Generator;
 
@@ -39417,7 +39465,7 @@ var generator_default = Generator;
 m(import_react12.default.createElement);
 var domNode = document.getElementById("root");
 var root = (0, import_client.createRoot)(domNode);
-var router = (0, import_react_router_dom9.createBrowserRouter)([
+var router = (0, import_react_router_dom10.createBrowserRouter)([
   {
     path: "*",
     element: /* @__PURE__ */ import_react12.default.createElement(App, null)
@@ -39440,7 +39488,7 @@ var router = (0, import_react_router_dom9.createBrowserRouter)([
   }
 ]);
 root.render(
-  /* @__PURE__ */ import_react12.default.createElement(import_react12.default.StrictMode, null, /* @__PURE__ */ import_react12.default.createElement(import_react_router_dom9.RouterProvider, { router }))
+  /* @__PURE__ */ import_react12.default.createElement(import_react12.default.StrictMode, null, /* @__PURE__ */ import_react12.default.createElement(import_react_router_dom10.RouterProvider, { router }))
 );
 /*! Bundled license information:
 

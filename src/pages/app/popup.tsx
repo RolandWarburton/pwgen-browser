@@ -181,9 +181,6 @@ const App = () => {
         <Link to="/generator">
           <Button>Generator</Button>
         </Link>
-        <Link to="/settings">
-          <Button>Settings</Button>
-        </Link>
         {settings && settings.storePasswordHistory ? (
           <Link to="/history">
             <Button>History ({passwordHistory.length})</Button>
@@ -191,6 +188,9 @@ const App = () => {
         ) : (
           ''
         )}
+        <Link to="/settings">
+          <Button>Settings</Button>
+        </Link>
       </SettingsButton>
     </div>
   );
