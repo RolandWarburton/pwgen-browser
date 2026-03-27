@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles';
 import { IPassword, ISettings } from '../../types';
-import { pairDevice, hasVIADevice } from '../../utils/via';
+import { hasVIADevice } from '../../utils/via';
 
 const defaultSettings: ISettings = {
   minLength: 3,
@@ -59,9 +58,7 @@ function Settings() {
 
   return (
     <div>
-      <Link to="/">
-        <Button>Back</Button>
-      </Link>
+      <Button onClick={() => window.close()}>Close</Button>
       <Form onSubmit={handleFormSubmit}>
         <Row>
           <FormLabel>Min Length:</FormLabel>
@@ -193,20 +190,8 @@ function Settings() {
         <Row>
           <FormLabel>VIA Keyboard:</FormLabel>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Button type="button" onClick={async () => {
-              // If running inside the popup, open as a tab so the HID picker
-              // dialog doesn't cause the popup to close on focus loss.
-              const isPopup = window.innerWidth <= 800;
-              if (isPopup) {
-                chrome.tabs.create({ url: chrome.runtime.getURL('popup.html#/settings') });
-                return;
-              }
-              try {
-                const name = await pairDevice();
-                setKeyboardStatus(`Paired: ${name}`);
-              } catch (err) {
-                setKeyboardStatus('Pairing failed');
-              }
+            <Button type="button" onClick={() => {
+              chrome.tabs.create({ url: chrome.runtime.getURL('pair.html') });
             }}>Pair Keyboard</Button>
             <span>{keyboardStatus}</span>
           </div>

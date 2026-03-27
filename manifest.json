@@ -7,8 +7,11 @@
     "128": "images/icon128.png",
     "16": "images/icon16.png"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "sidePanel"],
   "action": {
     "default_popup": "popup.html"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
   }
 }

@@ -30,7 +30,7 @@ function makeTemp(name) {
 }
 
 const buildSettings = {
-  entryPoints: ['src/index.tsx'],
+  entryPoints: ['src/index.tsx', 'src/sidepanel.tsx'],
   outdir: './dist',
   platform: 'node',
   bundle: true,
@@ -57,12 +57,16 @@ async function main() {
   makeTemp('dist');
   const result = await build();
 
-  let content = '';
-  content = result.outputFiles[0].text;
-  writeFileSync('dist/index.js', content);
+  for (const file of result.outputFiles) {
+    const name = file.path.split('/').pop();
+    writeFileSync(`dist/${name}`, file.text);
+  }
 
   copyFileSync('manifest.json', 'dist/manifest.json');
   copyFileSync('./static/popup.html', './dist/popup.html');
+  copyFileSync('./static/sidepanel.html', './dist/sidepanel.html');
+  copyFileSync('./static/pair.html', './dist/pair.html');
+  copyFileSync('./static/pair.js', './dist/pair.js');
   copyFolderSync('./images/', './dist/images');
 }
 main();
