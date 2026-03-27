@@ -3,10 +3,10 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 // --- Configuration ---
-const TAG = 'v1.0.0';
-const RELEASE_NAME = 'Version 1.0.0';
+const TAG = 'v1.0.1';
+const RELEASE_NAME = 'Version 1.0.1';
 const ZIP_FILE_PATH = 'pwgen-browser.zip';
-const RELEASE_NOTES = 'Add VIA keyboard macro push, side panel settings, WebHID pairing';
+const RELEASE_NOTES = 'Minor bugfix';
 // ---------------------
 
 function run(command) {
