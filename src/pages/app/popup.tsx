@@ -163,6 +163,7 @@ const App = () => {
         {passwords &&
           passwords.map((_, index) => (
             <Password
+              key={index}
               index={index}
               passwords={passwords}
               deletePassword={deletePassword}
