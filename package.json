@@ -1,9 +1,11 @@
 {
   "name": "pwgen-browser",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "build": "node build.js",
-    "lint": "eslint ./src ./build.js"
+    "lint": "eslint ./src ./build.js",
+    "release": "node scripts/release.js"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.254",
