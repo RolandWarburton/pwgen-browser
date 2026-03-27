@@ -192,7 +192,7 @@ function Settings() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Button type="button" onClick={() => {
               chrome.tabs.create({ url: chrome.runtime.getURL('pair.html') });
-            }}>Pair Keyboard</Button>
+            }}>Pair</Button>
             <span>{keyboardStatus}</span>
           </div>
         </Row>
