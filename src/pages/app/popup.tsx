@@ -188,7 +188,7 @@ const App = () => {
         ) : (
           ''
         )}
-        <Button onClick={() => { chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT }); }}>Settings</Button>
+        <Button onClick={() => { chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT }); window.close(); }}>Settings</Button>
       </SettingsButton>
     </div>
   );
