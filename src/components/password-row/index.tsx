@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { IPassword } from '../../types';
-import { NoteCell, Row, SVGHover } from '../styles';
+import { NoteCell, Row, SVGHover, DropdownWrapper, DropdownMenu } from '../styles';
 import { IconCopy } from '@components/icons/copy';
 import { IconQR } from '@components/icons/qr';
 import { IconFlag } from '@components/icons/flag';
 import { IconTrash } from '@components/icons/trash';
 import { IconKeyboard } from '@components/icons/keyboard';
+import { IconEllipsis } from '@components/icons/ellipsis';
 import { useNavigate } from 'react-router-dom';
 import { IconEye } from '@components/icons/eye';
 import { pushCredentialsToKeyboard } from '../../utils/via';
@@ -24,6 +25,10 @@ function Password(props: IProps) {
   const { passwords, index, updateNote, deletePassword, flagPassword, hidePassword } = props;
   const password = passwords[index];
   const [pushing, setPushing] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const handleMouseLeave = () => {
+    setMenuOpen(false);
+  };
 
   const handlePushToKeyboard = async () => {
     setPushing(true);
@@ -40,7 +45,7 @@ function Password(props: IProps) {
   return (
     <Row
       key={index}
-      columns="1fr auto auto auto auto 2fr auto auto"
+      columns="1fr auto 2fr auto auto auto "
       background={password.flagged ? 'yellow' : ''}
     >
       {password.hidden ? '*'.repeat(password.password.length) : password.password}
@@ -53,27 +58,6 @@ function Password(props: IProps) {
       >
         <IconCopy />
       </SVGHover>
-      <SVGHover
-        onClick={() => {
-          navigate(`/qr/${password.password}`);
-        }}
-      >
-        <IconQR />
-      </SVGHover>
-      <SVGHover
-        onClick={() => {
-          flagPassword(index);
-        }}
-      >
-        <IconFlag />
-      </SVGHover>
-      <SVGHover
-        onClick={handlePushToKeyboard}
-        title="Push username + password to keyboard macro M10"
-        style={{ opacity: pushing ? 0.5 : 1 }}
-      >
-        <IconKeyboard />
-      </SVGHover>
       <NoteCell
         type={password.hidden ? 'password' : 'text'}
         placeholder="note"
@@ -83,6 +67,41 @@ function Password(props: IProps) {
       <SVGHover onClick={() => hidePassword(index)}>
         <IconEye open={password.hidden} />
       </SVGHover>
+      <DropdownWrapper onMouseLeave={handleMouseLeave}>
+        <SVGHover onClick={() => setMenuOpen(!menuOpen)}>
+          <IconEllipsis />
+        </SVGHover>
+        {menuOpen && (
+          <DropdownMenu>
+            <SVGHover
+              onClick={() => {
+                navigate(`/qr/${password.password}`);
+                setMenuOpen(false);
+              }}
+            >
+              <IconQR />
+            </SVGHover>
+            <SVGHover
+              onClick={() => {
+                flagPassword(index);
+                setMenuOpen(false);
+              }}
+            >
+              <IconFlag />
+            </SVGHover>
+            <SVGHover
+              onClick={() => {
+                handlePushToKeyboard();
+                setMenuOpen(false);
+              }}
+              title="Push username + password to keyboard macro M10"
+              style={{ opacity: pushing ? 0.5 : 1 }}
+            >
+              <IconKeyboard />
+            </SVGHover>
+          </DropdownMenu>
+        )}
+      </DropdownWrapper>
       <SVGHover
         onClick={() => {
           deletePassword(index);

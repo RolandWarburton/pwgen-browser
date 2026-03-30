@@ -39,6 +39,27 @@ export const SVGHover = styled('div')`
 
 export const PasswordCell = styled('div')``;
 
+export const DropdownWrapper = styled('div')`
+  position: relative;
+  display: inline-block;
+`;
+
+export const DropdownMenu = styled('div')`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  gap: 2px;
+`;
+
 export const NoteCell = styled('input')``;
 
 export const SettingsButton = styled('div')`
