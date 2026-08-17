@@ -2,7 +2,7 @@ import React from 'react';
 import { ISettings } from '@types';
 import { Button, ButtonGroup, ButtonGroupButton, SettingsButton } from '@/components/styles';
 import { genpw } from '@rolandwarburton/pwgen';
-import { getPasswordHistory, getSettings } from '../settings';
+import { getPasswordHistory, getSettings, savePasswordHistory } from '@/storage';
 import { GeneratorContainer, Container, Password } from './styles';
 import { Link, useSearchParams } from 'react-router-dom';
 
@@ -36,7 +36,7 @@ function Generator() {
     if (passwordHistory.length === 0) {
       return;
     }
-    chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
+    savePasswordHistory(passwordHistory);
     console.log(`saved ${passwordHistory.length} items to password history`);
   }, [passwordHistory]);
 

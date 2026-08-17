@@ -113,3 +113,65 @@ export const Button = styled('button')`
   border-radius: 5px;
   margin: 0.25em;
 `;
+
+export const TabStrip = styled('div')`
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 0px 5px;
+  overflow-x: auto;
+  border-bottom: 1px solid #bbb;
+`;
+
+export const Tab = styled('div')`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  max-width: 160px;
+  padding: 6px 8px;
+  border-radius: 5px 5px 0px 0px;
+  background-color: #ccc;
+  color: #333;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #bbb;
+  }
+
+  &[data-active='true'] {
+    background-color: #333;
+    color: #fff;
+  }
+`;
+
+export const TabName = styled('span')`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const TabNameInput = styled('input')`
+  font-size: inherit;
+  width: 100px;
+`;
+
+// small square action inside/next to a tab (close, add)
+export const TabAction = styled('button')`
+  background: none;
+  border: 0px;
+  color: inherit;
+  font-size: 1em;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 3px;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  &[data-confirm='true'] {
+    background-color: #c00;
+    color: #fff;
+  }
+`;

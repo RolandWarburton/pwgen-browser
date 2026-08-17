@@ -18,4 +18,10 @@ interface IPassword {
   hidden: boolean;
 }
 
-export { ISettings, IPassword };
+interface ITab {
+  id: string;
+  name: string;
+  passwords: IPassword[];
+}
+
+export { ISettings, IPassword, ITab };

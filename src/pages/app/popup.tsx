@@ -10,16 +10,19 @@ import {
   ButtonGroup,
   Row
 } from '../../components/styles';
-import { getPasswordHistory, getPasswords, getSettings } from '../settings';
-import { IPassword, ISettings } from '../../types';
+import {
+  createTab,
+  getActiveTabId,
+  getTabs,
+  getPasswordHistory,
+  getSettings,
+  saveActiveTabId,
+  saveTabs,
+  savePasswordHistory
+} from '@/storage';
+import { ITab, IPassword, ISettings } from '../../types';
 import Password from '@components/password-row';
-
-// async function getLastPasswordFromHistory() {
-//   const history = await getPasswordHistory();
-//   if (history.at(0)) {
-//     return history.at(0);
-//   }
-// }
+import Tabs from '@components/tabs';
 
 const Page = styled('div')`
   flex: 1;
@@ -29,26 +32,33 @@ const Page = styled('div')`
 
 const App = () => {
   const [password, setPassword] = useState('');
-  const [passwords, setPasswords] = useState<IPassword[] | false>(false);
+  const [tabs, setTabs] = useState<ITab[] | false>(false);
+  const [activeTabId, setActiveTabId] = useState('');
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
   const [settings, setSettings] = useState<ISettings | false>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  // load stuff for app to function (settings, passwords, password history)
-  useEffect(() => {
-    Promise.all([getSettings(), getPasswords(), getPasswordHistory()])
-      .then((result) => {
-        const [settings, passwords, passwordHistory] = result;
-        setSettings(settings);
-        setPasswords(passwords);
+  const activeTab = tabs ? tabs.find((tab) => tab.id === activeTabId) : undefined;
 
-        if (settings.storePasswordHistory && passwordHistory.length > 0) {
-          setPasswordHistory(passwordHistory);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  // load stuff for app to function (settings, tabs, password history)
+  useEffect(() => {
+    const doAsync = async () => {
+      const [settings, tabs, passwordHistory] = await Promise.all([
+        getSettings(),
+        getTabs(),
+        getPasswordHistory()
+      ]);
+      setTabs(tabs);
+      setActiveTabId(await getActiveTabId(tabs));
+      setSettings(settings);
+
+      if (settings.storePasswordHistory && passwordHistory.length > 0) {
+        setPasswordHistory(passwordHistory);
+      }
+    };
+    doAsync().catch((error) => {
+      console.log(error);
+    });
   }, []);
 
   // when the settings are changed
@@ -66,28 +76,48 @@ const App = () => {
     if (passwordHistory.length === 0) {
       return;
     }
-    chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
+    savePasswordHistory(passwordHistory);
   }, [passwordHistory]);
 
-  // when passwords list changes update it
+  // when tabs change update them
   useEffect(() => {
-    if (passwords) {
-      chrome.storage.local.set({ passwords: JSON.stringify(passwords) });
+    if (tabs) {
+      saveTabs(tabs);
     }
-  }, [passwords]);
+  }, [tabs]);
 
-  // add a password to the list
+  // when the active tab changes remember it for the next popup open
+  useEffect(() => {
+    if (activeTabId) {
+      saveActiveTabId(activeTabId);
+    }
+  }, [activeTabId]);
+
+  // replace the passwords of the active tab, leaving the other tabs alone
+  const updateActivePasswords = (update: (passwords: IPassword[]) => IPassword[]) => {
+    if (!tabs) {
+      return;
+    }
+    setTabs(
+      tabs.map((tab) =>
+        tab.id === activeTabId ? { ...tab, passwords: update(tab.passwords) } : tab
+      )
+    );
+  };
+
+  // add a password to the active tab
   const pushNewPassword = async () => {
-    if (password === '' || !passwords) {
+    if (password === '' || !activeTab) {
       return;
     }
 
     const passwordListLength = settings ? settings.passwordsListMaxLength : 5;
-    const newPasswords = [
-      { password: password, note: '', hidden: false, flagged: false },
-      ...passwords
-    ].slice(0, passwordListLength) as IPassword[];
-    setPasswords(newPasswords);
+    updateActivePasswords((passwords) =>
+      [{ password: password, note: '', hidden: false, flagged: false }, ...passwords].slice(
+        0,
+        passwordListLength
+      )
+    );
   };
 
   // create a new password
@@ -105,57 +135,79 @@ const App = () => {
     }
   };
 
-  // clear the passwords list
+  // clear the active tab's passwords list
   const clear = () => {
-    console.log('clearing');
-    chrome.storage.local.remove('passwords');
-    setPasswords([]);
+    updateActivePasswords(() => []);
   };
 
-  // delete a password from the passwords list
+  // delete a password from the active tab
   const deletePassword = (index: number) => {
-    if (!passwords) {
-      return;
-    }
-    console.log('deleting password');
-    const updatedPasswords = [...passwords];
-    updatedPasswords.splice(index, 1);
-    setPasswords(updatedPasswords);
+    updateActivePasswords((passwords) => passwords.filter((_, i) => i !== index));
   };
 
   // update a note for a password
   const updateNote = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    if (!passwords) {
-      return;
-    }
-    console.log('updating note');
-    const updatedPasswords = [...passwords];
-    updatedPasswords[index].note = event.target.value;
-    setPasswords(updatedPasswords);
+    const note = event.target.value;
+    updateActivePasswords((passwords) =>
+      passwords.map((password, i) => (i === index ? { ...password, note } : password))
+    );
   };
 
   const flagPassword = (index: number) => {
-    if (!passwords) {
-      return;
-    }
-    console.log('flagging password');
-    const updatedPasswords = [...passwords];
-    updatedPasswords[index].flagged = !updatedPasswords[index].flagged;
-    setPasswords(updatedPasswords);
+    updateActivePasswords((passwords) =>
+      passwords.map((password, i) =>
+        i === index ? { ...password, flagged: !password.flagged } : password
+      )
+    );
   };
 
   const hidePassword = (index: number) => {
-    if (!passwords) {
+    updateActivePasswords((passwords) =>
+      passwords.map((password, i) =>
+        i === index ? { ...password, hidden: !password.hidden } : password
+      )
+    );
+  };
+
+  const addTab = () => {
+    if (!tabs) {
       return;
     }
-    console.log('hiding password');
-    const updatedPasswords = [...passwords];
-    updatedPasswords[index].hidden = !updatedPasswords[index].hidden;
-    setPasswords(updatedPasswords);
+    const tab = createTab(`Tab ${tabs.length + 1}`);
+    setTabs([...tabs, tab]);
+    setActiveTabId(tab.id);
+  };
+
+  const deleteTab = (id: string) => {
+    if (!tabs || tabs.length <= 1) {
+      return;
+    }
+    const remaining = tabs.filter((tab) => tab.id !== id);
+    setTabs(remaining);
+    if (id === activeTabId) {
+      setActiveTabId(remaining[0].id);
+    }
+  };
+
+  const renameTab = (id: string, name: string) => {
+    if (!tabs) {
+      return;
+    }
+    setTabs(tabs.map((tab) => (tab.id === id ? { ...tab, name } : tab)));
   };
 
   return (
     <Page>
+      {tabs && (
+        <Tabs
+          tabs={tabs}
+          activeTabId={activeTabId}
+          selectTab={setActiveTabId}
+          addTab={addTab}
+          deleteTab={deleteTab}
+          renameTab={renameTab}
+        />
+      )}
       <Container>
         <Row columns="auto 1fr">
           password:{' '}
@@ -167,12 +219,12 @@ const App = () => {
             defaultValue={password}
           />
         </Row>
-        {passwords &&
-          passwords.map((_, index) => (
+        {activeTab &&
+          activeTab.passwords.map((_, index) => (
             <Password
               key={index}
               index={index}
-              passwords={passwords}
+              passwords={activeTab.passwords}
               deletePassword={deletePassword}
               updateNote={updateNote}
               flagPassword={flagPassword}

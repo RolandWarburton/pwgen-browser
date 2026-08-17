@@ -4,24 +4,23 @@ import { Button, SVGHover, Row } from '@components/styles';
 import { IconCopy } from '@components/icons/copy';
 import { useNavigate } from 'react-router-dom';
 import { IconQR } from '@components/icons/qr';
+import { clearPasswordHistory, getPasswordHistory } from '@/storage';
 
 function History() {
   const navigate = useNavigate();
   const [passwordHistory, setPasswordHistory] = useState<string[]>([]);
 
   useEffect(() => {
-    // get the password password history
-    chrome.storage.local.get('passwordHistory', (result) => {
-      if (Object.keys(result).length !== 0 && typeof result.passwordHistory == 'string') {
-        console.log('setting password history');
-        const temp = JSON.parse(result.passwordHistory) as string[];
-        setPasswordHistory(temp);
-      }
-    });
+    // get the password history
+    getPasswordHistory()
+      .then(setPasswordHistory)
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   const clearHistory = () => {
-    chrome.storage.local.remove('passwordHistory');
+    clearPasswordHistory();
     setPasswordHistory([]);
   };
 

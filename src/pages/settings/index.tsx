@@ -1,26 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles';
-import { IPassword, ISettings } from '../../types';
+import { defaultSettings, getSettings, saveSettings } from '@/storage';
 import { hasVIADevice } from '../../utils/via';
-
-const defaultSettings: ISettings = {
-  minLength: 3,
-  maxLength: 5,
-  numberOfWords: 2,
-  count: 1,
-  delimiter: '-',
-  prepend: '',
-  append: '-secret',
-  passwordsListMaxLength: 5,
-  retainLastPassword: true,
-  storePasswordHistory: true
-};
-
-// function setDefaultSettings(setFunc: React.Dispatch<ISettings>) {
-//   chrome.storage.local.set({ settings: defaultSettings }, () => {
-//     setFunc(defaultSettings);
-//   });
-// }
 
 function Settings() {
   const [settings, setSettings] = useState(defaultSettings);
@@ -53,7 +34,7 @@ function Settings() {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    chrome.storage.local.set({ settings });
+    saveSettings(settings);
   };
 
   return (
@@ -204,43 +185,4 @@ function Settings() {
   );
 }
 
-function getSettings(): Promise<ISettings> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get('settings', async (result) => {
-      if (result.settings) {
-        const settings = result.settings as ISettings;
-        resolve(settings);
-      } else {
-        resolve(defaultSettings);
-      }
-    });
-  });
-}
-
-function getPasswords(): Promise<IPassword[]> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get('passwords', async (result) => {
-      if (typeof result.passwords == 'string') {
-        const passwords = JSON.parse(result.passwords) as IPassword[];
-        resolve(passwords);
-      } else {
-        resolve([]);
-      }
-    });
-  });
-}
-
-function getPasswordHistory(): Promise<string[]> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get('passwordHistory', async (result) => {
-      if (typeof result.passwordHistory == 'string') {
-        const passwordHistory = JSON.parse(result.passwordHistory) as string[];
-        resolve(passwordHistory);
-      } else {
-        resolve([]);
-      }
-    });
-  });
-}
-
-export { Settings, getSettings, getPasswords, getPasswordHistory };
+export { Settings };
