@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IPassword } from '../../types';
-import { NoteCell, Row, SVGHover, DropdownWrapper, DropdownMenu } from '../styles';
+import { NoteCell, MacroCell, Row, SVGHover, DropdownWrapper, DropdownMenu } from '../styles';
 import { IconCopy } from '@components/icons/copy';
 import { IconQR } from '@components/icons/qr';
 import { IconFlag } from '@components/icons/flag';
@@ -9,6 +9,7 @@ import { IconKeyboard } from '@components/icons/keyboard';
 import { IconEllipsis } from '@components/icons/ellipsis';
 import { useNavigate } from 'react-router-dom';
 import { IconEye } from '@components/icons/eye';
+import { IconBraces } from '@components/icons/braces';
 import { pushCredentialsToKeyboard } from '../../utils/via';
 
 interface IProps {
@@ -17,15 +18,19 @@ interface IProps {
   deletePassword: (index: number) => void;
   flagPassword: (index: number) => void;
   updateNote: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+  updateMacro: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
   hidePassword: (index: number) => void;
 }
 
 function Password(props: IProps) {
   const navigate = useNavigate();
-  const { passwords, index, updateNote, deletePassword, flagPassword, hidePassword } = props;
+  const {
+    passwords, index, updateNote, updateMacro, deletePassword, flagPassword, hidePassword
+  } = props;
   const password = passwords[index];
   const [pushing, setPushing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showMacro, setShowMacro] = useState(false);
   const handleMouseLeave = () => {
     setMenuOpen(false);
   };
@@ -33,7 +38,7 @@ function Password(props: IProps) {
   const handlePushToKeyboard = async () => {
     setPushing(true);
     try {
-      await pushCredentialsToKeyboard(password.note, password.password);
+      await pushCredentialsToKeyboard(password.note, password.password, password.macro);
       alert('Pushed to keyboard macro M10');
     } catch (err) {
       alert(`Failed: ${(err as Error).message}`);
@@ -58,12 +63,22 @@ function Password(props: IProps) {
       >
         <IconCopy />
       </SVGHover>
-      <NoteCell
-        type={password.hidden ? 'password' : 'text'}
-        placeholder="note"
-        value={password.note}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateNote(e, index)}
-      />
+      {showMacro ? (
+        // The macro holds $p, not the password itself, so it isn't masked.
+        <MacroCell
+          type="text"
+          placeholder="$n{KC_TAB}$p{KC_ENTER}"
+          value={password.macro ?? ''}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateMacro(e, index)}
+        />
+      ) : (
+        <NoteCell
+          type={password.hidden ? 'password' : 'text'}
+          placeholder="note"
+          value={password.note}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateNote(e, index)}
+        />
+      )}
       <SVGHover onClick={() => hidePassword(index)}>
         <IconEye open={password.hidden} />
       </SVGHover>
@@ -88,6 +103,15 @@ function Password(props: IProps) {
               }}
             >
               <IconFlag />
+            </SVGHover>
+            <SVGHover
+              onClick={() => {
+                setShowMacro(!showMacro);
+                setMenuOpen(false);
+              }}
+              title={showMacro ? 'Show note' : 'Show keyboard macro'}
+            >
+              <IconBraces active={showMacro} />
             </SVGHover>
             <SVGHover
               onClick={() => {

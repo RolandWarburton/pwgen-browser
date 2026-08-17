@@ -1,6 +1,8 @@
 // VIA keyboard communication and macro writing
 // Reference: https://github.com/the-via/app
 
+import { encodeMacro, macroUses } from './macro';
+
 export const CMD = {
   GET_PROTOCOL_VERSION: 0x01,
   MACRO_GET_COUNT: 0x0C,
@@ -9,22 +11,9 @@ export const CMD = {
   MACRO_SET_BUFFER: 0x0F,
 } as const;
 
-const KC_ENTER = 0x28;
-
-// Macro byte encoding, as parsed by QMK's send_string_with_delay_impl():
-// SS_QMK_PREFIX introduces a sequence, then a subcommand byte, then a keycode.
-// A prefix followed by an unrecognised subcommand is silently swallowed.
-const SS_QMK_PREFIX = 1;
-const SS_TAP_CODE = 1;
-
 export const MACRO_TERMINATOR = 0;
 const MACRO_SLOT = 10;
 const CHUNK_SIZE = 28;
-
-// Bytes outside this range are not literal text: 0 terminates a macro and 1
-// starts an escape sequence, and anything >= 0x80 is not valid send_string input.
-const MIN_PRINTABLE = 0x20;
-const MAX_PRINTABLE = 0x7E;
 
 const COMMAND_TIMEOUT_MS = 3000;
 
@@ -165,38 +154,23 @@ export function parseMacros(buffer: number[], count: number): number[][] {
   return macros;
 }
 
-// A macro can only carry printable ASCII as literal text; anything else would
-// silently write a control byte or a bogus keycode to the keyboard.
-function encodeText(text: string, field: string): number[] {
-  const bytes: number[] = [];
+// Without a macro template, fall back to the original behaviour: type the note,
+// tap Enter, type the password. Expressed as a template so there is one encoder.
+const DEFAULT_TEMPLATE = '$n{KC_ENTER}$p';
 
-  for (const char of text) {
-    const code = char.charCodeAt(0);
-    if (char.length > 1 || code < MIN_PRINTABLE || code > MAX_PRINTABLE) {
-      throw new Error(`${field} contains a character the keyboard can't type: "${char}"`);
-    }
-    bytes.push(code);
-  }
+export async function pushCredentialsToKeyboard(
+  note: string,
+  password: string,
+  macro?: string
+): Promise<void> {
+  const template = macro?.trim() ? macro : DEFAULT_TEMPLATE;
 
-  return bytes;
-}
+  if (!note && macroUses(template, 'note')) throw new Error('Note is empty');
+  if (!password && macroUses(template, 'password')) throw new Error('Password is empty');
 
-function encodeTap(keycode: number): number[] {
-  return [SS_QMK_PREFIX, SS_TAP_CODE, keycode];
-}
-
-function encodeMacroBytes(username: string, password: string): number[] {
-  return [
-    ...encodeText(username, 'Note'),
-    ...encodeTap(KC_ENTER),
-    ...encodeText(password, 'Password'),
-  ];
-}
-
-
-export async function pushCredentialsToKeyboard(username: string, password: string): Promise<void> {
-  if (!username) throw new Error('Username (note field) is empty');
-  if (!password) throw new Error('Password is empty');
+  // Encode before touching the keyboard so a bad template fails without a write.
+  const newMacroBytes = encodeMacro(template, { note, password });
+  if (!newMacroBytes.length) throw new Error('Macro is empty');
 
   const macroCount = await getMacroCount();
   if (macroCount <= MACRO_SLOT) {
@@ -206,9 +180,6 @@ export async function pushCredentialsToKeyboard(username: string, password: stri
   const bufferSize = await getMacroBufferSize();
   const buffer = await getMacroBytes();
   const macros = parseMacros(buffer, macroCount);
-
-  // Build the new macro bytes
-  const newMacroBytes = encodeMacroBytes(username, password);
 
   // Find the byte offset where M10 starts in the buffer
   let offset = 0;

@@ -16,6 +16,9 @@ interface IPassword {
   note: string;
   flagged: boolean;
   hidden: boolean;
+  // VIA macro expression pushed to the keyboard, with $p standing in for the
+  // password. Absent or empty means "note, Enter, password".
+  macro?: string;
 }
 
 interface ITab {
