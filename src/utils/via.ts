@@ -12,7 +12,8 @@ export const CMD = {
 } as const;
 
 export const MACRO_TERMINATOR = 0;
-const MACRO_SLOT = 10;
+export const DEFAULT_MACRO_SLOT = 10;
+export const FALLBACK_MACRO_COUNT = 16;
 const CHUNK_SIZE = 28;
 
 const COMMAND_TIMEOUT_MS = 3000;
@@ -161,7 +162,8 @@ const DEFAULT_TEMPLATE = '$n{KC_ENTER}$p';
 export async function pushCredentialsToKeyboard(
   note: string,
   password: string,
-  macro?: string
+  macro?: string,
+  slot: number = DEFAULT_MACRO_SLOT
 ): Promise<void> {
   const template = macro?.trim() ? macro : DEFAULT_TEMPLATE;
 
@@ -173,23 +175,26 @@ export async function pushCredentialsToKeyboard(
   if (!newMacroBytes.length) throw new Error('Macro is empty');
 
   const macroCount = await getMacroCount();
-  if (macroCount <= MACRO_SLOT) {
-    throw new Error(`Keyboard only has ${macroCount} macro slots (need at least ${MACRO_SLOT + 1})`);
+  if (macroCount <= slot) {
+    throw new Error(
+      `Keyboard only has ${macroCount} macro slots, so M${slot} does not exist. ` +
+      'Pick a lower slot in Settings.'
+    );
   }
 
   const bufferSize = await getMacroBufferSize();
   const buffer = await getMacroBytes();
   const macros = parseMacros(buffer, macroCount);
 
-  // Find the byte offset where M10 starts in the buffer
+  // Find the byte offset where the target macro starts in the buffer
   let offset = 0;
-  for (let i = 0; i < MACRO_SLOT; i++) {
+  for (let i = 0; i < slot; i++) {
     offset += macros[i].length + 1; // +1 for terminator
   }
 
-  // Rebuild from M10 onwards: new M10 + remaining macros (M11, M12, ...)
+  // Rebuild from the target slot onwards: new macro + the macros that follow it
   const patch: number[] = [...newMacroBytes, MACRO_TERMINATOR];
-  for (let i = MACRO_SLOT + 1; i < macroCount; i++) {
+  for (let i = slot + 1; i < macroCount; i++) {
     patch.push(...macros[i], MACRO_TERMINATOR);
   }
 
@@ -197,6 +202,6 @@ export async function pushCredentialsToKeyboard(
     throw new Error('New macro is too large to fit in the buffer');
   }
 
-  // Write only from M10's offset onwards
+  // Write only from the target slot's offset onwards
   await writeMacroBytesAt(offset, patch);
 }

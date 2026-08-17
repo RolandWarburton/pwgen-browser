@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles';
+import { Button, FormLabel, FormInput, FormSelect, Form, SaveButton, Row } from '@components/styles';
 import { defaultSettings, getSettings, saveSettings } from '@/storage';
-import { hasVIADevice } from '../../utils/via';
+import { hasVIADevice, getMacroCount, FALLBACK_MACRO_COUNT } from '../../utils/via';
 
 function Settings() {
   const [settings, setSettings] = useState(defaultSettings);
   const [keyboardStatus, setKeyboardStatus] = useState('');
+  const [macroCount, setMacroCount] = useState(FALLBACK_MACRO_COUNT);
 
   useEffect(() => {
     const doAsync = async () => {
@@ -13,6 +14,12 @@ function Settings() {
       setSettings(settings);
       const paired = await hasVIADevice();
       setKeyboardStatus(paired ? 'Paired' : 'Not paired');
+      if (!paired) return;
+      try {
+        setMacroCount(await getMacroCount());
+      } catch (err) {
+        console.error('Unable to read macro count:', err);
+      }
     };
     doAsync();
   }, []);
@@ -176,6 +183,27 @@ function Settings() {
             }}>Pair</Button>
             <span>{keyboardStatus}</span>
           </div>
+        </Row>
+        <Row>
+          <FormLabel>Macro Slot:</FormLabel>
+          <FormSelect
+            name="macroSlot"
+            value={settings.macroSlot}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+              setSettings({ ...settings, macroSlot: parseInt(e.target.value) });
+            }}
+          >
+            {/* A saved slot beyond the reported count still needs an entry, or
+                the select would render blank and silently change the setting. */}
+            {Array.from(
+              { length: Math.max(macroCount, settings.macroSlot + 1) },
+              (_unused, i) => (
+                <option key={i} value={i}>
+                  {`M${i}${i >= macroCount ? ' (not on this keyboard)' : ''}`}
+                </option>
+              )
+            )}
+          </FormSelect>
         </Row>
         <SaveButton>
           <Button type="submit">Save Settings</Button>

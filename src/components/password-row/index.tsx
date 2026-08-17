@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { IconEye } from '@components/icons/eye';
 import { IconBraces } from '@components/icons/braces';
 import { pushCredentialsToKeyboard } from '../../utils/via';
+import { getSettings } from '@/storage';
 
 interface IProps {
   passwords: IPassword[];
@@ -38,8 +39,11 @@ function Password(props: IProps) {
   const handlePushToKeyboard = async () => {
     setPushing(true);
     try {
-      await pushCredentialsToKeyboard(password.note, password.password, password.macro);
-      alert('Pushed to keyboard macro M10');
+      const { macroSlot } = await getSettings();
+      await pushCredentialsToKeyboard(
+        password.note, password.password, password.macro, macroSlot
+      );
+      alert(`Pushed to keyboard macro M${macroSlot}`);
     } catch (err) {
       alert(`Failed: ${(err as Error).message}`);
     } finally {
@@ -118,7 +122,7 @@ function Password(props: IProps) {
                 handlePushToKeyboard();
                 setMenuOpen(false);
               }}
-              title="Push username + password to keyboard macro M10"
+              title="Write this row's macro to the keyboard macro slot"
               style={{ opacity: pushing ? 0.5 : 1 }}
             >
               <IconKeyboard />

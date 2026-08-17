@@ -9,6 +9,7 @@ interface ISettings {
   passwordsListMaxLength: number;
   retainLastPassword: boolean;
   storePasswordHistory: boolean;
+  macroSlot: number;
 }
 
 interface IPassword {

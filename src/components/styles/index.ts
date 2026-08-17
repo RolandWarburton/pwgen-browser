@@ -3,6 +3,7 @@ import { styled } from 'goober';
 export const Form = styled('form')``;
 export const FormLabel = styled('div')``;
 export const FormInput = styled('input')``;
+export const FormSelect = styled('select')``;
 
 export const Container = styled('div')`
   margin: 10px 0px;

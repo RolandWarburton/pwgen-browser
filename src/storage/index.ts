@@ -1,4 +1,5 @@
 import { ITab, IPassword, ISettings } from '@types';
+import { DEFAULT_MACRO_SLOT } from '../utils/via';
 
 const defaultSettings: ISettings = {
   minLength: 3,
@@ -10,7 +11,8 @@ const defaultSettings: ISettings = {
   append: '-secret',
   passwordsListMaxLength: 5,
   retainLastPassword: true,
-  storePasswordHistory: true
+  storePasswordHistory: true,
+  macroSlot: DEFAULT_MACRO_SLOT
 };
 
 function createTab(name: string, passwords: IPassword[] = []): ITab {
@@ -20,11 +22,9 @@ function createTab(name: string, passwords: IPassword[] = []): ITab {
 function getSettings(): Promise<ISettings> {
   return new Promise((resolve) => {
     chrome.storage.local.get('settings', (result) => {
-      if (result.settings) {
-        resolve(result.settings as ISettings);
-      } else {
-        resolve(defaultSettings);
-      }
+      // Merged with the defaults so settings saved before a field existed
+      // (e.g. macroSlot) still come back with a usable value.
+      resolve({ ...defaultSettings, ...(result.settings as ISettings | undefined) });
     });
   });
 }
