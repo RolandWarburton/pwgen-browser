@@ -63,9 +63,10 @@ export const DropdownMenu = styled('div')`
 export const NoteCell = styled('input')``;
 
 export const SettingsButton = styled('div')`
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 10px 0px 0px;
 `;
 
 export const SaveButton = styled('div')`

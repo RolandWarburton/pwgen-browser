@@ -7,7 +7,7 @@ const GeneratorContainer = styled('div')`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  flex: 1;
 `;
 
 const Password = styled('div')`
@@ -17,7 +17,9 @@ const Password = styled('div')`
 `;
 
 const Container = styled('div')`
-  height: 350px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   ${BasicContainer}
 `;
 

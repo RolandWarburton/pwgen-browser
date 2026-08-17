@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { styled } from 'goober';
 import { Link } from 'react-router-dom';
 import { genpw } from '@rolandwarburton/pwgen';
 import {
@@ -19,6 +20,12 @@ import Password from '@components/password-row';
 //     return history.at(0);
 //   }
 // }
+
+const Page = styled('div')`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
 
 const App = () => {
   const [password, setPassword] = useState('');
@@ -148,7 +155,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <Page>
       <Container>
         <Row columns="auto 1fr">
           password:{' '}
@@ -191,7 +198,7 @@ const App = () => {
         )}
         <Button onClick={() => { chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT }); window.close(); }}>Settings</Button>
       </SettingsButton>
-    </div>
+    </Page>
   );
 };
 
