@@ -141,7 +141,7 @@ function Settings() {
             type="number"
             name="passwordsListMaxLength"
             min={0}
-            max={10}
+            max={50}
             value={settings.passwordsListMaxLength}
             onChange={(e) => {
               handleInputChange(e, 'number');
