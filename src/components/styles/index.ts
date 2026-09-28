@@ -3,7 +3,6 @@ import { styled } from 'goober';
 export const Form = styled('form')``;
 export const FormLabel = styled('div')``;
 export const FormInput = styled('input')``;
-export const FormSelect = styled('select')``;
 
 export const Container = styled('div')`
   margin: 10px 0px;
@@ -62,18 +61,6 @@ export const DropdownMenu = styled('div')`
 `;
 
 export const NoteCell = styled('input')``;
-
-// Visually distinct from the note field so it's obvious at a glance that the
-// row is showing a macro template rather than a description.
-export const MacroCell = styled('input')`
-  background-color: #1e1e1e;
-  color: #ff5f5f;
-  font-family: monospace;
-  border: 1px solid #3a3a3a;
-  &::placeholder {
-    color: #b45454;
-  }
-`;
 
 export const SettingsButton = styled('div')`
   margin-top: auto;

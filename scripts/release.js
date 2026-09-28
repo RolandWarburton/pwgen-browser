@@ -3,10 +3,10 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 // --- Configuration ---
-const TAG = 'v1.4.0';
-const RELEASE_NAME = 'Version 1.4.0';
+const TAG = 'v1.5.0';
+const RELEASE_NAME = 'Version 1.5.0';
 const ZIP_FILE_PATH = 'pwgen-browser.zip';
-const RELEASE_NOTES = 'Selectable macro slot';
+const RELEASE_NOTES = 'Remove VIA keyboard macro feature';
 // ---------------------
 
 function run(command) {

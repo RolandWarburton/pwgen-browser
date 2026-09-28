@@ -153,14 +153,6 @@ const App = () => {
     );
   };
 
-  // update the VIA macro template for a password
-  const updateMacro = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const macro = event.target.value;
-    updateActivePasswords((passwords) =>
-      passwords.map((password, i) => (i === index ? { ...password, macro } : password))
-    );
-  };
-
   const flagPassword = (index: number) => {
     updateActivePasswords((passwords) =>
       passwords.map((password, i) =>
@@ -235,7 +227,6 @@ const App = () => {
               passwords={activeTab.passwords}
               deletePassword={deletePassword}
               updateNote={updateNote}
-              updateMacro={updateMacro}
               flagPassword={flagPassword}
               hidePassword={hidePassword}
             />

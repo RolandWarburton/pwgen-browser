@@ -65,8 +65,6 @@ async function main() {
   copyFileSync('manifest.json', 'dist/manifest.json');
   copyFileSync('./static/popup.html', './dist/popup.html');
   copyFileSync('./static/sidepanel.html', './dist/sidepanel.html');
-  copyFileSync('./static/pair.html', './dist/pair.html');
-  copyFileSync('./static/pair.js', './dist/pair.js');
   copyFolderSync('./images/', './dist/images');
 }
 main();
