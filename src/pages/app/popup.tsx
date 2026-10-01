@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { styled } from 'goober';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { genpw } from '@rolandwarburton/pwgen';
 import {
   ButtonGroupButton,

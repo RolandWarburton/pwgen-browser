@@ -4,7 +4,7 @@ import { Button, ButtonGroup, ButtonGroupButton, SettingsButton } from '@/compon
 import { genpw } from '@rolandwarburton/pwgen';
 import { getPasswordHistory, getSettings, savePasswordHistory } from '@/storage';
 import { GeneratorContainer, Container, Password } from './styles';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router';
 
 function Generator() {
   const passwordRef = React.useRef<HTMLSpanElement>(null);

@@ -1,9 +1,9 @@
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Button, Container, Row } from '@components/styles';
-import { useParams } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 
 function PasswordQRCode() {
   const { param } = useParams();

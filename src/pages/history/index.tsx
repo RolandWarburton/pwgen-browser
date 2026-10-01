@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Button, SVGHover, Row } from '@components/styles';
 import { IconCopy } from '@components/icons/copy';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { IconQR } from '@components/icons/qr';
 import { clearPasswordHistory, getPasswordHistory } from '@/storage';
 

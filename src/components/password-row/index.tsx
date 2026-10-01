@@ -6,7 +6,7 @@ import { IconQR } from '@components/icons/qr';
 import { IconFlag } from '@components/icons/flag';
 import { IconTrash } from '@components/icons/trash';
 import { IconEllipsis } from '@components/icons/ellipsis';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { IconEye } from '@components/icons/eye';
 
 interface IProps {

@@ -46,7 +46,7 @@ State management is plain React hooks — no global store.
 - ESM throughout (`"type": "module"` in package.json)
 - TypeScript strict mode, single quotes, semicolons, no trailing commas (ESLint `comma-dangle`)
 - Unused variables must be prefixed with `_`
-- Routing via react-router-dom v6; query params track navigation context (e.g., `?back=history`)
+- Routing via react-router v8; query params track navigation context (e.g., `?back=history`)
 
 ## History
 
