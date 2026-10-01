@@ -46,7 +46,7 @@ function History() {
               </SVGHover>
               <SVGHover
                 onClick={() => {
-                  navigate(`/qr/${password}?back=history`);
+                  navigate(`/qr?${new URLSearchParams({ password, back: 'history' })}`);
                 }}
               >
                 <IconQR />

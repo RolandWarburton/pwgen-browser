@@ -2,14 +2,14 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Link } from 'react-router';
 import { Button, Container, Row } from '@components/styles';
-import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router';
 
 function PasswordQRCode() {
-  const { param } = useParams();
+  // the password is passed as a query param rather than a path segment, because
+  // react-router decodes path segments twice, which mangles passwords containing '%'
   const [searchParams] = useSearchParams();
+  const password = searchParams.get('password');
   const back = searchParams.get('back');
-  console.log(back);
   return (
     <div>
       <Container>
@@ -19,7 +19,7 @@ function PasswordQRCode() {
           </Link>
         </Row>
         <Row columns="1fr">
-          <QRCodeSVG value={param || 'NO PASSWORD SET'} width="100%" height="200px" />
+          <QRCodeSVG value={password || 'NO PASSWORD SET'} width="100%" height="200px" />
         </Row>
       </Container>
     </div>

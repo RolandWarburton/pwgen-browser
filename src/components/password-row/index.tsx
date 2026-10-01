@@ -62,7 +62,7 @@ function Password(props: IProps) {
           <DropdownMenu>
             <SVGHover
               onClick={() => {
-                navigate(`/qr/${password.password}`);
+                navigate(`/qr?${new URLSearchParams({ password: password.password })}`);
                 setMenuOpen(false);
               }}
             >

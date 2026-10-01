@@ -28,7 +28,7 @@ const router = createHashRouter([
     element: <History />
   },
   {
-    path: '/qr/:param',
+    path: '/qr',
     element: <PasswordQRCode />
   },
   {
