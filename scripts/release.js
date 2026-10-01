@@ -3,10 +3,10 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 // --- Configuration ---
-const TAG = 'v1.5.0';
-const RELEASE_NAME = 'Version 1.5.0';
+const TAG = 'v1.6.0';
+const RELEASE_NAME = 'Version 1.6.0';
 const ZIP_FILE_PATH = 'pwgen-browser.zip';
-const RELEASE_NOTES = 'Remove VIA keyboard macro feature';
+const RELEASE_NOTES = 'Move the whole UI into the side panel (no popup); default passwords list length is now 20';
 // ---------------------
 
 function run(command) {
