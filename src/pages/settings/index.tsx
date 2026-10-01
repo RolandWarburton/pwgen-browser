@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles';
 import { defaultSettings, getSettings, saveSettings } from '@/storage';
 
@@ -35,7 +36,9 @@ function Settings() {
 
   return (
     <div>
-      <Button onClick={() => window.close()}>Close</Button>
+      <Link to="/">
+        <Button>Back</Button>
+      </Link>
       <Form onSubmit={handleFormSubmit}>
         <Row>
           <FormLabel>Min Length:</FormLabel>

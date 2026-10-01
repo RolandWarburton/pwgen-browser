@@ -8,7 +8,7 @@ const defaultSettings: ISettings = {
   delimiter: '-',
   prepend: '',
   append: '-secret',
-  passwordsListMaxLength: 5,
+  passwordsListMaxLength: 20,
   retainLastPassword: true,
   storePasswordHistory: true
 };

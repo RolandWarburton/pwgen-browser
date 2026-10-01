@@ -30,7 +30,7 @@ function makeTemp(name) {
 }
 
 const buildSettings = {
-  entryPoints: ['src/index.tsx', 'src/sidepanel.tsx'],
+  entryPoints: ['src/sidepanel.tsx', 'src/background.ts'],
   outdir: './dist',
   platform: 'node',
   bundle: true,
@@ -63,7 +63,6 @@ async function main() {
   }
 
   copyFileSync('manifest.json', 'dist/manifest.json');
-  copyFileSync('./static/popup.html', './dist/popup.html');
   copyFileSync('./static/sidepanel.html', './dist/sidepanel.html');
   copyFolderSync('./images/', './dist/images');
 }

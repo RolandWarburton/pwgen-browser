@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A Chrome extension (Manifest V3) for generating random passwords using word lists via the `@rolandwarburton/pwgen` npm package. Provides password generation, tabbed password lists, history, QR codes, and clipboard copy. The popup holds the main UI; the side panel holds settings.
+A Chrome extension (Manifest V3) for generating random passwords using word lists via the `@rolandwarburton/pwgen` npm package. Provides password generation, tabbed password lists, history, QR codes, and clipboard copy. The whole UI lives in Chrome's side panel; clicking the toolbar icon opens it (there is no popup).
 
 ## Build & Lint
 
 ```bash
-npm run build    # node build.js — esbuild bundle: src/{index,sidepanel}.tsx → dist/, plus copies manifest.json, static/{popup,sidepanel}.html, images/
+npm run build    # node build.js — esbuild bundle: src/sidepanel.tsx + src/background.ts → dist/, plus copies manifest.json, static/sidepanel.html, images/
 npm run lint     # ESLint on src/ and build.js
 npm run release  # scripts/release.js — builds, zips dist/, publishes a GitHub release via `gh` (does NOT bump the version)
 ```
@@ -21,10 +21,10 @@ npm run release  # scripts/release.js — builds, zips dist/, publishes a GitHub
 
 ## Architecture
 
-- **Entry points**: `src/index.tsx` (popup, routes `*` → app, `/settings`, `/history`, `/qr/:param`, `/generator`) and `src/sidepanel.tsx` (side panel, renders only Settings). Both use `createHashRouter` + Goober CSS-in-JS (`setup(React.createElement)`).
-- **Pages**: `src/pages/{app,generator,settings,history,qr}/` — each page loads its own data from Chrome storage. The popup's Settings button opens the side panel (`chrome.sidePanel.open`) and closes the popup.
+- **Entry points**: `src/sidepanel.tsx` (side panel, routes `*` → app, `/settings`, `/history`, `/qr/:param`, `/generator`; uses `createHashRouter` + Goober CSS-in-JS via `setup(React.createElement)`) and `src/background.ts` (service worker that makes the toolbar icon open the side panel).
+- **Pages**: `src/pages/{app,generator,settings,history,qr}/` — each page loads its own data from Chrome storage. (`pages/app/popup.tsx` is named from when the UI was a popup.)
 - **Shared components**: `src/components/` — `password-row/` (list item with actions), `tabs/` (password list tabs), `icons/` (inline SVG), `styles/` (Goober styled components)
-- **Static files**: `static/` — `popup.html`, `sidepanel.html`
+- **Static files**: `static/` — `sidepanel.html`
 - **Types**: `src/types/index.ts` — `ISettings`, `IPassword`, `ITab`
 - **Path aliases** (tsconfig): `@/*` → `src/*`, `@components/*` → `src/components/*`, `@types` → `src/types`
 

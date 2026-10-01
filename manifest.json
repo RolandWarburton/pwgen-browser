@@ -8,8 +8,10 @@
     "16": "images/icon16.png"
   },
   "permissions": ["storage", "sidePanel"],
-  "action": {
-    "default_popup": "popup.html"
+  "action": {},
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
   },
   "side_panel": {
     "default_path": "sidepanel.html"

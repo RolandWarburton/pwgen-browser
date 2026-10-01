@@ -86,7 +86,7 @@ const App = () => {
     }
   }, [tabs]);
 
-  // when the active tab changes remember it for the next popup open
+  // when the active tab changes remember it for the next time the panel opens
   useEffect(() => {
     if (activeTabId) {
       saveActiveTabId(activeTabId);
@@ -248,7 +248,9 @@ const App = () => {
         ) : (
           ''
         )}
-        <Button onClick={() => { chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT }); window.close(); }}>Settings</Button>
+        <Link to="/settings">
+          <Button>Settings</Button>
+        </Link>
       </SettingsButton>
     </Page>
   );

@@ -56,7 +56,7 @@ function Tabs(props: IProps) {
           ) : (
             <TabName title="double click to rename">{tab.name}</TabName>
           )}
-          {/* deleting takes two clicks, because a confirm() dialog would freeze the popup.
+          {/* deleting takes two clicks, because a confirm() dialog would freeze the panel.
               the last tab cannot be deleted, so there is always somewhere to put passwords */}
           {tab.id === activeTabId && tabs.length > 1 && editingId !== tab.id && (
             <TabAction
