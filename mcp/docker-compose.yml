@@ -1,0 +1,33 @@
+services:
+  pwgen-mcp:
+    build: .
+    image: pwgen-mcp:latest
+    container_name: pwgen-mcp
+    env_file:
+      - .env
+    healthcheck:
+      # not /mcp: it answers 401 without a token
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "-T", "5", "http://127.0.0.1:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - services
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pwgen-mcp.rule=Host(`pwgen-mcp.${MCP_DOMAIN:?MCP_DOMAIN must be set in .env}`)"
+      - "traefik.http.routers.pwgen-mcp.entrypoints=websecure"
+      - "traefik.http.routers.pwgen-mcp.tls=true"
+      - "traefik.http.routers.pwgen-mcp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.pwgen-mcp.loadbalancer.server.port=8080"
+      - "traefik.docker.network=services"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+networks:
+  services:
+    external: true
