@@ -1,9 +1,10 @@
 import React from 'react';
 import { ISettings } from '@types';
-import { Button, ButtonGroup, ButtonGroupButton, SettingsButton } from '@/components/styles';
+import { Button, ButtonGroup, ButtonGroupButton, SettingsButton } from '@/components/styles/index.ts';
+// @ts-types="../../types/pwgen.d.ts"
 import { genpw } from '@rolandwarburton/pwgen';
-import { getSettings } from '@/storage';
-import { GeneratorContainer, Container, Password } from './styles';
+import { getSettings } from '@/storage/index.ts';
+import { GeneratorContainer, Container, Password } from './styles.tsx';
 import { Link, useSearchParams } from 'react-router';
 
 function Generator() {

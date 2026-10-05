@@ -1,5 +1,3 @@
-import React from 'react';
-
 function IconEllipsis() {
   return (
     <div style={{ padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

@@ -1,6 +1,6 @@
 import { ISettings, IBaoSession } from '@types';
-import { BaoError, AuthError, request } from './client';
-import { getSession, saveSession, clearSession } from './session';
+import { BaoError, AuthError, request } from './client.ts';
+import { getSession, saveSession, clearSession } from './session.ts';
 
 interface AuthResponse {
   auth: {

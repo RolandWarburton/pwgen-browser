@@ -1,5 +1,5 @@
 import { ISettings, ITab, IPassword } from '@types';
-import { kv, ConflictError, NotFoundError, KvMetadata } from './client';
+import { kv, ConflictError, NotFoundError, KvMetadata } from './client.ts';
 
 // <mount>/<base path>/
 //   _tabs          { next }          tab counter; numbers are never reused
