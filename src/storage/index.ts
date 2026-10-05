@@ -1,5 +1,9 @@
-import { ITab, IPassword, ISettings } from '@types';
+import { ISettings } from '@types';
 
+// set from BAO_ADDR by build.js
+declare const __BAO_ADDR__: string;
+
+// browser storage holds only settings and the selected tab
 const defaultSettings: ISettings = {
   minLength: 3,
   maxLength: 5,
@@ -8,21 +12,21 @@ const defaultSettings: ISettings = {
   delimiter: '-',
   prepend: '',
   append: '-secret',
-  passwordsListMaxLength: 20,
-  retainLastPassword: true,
-  storePasswordHistory: true
+  baoAddress: __BAO_ADDR__,
+  baoMount: 'kv',
+  baoBasePath: 'pwgen',
+  baoRole: 'pwgen'
 };
-
-function createTab(name: string, passwords: IPassword[] = []): ITab {
-  return { id: crypto.randomUUID(), name, passwords };
-}
 
 function getSettings(): Promise<ISettings> {
   return new Promise((resolve) => {
     chrome.storage.local.get('settings', (result) => {
-      // Merged with the defaults so settings saved before a field existed
-      // still come back with a usable value.
-      resolve({ ...defaultSettings, ...(result.settings as ISettings | undefined) });
+      // defaults fill fields added since the settings were saved; the address is always the build's
+      resolve({
+        ...defaultSettings,
+        ...(result.settings as ISettings | undefined),
+        baoAddress: defaultSettings.baoAddress
+      });
     });
   });
 }
@@ -31,32 +35,15 @@ function saveSettings(settings: ISettings) {
   chrome.storage.local.set({ settings });
 }
 
-function getTabs(): Promise<ITab[]> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get('tabs', (result) => {
-      const tabs = result.tabs as ITab[] | undefined;
-      if (tabs && tabs.length > 0) {
-        resolve(tabs);
-      } else {
-        resolve([createTab('Passwords')]);
-      }
-    });
-  });
-}
-
-function saveTabs(tabs: ITab[]) {
-  chrome.storage.local.set({ tabs });
-}
-
-// resolves to a tab id that exists in `tabs`, falling back to the first tab
-function getActiveTabId(tabs: ITab[]): Promise<string> {
+// resolves to a slug in `slugs`, falling back to the first one
+function getActiveTabId(slugs: string[]): Promise<string> {
   return new Promise((resolve) => {
     chrome.storage.local.get('activeTabId', (result) => {
       const id = result.activeTabId as string | undefined;
-      if (id && tabs.some((tab) => tab.id === id)) {
+      if (id && slugs.includes(id)) {
         resolve(id);
       } else {
-        resolve(tabs[0].id);
+        resolve(slugs[0]);
       }
     });
   });
@@ -66,36 +53,4 @@ function saveActiveTabId(activeTabId: string) {
   chrome.storage.local.set({ activeTabId });
 }
 
-function getPasswordHistory(): Promise<string[]> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get('passwordHistory', (result) => {
-      if (typeof result.passwordHistory == 'string') {
-        resolve(JSON.parse(result.passwordHistory) as string[]);
-      } else {
-        resolve([]);
-      }
-    });
-  });
-}
-
-function savePasswordHistory(passwordHistory: string[]) {
-  chrome.storage.local.set({ passwordHistory: JSON.stringify(passwordHistory) });
-}
-
-function clearPasswordHistory() {
-  chrome.storage.local.remove('passwordHistory');
-}
-
-export {
-  defaultSettings,
-  createTab,
-  getSettings,
-  saveSettings,
-  getTabs,
-  saveTabs,
-  getActiveTabId,
-  saveActiveTabId,
-  getPasswordHistory,
-  savePasswordHistory,
-  clearPasswordHistory
-};
+export { defaultSettings, getSettings, saveSettings, getActiveTabId, saveActiveTabId };

@@ -5,6 +5,8 @@ import { TabStrip, Tab, TabName, TabNameInput, TabAction } from '@components/sty
 interface IProps {
   tabs: ITab[];
   activeTabId: string;
+  // set while deleting (one request per password)
+  deletingId?: string;
   selectTab: (id: string) => void;
   addTab: () => void;
   deleteTab: (id: string) => void;
@@ -12,8 +14,7 @@ interface IProps {
 }
 
 function Tabs(props: IProps) {
-  const { tabs, activeTabId, selectTab, addTab, deleteTab, renameTab } = props;
-  // the tab currently being renamed, and the tab whose delete is awaiting confirmation
+  const { tabs, activeTabId, deletingId, selectTab, addTab, deleteTab, renameTab } = props;
   const [editingId, setEditingId] = useState<string | false>(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | false>(false);
 
@@ -29,25 +30,25 @@ function Tabs(props: IProps) {
     <TabStrip>
       {tabs.map((tab) => (
         <Tab
-          key={tab.id}
-          data-active={tab.id === activeTabId}
+          key={tab.slug}
+          data-active={tab.slug === activeTabId}
           onClick={() => {
-            selectTab(tab.id);
+            selectTab(tab.slug);
             setConfirmDeleteId(false);
           }}
-          onDoubleClick={() => setEditingId(tab.id)}
+          onDoubleClick={() => setEditingId(tab.slug)}
         >
-          {editingId === tab.id ? (
+          {editingId === tab.slug ? (
             <TabNameInput
               autoFocus
               defaultValue={tab.name}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
               onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
-                commitRename(tab.id, e.target.value)
+                commitRename(tab.slug, e.target.value)
               }
               onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                 if (e.key === 'Enter') {
-                  commitRename(tab.id, e.currentTarget.value);
+                  commitRename(tab.slug, e.currentTarget.value);
                 } else if (e.key === 'Escape') {
                   setEditingId(false);
                 }
@@ -56,23 +57,29 @@ function Tabs(props: IProps) {
           ) : (
             <TabName title="double click to rename">{tab.name}</TabName>
           )}
-          {/* deleting takes two clicks, because a confirm() dialog would freeze the panel.
-              the last tab cannot be deleted, so there is always somewhere to put passwords */}
-          {tab.id === activeTabId && tabs.length > 1 && editingId !== tab.id && (
+          {/* two clicks (confirm() freezes the panel); the last tab can't be deleted */}
+          {tab.slug === activeTabId && tabs.length > 1 && editingId !== tab.slug && (
             <TabAction
-              data-confirm={confirmDeleteId === tab.id}
-              title={confirmDeleteId === tab.id ? 'click again to delete' : 'delete tab'}
+              data-confirm={confirmDeleteId === tab.slug}
+              disabled={deletingId === tab.slug}
+              title={
+                deletingId === tab.slug
+                  ? 'deleting…'
+                  : confirmDeleteId === tab.slug
+                    ? 'click again to permanently delete this tab and its passwords'
+                    : 'delete tab'
+              }
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
-                if (confirmDeleteId === tab.id) {
-                  deleteTab(tab.id);
+                if (confirmDeleteId === tab.slug) {
+                  deleteTab(tab.slug);
                   setConfirmDeleteId(false);
                 } else {
-                  setConfirmDeleteId(tab.id);
+                  setConfirmDeleteId(tab.slug);
                 }
               }}
             >
-              ✕
+              {deletingId === tab.slug ? '…' : '✕'}
             </TabAction>
           )}
         </Tab>
