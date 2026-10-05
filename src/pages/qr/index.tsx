@@ -5,8 +5,7 @@ import { Button, Container, Row } from '@components/styles';
 import { useSearchParams } from 'react-router';
 
 function PasswordQRCode() {
-  // the password is passed as a query param rather than a path segment, because
-  // react-router decodes path segments twice, which mangles passwords containing '%'
+  // query param, not path: react-router double-decodes paths, mangling '%'
   const [searchParams] = useSearchParams();
   const password = searchParams.get('password');
   const back = searchParams.get('back');

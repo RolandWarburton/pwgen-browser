@@ -6,22 +6,35 @@ interface ISettings {
   delimiter: string;
   prepend: string;
   append: string;
-  passwordsListMaxLength: number;
-  retainLastPassword: boolean;
-  storePasswordHistory: boolean;
+  baoAddress: string;
+  baoMount: string;
+  baoBasePath: string;
+  baoRole: string;
 }
 
+// one KV secret: <base path>/<tab slug>/<key>
 interface IPassword {
+  key: string;
   password: string;
   note: string;
   flagged: boolean;
   hidden: boolean;
+  createdTime: string;
+  version: number;
+  meta: Record<string, string>;
 }
 
 interface ITab {
-  id: string;
+  slug: string; // folder name, fixed
   name: string;
-  passwords: IPassword[];
+  order: number;
 }
 
-export { ISettings, IPassword, ITab };
+interface IBaoSession {
+  token: string;
+  expiresAt: number; // epoch ms
+  ttl: number; // seconds
+  displayName: string;
+}
+
+export { ISettings, IPassword, ITab, IBaoSession };

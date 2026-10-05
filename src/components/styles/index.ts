@@ -20,12 +20,10 @@ export const Row = styled('div') <{ columns?: string; background?: string }>`
 `;
 
 export const SVGHover = styled('div')`
-  /* center SVG icons */
   display: flex;
   align-items: center;
   justify-content: center;
 
-  /* make the icon look nice */
   border-radius: 5px;
   transition: background-color 0.3s ease;
   &:hover {
@@ -173,5 +171,23 @@ export const TabAction = styled('button')`
   &[data-confirm='true'] {
     background-color: #c00;
     color: #fff;
+  }
+`;
+
+// inline message above the list: errors, offline, sign-in prompt
+export const Banner = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0.25em;
+  padding: 6px 10px;
+  border-radius: 5px;
+  background-color: #eee;
+  color: #333;
+
+  &[data-kind='error'] {
+    background-color: #fdd;
+    color: #800;
   }
 `;

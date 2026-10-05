@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readdirSync, statSync, copyFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, statSync, copyFileSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { build as esbuild } from 'esbuild';
 
@@ -23,6 +23,15 @@ function copyFolderSync(source, target) {
   });
 }
 
+// the OpenBao address comes from BAO_ADDR (environment or .env), so it stays out of the repo
+if (existsSync('.env')) {
+  process.loadEnvFile('.env');
+}
+if (!process.env.BAO_ADDR) {
+  console.error('BAO_ADDR is not set; using https://openbao.example.net');
+}
+const baoAddress = new URL(process.env.BAO_ADDR || 'https://openbao.example.net').origin;
+
 function makeTemp(name) {
   if (!existsSync(`./${name}`)) {
     mkdirSync(`./${name}`);
@@ -42,7 +51,10 @@ const buildSettings = {
     '.ts': 'tsx'
   },
   globalName: 'React',
-  define: { 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development') }
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    __BAO_ADDR__: JSON.stringify(baoAddress)
+  }
 };
 
 async function build() {
@@ -62,7 +74,9 @@ async function main() {
     writeFileSync(`dist/${name}`, file.text);
   }
 
-  copyFileSync('manifest.json', 'dist/manifest.json');
+  const manifest = JSON.parse(readFileSync('manifest.json', 'utf8'));
+  manifest.host_permissions = [`${baoAddress}/*`];
+  writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2) + '\n');
   copyFileSync('./static/sidepanel.html', './dist/sidepanel.html');
   copyFolderSync('./images/', './dist/images');
 }

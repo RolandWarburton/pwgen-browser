@@ -3,11 +3,21 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 // --- Configuration ---
-const TAG = 'v1.6.0';
-const RELEASE_NAME = 'Version 1.6.0';
+const TAG = 'v2.0.0';
+const RELEASE_NAME = 'Version 2.0.0';
 const ZIP_FILE_PATH = 'pwgen-browser.zip';
-const RELEASE_NOTES = 'Move the whole UI into the side panel (no popup); default passwords list length is now 20';
+const RELEASE_NOTES = 'Tabs and passwords are stored in OpenBao with Dex sign-in instead of the browser (local saving and history removed); adds an MCP server for claude.ai';
 // ---------------------
+
+// ZIP_PASSWORD comes from the environment or .env, never the repo
+if (existsSync('.env')) {
+  process.loadEnvFile('.env');
+}
+const ZIP_PASSWORD = process.env.ZIP_PASSWORD;
+if (!ZIP_PASSWORD) {
+  console.error('ZIP_PASSWORD must be set (environment or .env)');
+  process.exit(1);
+}
 
 function run(command) {
   console.log(`\n$ ${command}`);
@@ -28,7 +38,12 @@ async function createRelease() {
   if (existsSync(ZIP_FILE_PATH)) {
     run(`rm ${ZIP_FILE_PATH}`);
   }
-  run(`zip -r ${ZIP_FILE_PATH} dist/`);
+  // not through run(), which would log the password
+  console.log(`\n$ zip -r -P *** ${ZIP_FILE_PATH} dist/`);
+  execSync(`zip -q -r -P "$ZIP_PASSWORD" ${ZIP_FILE_PATH} dist/`, {
+    stdio: 'inherit',
+    env: { ...process.env, ZIP_PASSWORD }
+  });
 
   // 3. Verify the zip exists
   const artifactPath = join(process.cwd(), ZIP_FILE_PATH);

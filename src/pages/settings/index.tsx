@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles';
 import { defaultSettings, getSettings, saveSettings } from '@/storage';
+import { signIn, signOut } from '@/openbao/auth';
+import { useBaoSession } from '@/openbao/session';
 
 function Settings() {
   const [settings, setSettings] = useState(defaultSettings);
+  const session = useBaoSession();
+  const [signingIn, setSigningIn] = useState(false);
+  const [baoError, setBaoError] = useState('');
 
   useEffect(() => {
     const doAsync = async () => {
@@ -32,6 +37,25 @@ function Settings() {
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     saveSettings(settings);
+  };
+
+  const handleSignIn = async () => {
+    setBaoError('');
+    setSigningIn(true);
+    try {
+      // save first so the panel uses the role signed in with
+      saveSettings(settings);
+      await signIn(settings);
+    } catch (err) {
+      setBaoError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setSigningIn(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    setBaoError('');
+    await signOut(settings);
   };
 
   return (
@@ -116,57 +140,69 @@ function Settings() {
           />
         </Row>
         <Row>
-          <FormLabel>passwords list length:</FormLabel>
+          <FormLabel>OpenBao:</FormLabel>
+          {/* read-only: set by BAO_ADDR at build time */}
+          <div>{settings.baoAddress}</div>
+        </Row>
+        <Row>
+          <FormLabel>Mount:</FormLabel>
           <FormInput
-            type="number"
-            name="passwordsListMaxLength"
-            min={0}
-            max={50}
-            value={settings.passwordsListMaxLength}
+            type="text"
+            name="baoMount"
+            value={settings.baoMount}
             onChange={(e) => {
-              handleInputChange(e, 'number');
+              handleInputChange(e, 'string');
             }}
           />
         </Row>
         <Row>
-          <FormLabel>Retain password:</FormLabel>
+          <FormLabel>Base path:</FormLabel>
           <FormInput
-            type="checkbox"
-            name="retainLastPassword"
-            checked={settings.retainLastPassword}
+            type="text"
+            name="baoBasePath"
+            value={settings.baoBasePath}
             onChange={(e) => {
-              // if retain password is checked then history needs to be enabled
-              if (!e.target.checked) {
-                handleInputChange(e, 'boolean');
-              } else {
-                setSettings({
-                  ...settings,
-                  retainLastPassword: true,
-                  storePasswordHistory: true
-                });
-              }
+              handleInputChange(e, 'string');
             }}
           />
         </Row>
         <Row>
-          <FormLabel>Password History:</FormLabel>
+          <FormLabel>Role:</FormLabel>
           <FormInput
-            type="checkbox"
-            name="storePasswordHistory"
-            checked={settings.storePasswordHistory}
+            type="text"
+            name="baoRole"
+            value={settings.baoRole}
             onChange={(e) => {
-              if (!e.target.checked) {
-                setSettings({
-                  ...settings,
-                  storePasswordHistory: false,
-                  retainLastPassword: false
-                });
-              } else {
-                handleInputChange(e, 'boolean');
-              }
+              handleInputChange(e, 'string');
             }}
           />
         </Row>
+        <Row>
+          <FormLabel>{session ? `Signed in as ${session.displayName}` : 'Signed out'}</FormLabel>
+          <div>
+            {session ? (
+              <Button type="button" onClick={handleSignOut}>
+                Sign out
+              </Button>
+            ) : (
+              <Button type="button" onClick={handleSignIn} disabled={signingIn || session === undefined}>
+                {signingIn ? 'Signing in…' : 'Sign in'}
+              </Button>
+            )}
+          </div>
+        </Row>
+        {session && (
+          <Row>
+            <FormLabel>Session ends:</FormLabel>
+            <div>{new Date(session.expiresAt).toLocaleString()}</div>
+          </Row>
+        )}
+        {baoError && (
+          <Row>
+            <FormLabel>Error:</FormLabel>
+            <div>{baoError}</div>
+          </Row>
+        )}
         <SaveButton>
           <Button type="submit">Save Settings</Button>
         </SaveButton>
