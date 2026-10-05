@@ -3,10 +3,10 @@ import { exists } from '@std/fs';
 import { load } from '@std/dotenv';
 
 // --- Configuration ---
-const TAG = 'v2.0.0';
-const RELEASE_NAME = 'Version 2.0.0';
+const TAG = 'v2.0.1';
+const RELEASE_NAME = 'Version 2.0.1';
 const ZIP_FILE_PATH = 'pwgen-browser.zip';
-const RELEASE_NOTES = 'Tabs and passwords are stored in OpenBao with Dex sign-in instead of the browser (local saving and history removed); adds an MCP server for claude.ai';
+const RELEASE_NOTES = 'The extension is built with Deno (deno bundle) instead of npm and esbuild';
 // ---------------------
 
 // ZIP_PASSWORD comes from the environment or .env, never the repo
