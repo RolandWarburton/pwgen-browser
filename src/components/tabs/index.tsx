@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ITab } from '@types';
-import { TabStrip, Tab, TabName, TabNameInput, TabAction } from '@components/styles';
+import { TabStrip, Tab, TabName, TabNameInput, TabAction } from '@components/styles/index.ts';
 
 interface IProps {
   tabs: ITab[];

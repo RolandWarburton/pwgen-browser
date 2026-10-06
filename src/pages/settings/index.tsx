@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles';
-import { defaultSettings, getSettings, saveSettings } from '@/storage';
-import { signIn, signOut } from '@/openbao/auth';
-import { useBaoSession } from '@/openbao/session';
+import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles/index.ts';
+import { defaultSettings, getSettings, saveSettings } from '@/storage/index.ts';
+import { signIn, signOut } from '@/openbao/auth.ts';
+import { useBaoSession } from '@/openbao/session.ts';
 
 function Settings() {
   const [settings, setSettings] = useState(defaultSettings);

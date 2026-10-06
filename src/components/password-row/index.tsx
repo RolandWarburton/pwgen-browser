@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { IPassword } from '../../types';
-import { NoteCell, Row, SVGHover, DropdownWrapper, DropdownMenu } from '../styles';
-import { IconCopy } from '@components/icons/copy';
-import { IconQR } from '@components/icons/qr';
-import { IconFlag } from '@components/icons/flag';
-import { IconTrash } from '@components/icons/trash';
-import { IconEllipsis } from '@components/icons/ellipsis';
+import { IPassword } from '../../types/index.ts';
+import { NoteCell, Row, SVGHover, DropdownWrapper, DropdownMenu } from '../styles/index.ts';
+import { IconCopy } from '@components/icons/copy.tsx';
+import { IconQR } from '@components/icons/qr.tsx';
+import { IconFlag } from '@components/icons/flag.tsx';
+import { IconTrash } from '@components/icons/trash.tsx';
+import { IconEllipsis } from '@components/icons/ellipsis.tsx';
 import { useNavigate } from 'react-router';
-import { IconEye } from '@components/icons/eye';
-import { IconEdit } from '@components/icons/edit';
+import { IconEye } from '@components/icons/eye.tsx';
+import { IconEdit } from '@components/icons/edit.tsx';
 
 // ms of typing pause before a note is saved
 const NOTE_SAVE_DELAY = 600;

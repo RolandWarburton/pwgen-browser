@@ -8,23 +8,26 @@ A Chrome extension (Manifest V3) for generating random passwords using word list
 
 Saved tabs and passwords live only in OpenBao: the panel is a live view of `kv/pwgen/`, and nothing is cached locally. Sign-in is through Dex OIDC. The repo also holds an MCP server (`mcp/`) that gives claude.ai the same tabs and passwords. Server setup (policies, Dex clients, OIDC role, AppRole) is in `README.md`.
 
-The OpenBao address comes from `BAO_ADDR` (environment, else `.env`) at build time: `build.js` defines `__BAO_ADDR__` for `defaultSettings.baoAddress` and writes it into `host_permissions` in `dist/manifest.json`. The repo only holds the `openbao.example.net` placeholder. It's read-only in Settings and always overrides the saved value.
+The OpenBao address comes from `BAO_ADDR` (environment, else `.env`) at build time: `scripts/build.ts` writes it to `src/config.gen.ts` (gitignored; `deno bundle` has no `--define`), which `src/storage/index.ts` imports for `defaultSettings.baoAddress`, and into `host_permissions` in `dist/manifest.json`. The repo only holds the `openbao.example.net` placeholder. It's read-only in Settings and always overrides the saved value.
 
 ## Build & Lint
 
+The extension is built with Deno 2 (`deno.json`: tasks, import map, compiler options; no `package.json` or `node_modules`). The MCP server is still Node.
+
 ```bash
-npm run build    # node build.js — esbuild bundle: src/sidepanel.tsx + src/background.ts → dist/, plus manifest.json (host_permissions from BAO_ADDR), static/sidepanel.html, images/
-npm run lint     # ESLint on src/ and build.js
-npm run release  # scripts/release.js — builds, zips dist/, publishes a GitHub release via `gh` (does NOT bump the version)
-npx tsc --noEmit -p .   # type-check the extension (esbuild doesn't); excludes mcp/
+deno task build    # scripts/build.ts — writes src/config.gen.ts, `deno bundle`s src/sidepanel.tsx + src/background.ts → dist/, plus manifest.json (host_permissions from BAO_ADDR), static/sidepanel.html, images/
+deno task lint     # deno lint on src/ and scripts/
+deno task check    # build (to generate config.gen.ts), then `deno check src/` — bundle doesn't type-check
+deno task release  # scripts/release.ts — builds, zips dist/, publishes a GitHub release via `gh` (does NOT bump the version)
 
 cd mcp && npm install && npm run build   # the MCP server, a separate Node package
 ```
 
-- Version bumps are done with the `/bump-version` skill (`.claude/skills/bump-version/`), which updates `package.json`, `manifest.json`, and the `TAG`/`RELEASE_NAME`/`RELEASE_NOTES` constants in `scripts/release.js`.
+- Version bumps are done with the `/bump-version` skill (`.claude/skills/bump-version/`), which updates `deno.json`, `manifest.json`, and the `TAG`/`RELEASE_NAME`/`RELEASE_NOTES` constants in `scripts/release.ts`.
 - Load `/dist` as an unpacked extension in `chrome://extensions/`. No dev server — rebuild and reload the extension manually.
 - `manifest.json` has a public `key`, which fixes the extension ID at `lmlfepmjcaglddfjhnegdfmfdheacjcj` for every unpacked install. Dex and OpenBao only accept sign-ins that return to `https://<that id>.chromiumapp.org/cb`, so don't change or remove the key. The private `.pem` is gitignored.
-- `build.js` copies static files one by one, so a new file in `static/` must also be added there.
+- `scripts/build.ts` copies static files one by one, so a new file in `static/` must also be added there.
+- npm packages are mapped in `deno.json` `imports` (`npm:` specifiers); add new dependencies there (`deno add npm:<pkg>`).
 
 ## Architecture
 
@@ -38,7 +41,8 @@ cd mcp && npm install && npm run build   # the MCP server, a separate Node packa
 - **Shared components**: `src/components/` — `password-row/` (list item with actions; notes are saved 600 ms after typing stops), `tabs/` (password list tabs), `icons/` (inline SVG), `styles/` (Goober styled components)
 - **Static files**: `static/` — `sidepanel.html`
 - **Types**: `src/types/index.ts` — `ISettings`, `IPassword`, `ITab`, `IBaoSession`
-- **Path aliases** (tsconfig): `@/*` → `src/*`, `@components/*` → `src/components/*`, `@types` → `src/types`
+- **Path aliases** (`deno.json` imports): `@/` → `src/`, `@components/` → `src/components/`, `@types` → `src/types/index.ts`
+- `@rolandwarburton/pwgen` has no types; its imports carry `// @ts-types="…/types/pwgen.d.ts"`
 
 ## Data Layer
 
@@ -78,8 +82,9 @@ A separate Node package (own `package.json` and `tsconfig.json`), deployed with 
 
 ## Conventions
 
-- ESM throughout (`"type": "module"` in package.json)
-- TypeScript strict mode, single quotes, semicolons, no trailing commas (ESLint `comma-dangle`)
+- ESM throughout; imports use explicit file extensions (`./client.ts`, `@components/styles/index.ts`), as Deno requires
+- JSX uses the automatic runtime (`react-jsx`), so `import React` is only needed for `React.*` references
+- TypeScript strict mode, single quotes, semicolons, no trailing commas (`deno.json` `fmt`)
 - Unused variables must be prefixed with `_`
 - Routing via react-router v8; query params carry page input and navigation context (e.g., `/qr?password=…&back=…`, `/generator?back=…`)
 - No `confirm()` dialogs (they freeze the side panel): destructive actions use a two-click confirm

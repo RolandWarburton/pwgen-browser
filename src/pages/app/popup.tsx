@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { styled } from 'goober';
 import { Link } from 'react-router';
+// @ts-types="../../types/pwgen.d.ts"
 import { genpw } from '@rolandwarburton/pwgen';
 import {
   ButtonGroupButton,
@@ -10,12 +11,12 @@ import {
   SettingsButton,
   ButtonGroup,
   Row
-} from '../../components/styles';
-import { getActiveTabId, getSettings, saveActiveTabId } from '@/storage';
-import { ITab, IPassword, ISettings } from '../../types';
-import { AuthError, ConflictError, NetworkError, NotFoundError } from '@/openbao/client';
-import { signIn, renewIfNeeded } from '@/openbao/auth';
-import { useBaoSession } from '@/openbao/session';
+} from '../../components/styles/index.ts';
+import { getActiveTabId, getSettings, saveActiveTabId } from '@/storage/index.ts';
+import { ITab, IPassword, ISettings } from '../../types/index.ts';
+import { AuthError, ConflictError, NetworkError, NotFoundError } from '@/openbao/client.ts';
+import { signIn, renewIfNeeded } from '@/openbao/auth.ts';
+import { useBaoSession } from '@/openbao/session.ts';
 import {
   addPassword,
   createTab,
@@ -27,9 +28,9 @@ import {
   renameTab as renameStoredTab,
   updatePassword,
   updatePasswordMeta
-} from '@/openbao/passwords';
-import Password from '@components/password-row';
-import Tabs from '@components/tabs';
+} from '@/openbao/passwords.ts';
+import Password from '@components/password-row/index.tsx';
+import Tabs from '@components/tabs/index.tsx';
 
 const Page = styled('div')`
   flex: 1;

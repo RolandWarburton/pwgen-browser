@@ -1,5 +1,5 @@
 import { styled } from 'goober';
-import { Container as BasicContainer } from '@components/styles';
+import { Container as BasicContainer } from '@components/styles/index.ts';
 
 const GeneratorContainer = styled('div')`
   display: flex;

@@ -23,7 +23,7 @@ Change the parameters of passwords generated.
 
 ## Installing
 
-1. Copy `.env.example` to `.env` and set `BAO_ADDR` to your OpenBao address, then `npm install && npm run build`.
+1. Copy `.env.example` to `.env` and set `BAO_ADDR` to your OpenBao address, then `deno task build` (needs [Deno](https://deno.com) 2.x).
 2. Go to `chrome://extensions/`, enable developer mode and click **Load unpacked**. Choose the `dist` folder, not the root of the repository.
 3. Check the extension ID is `lmlfepmjcaglddfjhnegdfmfdheacjcj`. The `key` in `manifest.json` fixes it, and the OpenBao sign-in only accepts that ID (or [your own](#using-your-own-extension-id)).
 4. Click the toolbar icon to open the side panel, go to **Settings** and click **Sign in**.
@@ -52,7 +52,7 @@ Keep `key.pem` safe: anyone with it can publish an extension with the same ID.
 ## Server setup
 
 The extension expects OpenBao with a KV v2 mount `kv`, signing in through Dex.
-Its address is set at build time from `BAO_ADDR` (environment or `.env`); `build.js` bakes it into the bundle and `host_permissions`.
+Its address is set at build time from `BAO_ADDR` (environment or `.env`); `scripts/build.ts` writes it to `src/config.gen.ts`, which is bundled, and into `host_permissions`.
 
 **Policy** `pwgen-user` (and an identical `pwgen-mcp` for the MCP server):
 
@@ -92,10 +92,10 @@ Copy `mcp/.env.example` to `mcp/.env`, fill in the role ID, secret ID and your h
 ## Development
 
 ```sh
-npm run build            # bundle to dist/
-npm run lint
-npx tsc --noEmit -p .    # type-check
-cd mcp && npm run build  # MCP server
+deno task build          # bundle to dist/
+deno task lint
+deno task check          # type-check
+cd mcp && npm run build  # MCP server (still Node)
 ```
 
 There is no dev server: rebuild and reload the extension in `chrome://extensions/`.

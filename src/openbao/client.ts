@@ -1,5 +1,5 @@
 import { ISettings } from '@types';
-import { getSession, clearSession } from './session';
+import { getSession, clearSession } from './session.ts';
 
 class BaoError extends Error {
   // 0 = no response
@@ -191,9 +191,6 @@ export {
   ConflictError,
   NetworkError,
   request,
-  kv,
-  KvVersion,
-  KvWriteResult,
-  KvSecret,
-  KvMetadata
+  kv
 };
+export type { KvVersion, KvWriteResult, KvSecret, KvMetadata };

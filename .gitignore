@@ -3,3 +3,4 @@ dist
 pwgen-browser.zip
 *.pem
 .env
+src/config.gen.ts

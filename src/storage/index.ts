@@ -1,7 +1,5 @@
 import { ISettings } from '@types';
-
-// set from BAO_ADDR by build.js
-declare const __BAO_ADDR__: string;
+import { BAO_ADDR } from '@/config.gen.ts';
 
 // browser storage holds only settings and the selected tab
 const defaultSettings: ISettings = {
@@ -12,7 +10,7 @@ const defaultSettings: ISettings = {
   delimiter: '-',
   prepend: '',
   append: '-secret',
-  baoAddress: __BAO_ADDR__,
+  baoAddress: BAO_ADDR,
   baoMount: 'kv',
   baoBasePath: 'pwgen',
   baoRole: 'pwgen'

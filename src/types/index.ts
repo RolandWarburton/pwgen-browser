@@ -37,4 +37,4 @@ interface IBaoSession {
   displayName: string;
 }
 
-export { ISettings, IPassword, ITab, IBaoSession };
+export type { ISettings, IPassword, ITab, IBaoSession };
