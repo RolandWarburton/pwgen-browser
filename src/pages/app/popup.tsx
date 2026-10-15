@@ -19,7 +19,7 @@ import {
 } from '../../components/styles/index.ts';
 import { getActiveTabId, getSettings, saveActiveTabId } from '@/storage/index.ts';
 import { ITab, IPassword, ISettings } from '../../types/index.ts';
-import { AuthError, ConflictError, ForbiddenError, NetworkError, NotFoundError } from '@/openbao/client.ts';
+import { AuthError, ConflictError, NetworkError, NotFoundError } from '@/openbao/client.ts';
 import { signIn, renewIfNeeded } from '@/openbao/auth.ts';
 import { useBaoSession } from '@/openbao/session.ts';
 import {
@@ -78,8 +78,6 @@ const App = () => {
   const report = (err: unknown, retry?: () => void) => {
     if (err instanceof AuthError) {
       setProblem({ message: 'Your OpenBao session ended. Sign in again.' });
-    } else if (err instanceof ForbiddenError) {
-      setProblem({ message: 'Your OpenBao account isn\'t allowed to do that.' });
     } else if (err instanceof NetworkError) {
       setProblem({ message: err.message, retry });
     } else {
@@ -105,19 +103,8 @@ const App = () => {
     try {
       let loaded = await loadTabs(settings);
       if (loaded.length === 0) {
-        // first sign-in: create `Tab 1`, unless the policy only allows shared tabs
-        try {
-          loaded = [await createTab(settings, [])];
-        } catch (err) {
-          if (!(err instanceof ForbiddenError)) {
-            throw err;
-          }
-          setTabs([]);
-          setPasswords(null);
-          setActiveTabId('');
-          setProblem({ message: 'No tabs are shared with this account.' });
-          return;
-        }
+        // first sign-in: create `Tab 1`
+        loaded = [await createTab(settings, [])];
       }
       setTabs(loaded);
       const slug = await getActiveTabId(loaded.map((tab) => tab.slug));
