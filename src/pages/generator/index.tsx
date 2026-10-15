@@ -1,15 +1,31 @@
 import React from 'react';
-import { ISettings } from '@types';
-import { Button, ButtonGroup, ButtonGroupButton, SettingsButton } from '@/components/styles/index.ts';
+import { useSearchParams } from 'react-router';
 // @ts-types="../../types/pwgen.d.ts"
 import { genpw } from '@rolandwarburton/pwgen';
+import {
+  Brand,
+  Button,
+  Card,
+  Container,
+  Fact,
+  Facts,
+  Header,
+  Label,
+  LinkButton,
+  PageTitle,
+  Toolbar
+} from '@/components/styles/index.ts';
 import { getSettings } from '@/storage/index.ts';
-import { GeneratorContainer, Container, Password } from './styles.tsx';
-import { Link, useSearchParams } from 'react-router';
+import { ISettings } from '@types';
+import { Passphrase } from './styles.tsx';
+
+// how long the Copy button reads "Copied"
+const COPIED_DELAY = 1000;
 
 function Generator() {
   const [settings, setSettings] = React.useState<ISettings | false>(false);
   const [password, setPassword] = React.useState('');
+  const [copied, setCopied] = React.useState(false);
   const [searchParams] = useSearchParams();
   const back = searchParams.get('back');
 
@@ -30,32 +46,71 @@ function Generator() {
 
   const copy = () => {
     if (password) {
-      navigator.clipboard.writeText(password).catch((error) => {
-        console.error('Unable to copy to clipboard:', error);
-      });
+      navigator.clipboard
+        .writeText(password)
+        .then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), COPIED_DELAY);
+        })
+        .catch((error) => {
+          console.error('Unable to copy to clipboard:', error);
+        });
     }
   };
 
   return (
-    <Container>
-      <GeneratorContainer>
-        <ButtonGroup>
-          <ButtonGroupButton onClick={generate}>Generate</ButtonGroupButton>
-          <ButtonGroupButton onClick={copy}>Copy</ButtonGroupButton>
-        </ButtonGroup>
-        <Password>
-          <span>{password || 'Nothing generated yet'}</span>
-        </Password>
-      </GeneratorContainer>
-      <SettingsButton>
-        <Link to={`/${back || ''}`}>
-          <Button>Back</Button>
-        </Link>
-        <Link to="/settings">
-          <Button>Settings</Button>
-        </Link>
-      </SettingsButton>
-    </Container>
+    <>
+      <Header>
+        <Brand>pwgen</Brand>
+      </Header>
+      <Container>
+        <Toolbar>
+          <LinkButton to={`/${back || ''}`}>← Passwords</LinkButton>
+          <LinkButton to="/settings">Settings</LinkButton>
+        </Toolbar>
+        <PageTitle>Generator</PageTitle>
+        <Card>
+          <div>
+            <Label as="span">Password</Label>
+            <Passphrase>{password || 'Nothing generated yet'}</Passphrase>
+          </div>
+          <div style={{ display: 'flex', gap: 'var(--gap)' }}>
+            <Button data-kind="primary" onClick={generate}>
+              Generate
+            </Button>
+            <Button onClick={copy} disabled={!password}>
+              {copied ? 'Copied' : 'Copy'}
+            </Button>
+          </div>
+        </Card>
+        {settings && (
+          <Facts aria-label="Generator options">
+            <Fact>
+              <dt>Words</dt>
+              <dd>{settings.numberOfWords}</dd>
+            </Fact>
+            <Fact>
+              <dt>Word length</dt>
+              <dd>
+                {settings.minLength} to {settings.maxLength}
+              </dd>
+            </Fact>
+            <Fact>
+              <dt>Delimiter</dt>
+              <dd>{settings.delimiter || 'none'}</dd>
+            </Fact>
+            <Fact>
+              <dt>Prepend</dt>
+              <dd>{settings.prepend || 'none'}</dd>
+            </Fact>
+            <Fact>
+              <dt>Append</dt>
+              <dd>{settings.append || 'none'}</dd>
+            </Fact>
+          </Facts>
+        )}
+      </Container>
+    </>
   );
 }
 

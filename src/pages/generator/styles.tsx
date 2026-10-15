@@ -1,26 +1,10 @@
 import { styled } from 'goober';
-import { Container as BasicContainer } from '@components/styles/index.ts';
 
-const GeneratorContainer = styled('div')`
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  flex: 1;
+const Passphrase = styled('p')`
+  margin: 8px 0 0;
+  font: 600 22px/1.3 var(--font-mono);
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
 `;
 
-const Password = styled('div')`
-  font-size: 2em;
-  width: 20ch;
-  text-align: center;
-`;
-
-const Container = styled('div')`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  ${BasicContainer}
-`;
-
-export { GeneratorContainer, Container, Password };
+export { Passphrase };

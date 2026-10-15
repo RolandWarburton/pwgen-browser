@@ -1,26 +1,78 @@
 <!doctype html>
 <html>
   <head>
-    <title>pwgen settings</title>
+    <title>pwgen</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <style>
+      :root {
+        --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+        --gap: 2px;
+        --bg: #f2f2f0;
+        --layer: #ffffff;
+        --layer-2: #e6e6e3;
+        --layer-hover: #ececea;
+        --layer-2-hover: #bcbcb9;
+        --fg: #121212;
+        --muted: #5c5f63;
+        --inverse: #121212;
+        --on-inverse: #f2f2f0;
+        --inverse-hover: #313131;
+        --accent: #0043ce;
+        --accent-hover: #002d9c;
+        --on-accent: #ffffff;
+        --hot: #c21b24;
+        --hot-hover: #a2191f;
+        --on-hot: #ffffff;
+        --hot-deep: #92141b;
+        --flag: #fbe58a;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0e0f10;
+          --layer: #1b1c1e;
+          --layer-2: #2a2c2f;
+          --layer-hover: #232427;
+          --layer-2-hover: #525456;
+          --fg: #f2f2f0;
+          --muted: #a2a6ab;
+          --inverse: #f2f2f0;
+          --on-inverse: #0e0f10;
+          --inverse-hover: #d2d2d1;
+          --accent: #78a9ff;
+          --accent-hover: #a6c8ff;
+          --on-accent: #0e0f10;
+          --hot: #ff6f76;
+          --hot-hover: #ff8f94;
+          --on-hot: #0e0f10;
+          --hot-deep: #ffa9ad;
+          --flag: #4a3d0c;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
-        padding: 8px;
-        box-sizing: border-box;
         min-height: 100vh;
-        background-color: #ddd;
-        font-size: 16px;
         display: flex;
         flex-direction: column;
+        background: var(--bg);
+        color: var(--fg);
+        font: 400 14px/1.5 var(--font-sans);
       }
       #root {
         flex: 1;
         display: flex;
         flex-direction: column;
       }
-      input {
-        font-size: 16px;
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      a {
+        color: var(--accent);
       }
     </style>
   </head>

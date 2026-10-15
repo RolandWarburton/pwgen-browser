@@ -1,20 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
 import { styled } from 'goober';
-import { Link } from 'react-router';
 // @ts-types="../../types/pwgen.d.ts"
 import { genpw } from '@rolandwarburton/pwgen';
 import {
   ButtonGroupButton,
   Button,
   Banner,
+  Brand,
+  Card,
   Container,
-  SettingsButton,
+  Header,
+  HeaderNav,
+  Input,
+  LinkButton,
+  List,
   ButtonGroup,
-  Row
+  ConfirmBanner
 } from '../../components/styles/index.ts';
 import { getActiveTabId, getSettings, saveActiveTabId } from '@/storage/index.ts';
 import { ITab, IPassword, ISettings } from '../../types/index.ts';
-import { AuthError, ConflictError, NetworkError, NotFoundError } from '@/openbao/client.ts';
+import { AuthError, ConflictError, ForbiddenError, NetworkError, NotFoundError } from '@/openbao/client.ts';
 import { signIn, renewIfNeeded } from '@/openbao/auth.ts';
 import { useBaoSession } from '@/openbao/session.ts';
 import {
@@ -50,6 +55,7 @@ const App = () => {
   const session = useBaoSession();
   const signedIn = Boolean(session);
   const [password, setPassword] = useState('');
+  const [newKey, setNewKey] = useState<string>();
   // a live view of OpenBao; nothing is cached locally
   const [tabs, setTabs] = useState<ITab[] | null>(null);
   const [activeTabId, setActiveTabId] = useState('');
@@ -72,6 +78,8 @@ const App = () => {
   const report = (err: unknown, retry?: () => void) => {
     if (err instanceof AuthError) {
       setProblem({ message: 'Your OpenBao session ended. Sign in again.' });
+    } else if (err instanceof ForbiddenError) {
+      setProblem({ message: 'Your OpenBao account isn\'t allowed to do that.' });
     } else if (err instanceof NetworkError) {
       setProblem({ message: err.message, retry });
     } else {
@@ -97,8 +105,19 @@ const App = () => {
     try {
       let loaded = await loadTabs(settings);
       if (loaded.length === 0) {
-        // first sign-in: create `Tab 1`
-        loaded = [await createTab(settings, [])];
+        // first sign-in: create `Tab 1`, unless the policy only allows shared tabs
+        try {
+          loaded = [await createTab(settings, [])];
+        } catch (err) {
+          if (!(err instanceof ForbiddenError)) {
+            throw err;
+          }
+          setTabs([]);
+          setPasswords(null);
+          setActiveTabId('');
+          setProblem({ message: 'No tabs are shared with this account.' });
+          return;
+        }
       }
       setTabs(loaded);
       const slug = await getActiveTabId(loaded.map((tab) => tab.slug));
@@ -263,6 +282,7 @@ const App = () => {
     try {
       const added = await addPassword(settings, slug, password, session.displayName);
       updateList(slug, (list) => [added, ...list]);
+      setNewKey(added.key);
       setProblem(null);
     } catch (err) {
       report(err);
@@ -271,12 +291,8 @@ const App = () => {
     }
   };
 
-  // permanent; two clicks because confirm() would freeze the panel
+  // permanent; confirmed in a banner because confirm() would freeze the panel
   const clear = async () => {
-    if (!confirmClear) {
-      setConfirmClear(true);
-      return;
-    }
     setConfirmClear(false);
     if (!settings || !passwords) {
       return;
@@ -407,27 +423,70 @@ const App = () => {
 
   return (
     <Page>
-      {tabs && (
-        <Tabs
-          tabs={tabs}
-          activeTabId={activeTabId}
-          deletingId={deletingTabId}
-          selectTab={setActiveTabId}
-          addTab={addTab}
-          deleteTab={deleteTab}
-          renameTab={renameTab}
-        />
-      )}
+      <Header>
+        <Brand>pwgen</Brand>
+        <HeaderNav>
+          <LinkButton to="/generator">Generator</LinkButton>
+          <LinkButton to="/settings">Settings</LinkButton>
+        </HeaderNav>
+      </Header>
       <Container>
-        <Row columns="auto 1fr">
-          password:{' '}
-          <input
+        {tabs && (
+          <Tabs
+            tabs={tabs}
+            activeTabId={activeTabId}
+            passwordCount={passwords?.length}
+            deletingId={deletingTabId}
+            selectTab={setActiveTabId}
+            addTab={addTab}
+            deleteTab={deleteTab}
+            renameTab={renameTab}
+          />
+        )}
+        <Card style={{ gridTemplateColumns: 'auto minmax(0, 1fr)', alignItems: 'center' }}>
+          <ButtonGroupButton onClick={() => generate()}>Generate</ButtonGroupButton>
+          <Input
+            id="new-password"
+            aria-label="Password"
+            data-mono="true"
             value={password}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value);
             }}
           />
-        </Row>
+        </Card>
+        <ButtonGroup style={{ padding: 0 }}>
+          <ButtonGroupButton
+            data-kind="primary"
+            onClick={pushNewPassword}
+            disabled={!signedIn || !activeTabId || saving}
+          >
+            {saving ? 'Saving…' : 'Add to list'}
+          </ButtonGroupButton>
+          <ButtonGroupButton
+            data-kind="hot-text"
+            onClick={() => setConfirmClear(true)}
+            disabled={!passwords || passwords.length === 0}
+          >
+            Clear…
+          </ButtonGroupButton>
+        </ButtonGroup>
+        {confirmClear && passwords && passwords.length > 0 && (
+          <ConfirmBanner role="alertdialog" aria-label="Confirm clear tab">
+            <span>
+              <strong>Clear “{tabs?.find((tab) => tab.slug === activeTabId)?.name}”?</strong> This permanently
+              removes {passwords.length} {passwords.length === 1 ? 'password' : 'passwords'} from OpenBao.
+            </span>
+            <div>
+              <button type="button" onClick={() => setConfirmClear(false)}>
+                Cancel
+              </button>
+              <button type="button" onClick={clear}>
+                Clear tab
+              </button>
+            </div>
+          </ConfirmBanner>
+        )}
         {problem && (
           <Banner data-kind="error">
             <span>{problem.message}</span>
@@ -449,48 +508,30 @@ const App = () => {
         {session === null && (
           <Banner>
             <span>Sign in to OpenBao to see and save passwords.</span>
-            <Button onClick={handleSignIn} disabled={signingIn || !settings}>
+            <Button data-kind="primary" onClick={handleSignIn} disabled={signingIn || !settings}>
               {signingIn ? 'Signing in…' : 'Sign in'}
             </Button>
           </Banner>
         )}
-        {signedIn && tabs && passwords === null && <Banner>Loading…</Banner>}
-        {passwords &&
-          passwords.map((item) => (
-            <Password
-              key={item.key}
-              password={item}
-              deletePassword={deletePassword}
-              updateNote={updateNote}
-              flagPassword={flagPassword}
-              hidePassword={hidePassword}
-              savePassword={savePassword}
-              recheck={recheck}
-            />
-          ))}
+        {signedIn && activeTabId && passwords === null && <Banner>Loading…</Banner>}
+        {passwords && (
+          <List>
+            {passwords.map((item) => (
+              <Password
+                key={item.key}
+                password={item}
+                deletePassword={deletePassword}
+                updateNote={updateNote}
+                flagPassword={flagPassword}
+                hidePassword={hidePassword}
+                savePassword={savePassword}
+                recheck={recheck}
+                isNew={item.key === newKey}
+              />
+            ))}
+          </List>
+        )}
       </Container>
-      <ButtonGroup>
-        <ButtonGroupButton onClick={() => generate()}>generate</ButtonGroupButton>
-        <ButtonGroupButton onClick={pushNewPassword} disabled={!signedIn || !tabs || saving}>
-          {saving ? 'Saving…' : 'Add to list'}
-        </ButtonGroupButton>
-        <ButtonGroupButton
-          onClick={clear}
-          onMouseLeave={() => setConfirmClear(false)}
-          disabled={!passwords || passwords.length === 0}
-          title={confirmClear ? 'permanently deletes every password in this tab' : undefined}
-        >
-          {confirmClear ? 'click again to clear' : 'clear'}
-        </ButtonGroupButton>
-      </ButtonGroup>
-      <SettingsButton>
-        <Link to="/generator">
-          <Button>Generator</Button>
-        </Link>
-        <Link to="/settings">
-          <Button>Settings</Button>
-        </Link>
-      </SettingsButton>
     </Page>
   );
 };

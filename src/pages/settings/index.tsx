@@ -1,9 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router';
-import { Button, FormLabel, FormInput, Form, SaveButton, Row } from '@components/styles/index.ts';
+import {
+  Banner,
+  Brand,
+  Button,
+  Card,
+  Fact,
+  Facts,
+  Form,
+  Header,
+  Input,
+  Label,
+  LinkButton,
+  PageTitle,
+  SectionHead,
+  Toolbar
+} from '@components/styles/index.ts';
+import { styled } from 'goober';
 import { defaultSettings, getSettings, saveSettings } from '@/storage/index.ts';
 import { signIn, signOut } from '@/openbao/auth.ts';
 import { useBaoSession } from '@/openbao/session.ts';
+
+const Pair = styled('div')`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+`;
 
 function Settings() {
   const [settings, setSettings] = useState(defaultSettings);
@@ -58,156 +79,109 @@ function Settings() {
     await signOut(settings);
   };
 
-  return (
+  const field = (
+    label: string,
+    name: keyof typeof settings,
+    type: 'number' | 'string',
+    extra: { min?: number; max?: number; maxLength?: number; mono?: boolean } = {}
+  ) => (
     <div>
-      <Link to="/">
-        <Button>Back</Button>
-      </Link>
-      <Form onSubmit={handleFormSubmit}>
-        <Row>
-          <FormLabel>Min Length:</FormLabel>
-          <FormInput
-            type="number"
-            name="minLength"
-            min={1}
-            max={15}
-            value={settings.minLength}
-            onChange={(e) => {
-              handleInputChange(e, 'number');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>Max Length:</FormLabel>
-          <FormInput
-            type="number"
-            name="maxLength"
-            min={1}
-            max={15}
-            value={settings.maxLength}
-            onChange={(e) => {
-              handleInputChange(e, 'number');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>Number of Words:</FormLabel>
-          <FormInput
-            type="number"
-            name="numberOfWords"
-            min={1}
-            max={6}
-            value={settings.numberOfWords}
-            onChange={(e) => {
-              handleInputChange(e, 'number');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>Delimiter:</FormLabel>
-          <FormInput
-            type="text"
-            name="delimiter"
-            max={15}
-            value={settings.delimiter}
-            onChange={(e) => {
-              handleInputChange(e, 'string');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>Prepend:</FormLabel>
-          <FormInput
-            type="text"
-            name="prepend"
-            maxLength={15}
-            value={settings.prepend}
-            onChange={(e) => {
-              handleInputChange(e, 'string');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>Append:</FormLabel>
-          <FormInput
-            type="text"
-            name="append"
-            maxLength={15}
-            value={settings.append}
-            onChange={(e) => {
-              handleInputChange(e, 'string');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>OpenBao:</FormLabel>
-          {/* read-only: set by BAO_ADDR at build time */}
-          <div>{settings.baoAddress}</div>
-        </Row>
-        <Row>
-          <FormLabel>Mount:</FormLabel>
-          <FormInput
-            type="text"
-            name="baoMount"
-            value={settings.baoMount}
-            onChange={(e) => {
-              handleInputChange(e, 'string');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>Base path:</FormLabel>
-          <FormInput
-            type="text"
-            name="baoBasePath"
-            value={settings.baoBasePath}
-            onChange={(e) => {
-              handleInputChange(e, 'string');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>Role:</FormLabel>
-          <FormInput
-            type="text"
-            name="baoRole"
-            value={settings.baoRole}
-            onChange={(e) => {
-              handleInputChange(e, 'string');
-            }}
-          />
-        </Row>
-        <Row>
-          <FormLabel>{session ? `Signed in as ${session.displayName}` : 'Signed out'}</FormLabel>
-          <div>
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        id={name}
+        name={name}
+        type={type === 'number' ? 'number' : 'text'}
+        data-mono={extra.mono ? 'true' : undefined}
+        min={extra.min}
+        max={extra.max}
+        maxLength={extra.maxLength}
+        value={settings[name] as string | number}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          handleInputChange(e, type);
+        }}
+      />
+    </div>
+  );
+
+  return (
+    <>
+      <Header>
+        <Brand>pwgen</Brand>
+      </Header>
+      <Form onSubmit={handleFormSubmit} style={{ padding: 8, flex: 1 }}>
+        <Toolbar>
+          <LinkButton to="/">← Passwords</LinkButton>
+          <Button type="submit" data-kind="primary">
+            Save settings
+          </Button>
+        </Toolbar>
+        <PageTitle>Settings</PageTitle>
+        <Card>
+          <SectionHead>Generator</SectionHead>
+          <Pair>
+            {field('Min length', 'minLength', 'number', { min: 1, max: 15 })}
+            {field('Max length', 'maxLength', 'number', { min: 1, max: 15 })}
+          </Pair>
+          {field('Number of words', 'numberOfWords', 'number', { min: 1, max: 6 })}
+          <Pair>
+            {field('Delimiter', 'delimiter', 'string', { maxLength: 15, mono: true })}
+            {field('Prepend', 'prepend', 'string', { maxLength: 15, mono: true })}
+          </Pair>
+          {field('Append', 'append', 'string', { maxLength: 15, mono: true })}
+        </Card>
+        <Card>
+          <SectionHead>OpenBao</SectionHead>
+          <Facts>
+            {/* read-only: set by BAO_ADDR at build time */}
+            <Fact>
+              <dt>Address</dt>
+              <dd>{settings.baoAddress}</dd>
+            </Fact>
+          </Facts>
+          <Pair>
+            {field('Mount', 'baoMount', 'string', { mono: true })}
+            {field('Base path', 'baoBasePath', 'string', { mono: true })}
+          </Pair>
+          {field('Role', 'baoRole', 'string', { mono: true })}
+        </Card>
+        <Card>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <SectionHead>Session</SectionHead>
             {session ? (
               <Button type="button" onClick={handleSignOut}>
                 Sign out
               </Button>
             ) : (
-              <Button type="button" onClick={handleSignIn} disabled={signingIn || session === undefined}>
+              <Button
+                type="button"
+                data-kind="primary"
+                onClick={handleSignIn}
+                disabled={signingIn || session === undefined}
+              >
                 {signingIn ? 'Signing in…' : 'Sign in'}
               </Button>
             )}
           </div>
-        </Row>
-        {session && (
-          <Row>
-            <FormLabel>Session ends:</FormLabel>
-            <div>{new Date(session.expiresAt).toLocaleString()}</div>
-          </Row>
-        )}
-        {baoError && (
-          <Row>
-            <FormLabel>Error:</FormLabel>
-            <div>{baoError}</div>
-          </Row>
-        )}
-        <SaveButton>
-          <Button type="submit">Save Settings</Button>
-        </SaveButton>
+          <Facts>
+            <Fact>
+              <dt>{session ? 'Signed in as' : 'Status'}</dt>
+              <dd>{session ? session.displayName : 'Signed out'}</dd>
+            </Fact>
+            {session && (
+              <Fact>
+                <dt>Session ends</dt>
+                <dd>{new Date(session.expiresAt).toLocaleString()}</dd>
+              </Fact>
+            )}
+          </Facts>
+          {baoError && (
+            <Banner data-kind="error">
+              <span>{baoError}</span>
+            </Banner>
+          )}
+        </Card>
       </Form>
-    </div>
+    </>
   );
 }
 
