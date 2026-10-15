@@ -2,6 +2,12 @@
 
 A Chrome extension based on [pwgen-js](https://github.com/RolandWarburton/pwgen-js). It generates word-list passwords in Chrome's side panel and saves them in [OpenBao](https://openbao.org/), organised in tabs.
 
+## Demo
+
+![Demo](./assets/demo.gif)
+
+Generate a password, save it to a tab with a note, show its QR code and copy it.
+
 ## Screenshots
 
 ![Screenshot 1](./assets/screenshot1.png)
