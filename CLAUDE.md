@@ -32,13 +32,14 @@ cd mcp && npm install && npm run build   # the MCP server, a separate Node packa
 ## Architecture
 
 - **Entry points**: `src/sidepanel.tsx` (side panel, routes `*` → app, `/settings`, `/qr?password=&back=`, `/generator`; uses `createHashRouter` + Goober CSS-in-JS via `setup(React.createElement)`; renews the OpenBao token on load) and `src/background.ts` (service worker that makes the toolbar icon open the side panel).
-- **Pages**: `src/pages/{app,generator,settings,qr}/`. `pages/app/popup.tsx` is the main panel (named from when the UI was a popup): tabs, the password field and the list. Settings has the OpenBao section with Sign in / Sign out.
+- **Pages**: `src/pages/{app,generator,settings,qr}/`. `pages/app/popup.tsx` is the main panel (named from when the UI was a popup): tabs, the password field with Generate beside it, the Add to list / Clear buttons, and the list; a password just added to the list flashes briefly. Settings has the OpenBao section with Sign in / Sign out.
 - **OpenBao**: `src/openbao/`
   - `session.ts`: the token in `chrome.storage.local` (`baoSession`), and the `useBaoSession()` hook
   - `client.ts`: `fetch` wrapper and typed errors (`AuthError` clears the session, `NotFoundError`, `ConflictError` for a failed check-and-set, `NetworkError`), plus `kv(settings)` helpers
   - `auth.ts`: `signIn` (OIDC through `chrome.identity.launchWebAuthFlow`), `renewIfNeeded`, `signOut`
   - `passwords.ts`: tabs and passwords on KV (`loadTabs`, `createTab`, `loadPasswords`, `addPassword`, `updatePassword`, …)
-- **Shared components**: `src/components/` — `password-row/` (list item with actions; notes are saved 600 ms after typing stops), `tabs/` (password list tabs), `icons/` (inline SVG), `styles/` (Goober styled components)
+- **Shared components**: `src/components/` — `password-row/` (list item: Copy/Hide/…/✕ buttons, or, after "…", a row of seven square icon buttons with tooltips; double-click the password to edit; notes are saved 600 ms after typing stops), `tabs/` (password list tabs), `icons/` (inline SVG in `currentColor`), `styles/` (Goober styled components)
+- **Look**: flat and borderless: no borders, rounded corners or shadows; blocks are told apart by fill and a 2px gap. Colours are CSS variables in `static/sidepanel.html` (light and dark from `prefers-color-scheme`): `accent` marks the one primary button, `hot` means destructive only, `flag` fills a flagged row. System fonts: sans for text, mono for passwords and labels
 - **Static files**: `static/` — `sidepanel.html`
 - **Types**: `src/types/index.ts` — `ISettings`, `IPassword`, `ITab`, `IBaoSession`
 - **Path aliases** (`deno.json` imports): `@/` → `src/`, `@components/` → `src/components/`, `@types` → `src/types/index.ts`
@@ -87,4 +88,4 @@ A separate Node package (own `package.json` and `tsconfig.json`), deployed with 
 - TypeScript strict mode, single quotes, semicolons, no trailing commas (`deno.json` `fmt`)
 - Unused variables must be prefixed with `_`
 - Routing via react-router v8; query params carry page input and navigation context (e.g., `/qr?password=…&back=…`, `/generator?back=…`)
-- No `confirm()` dialogs (they freeze the side panel): destructive actions use a two-click confirm
+- No `confirm()` dialogs (they freeze the side panel): deleting a tab and clearing a tab ask in a `ConfirmBanner` (red, with Cancel and a confirm button, naming the tab and the password count)
