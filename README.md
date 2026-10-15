@@ -8,16 +8,6 @@ A Chrome extension based on [pwgen-js](https://github.com/RolandWarburton/pwgen-
 
 Generate a password, save it to a tab with a note, show its QR code and copy it.
 
-## Screenshots
-
-![Screenshot 1](./assets/screenshot1.png)
-
-Generate a password and save it to a tab.
-
-![Screenshot 2](./assets/screenshot2.png)
-
-Change the parameters of passwords generated.
-
 ## Features
 
 - Generate passwords, copy them or show them as a QR code. Generating works without signing in.
