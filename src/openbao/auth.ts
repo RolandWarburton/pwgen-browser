@@ -1,6 +1,6 @@
-import { ISettings, IBaoSession } from '@types';
-import { BaoError, AuthError, request } from './client.ts';
-import { getSession, saveSession, clearSession } from './session.ts';
+import { IBaoSession, ISettings } from '@types';
+import { AuthError, BaoError, request } from './client.ts';
+import { clearSession, getSession, saveSession } from './session.ts';
 
 interface AuthResponse {
   auth: {
@@ -109,4 +109,4 @@ async function signOut(settings: ISettings) {
   await clearSession();
 }
 
-export { signIn, renewIfNeeded, signOut };
+export { renewIfNeeded, signIn, signOut };

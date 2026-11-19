@@ -66,16 +66,16 @@ function Generator() {
       <Container>
         <Toolbar>
           <LinkButton to={`/${back || ''}`}>← Passwords</LinkButton>
-          <LinkButton to="/settings">Settings</LinkButton>
+          <LinkButton to='/settings'>Settings</LinkButton>
         </Toolbar>
         <PageTitle>Generator</PageTitle>
         <Card>
           <div>
-            <Label as="span">Password</Label>
+            <Label as='span'>Password</Label>
             <Passphrase>{password || 'Nothing generated yet'}</Passphrase>
           </div>
           <div style={{ display: 'flex', gap: 'var(--gap)' }}>
-            <Button data-kind="primary" onClick={generate}>
+            <Button data-kind='primary' onClick={generate}>
               Generate
             </Button>
             <Button onClick={copy} disabled={!password}>
@@ -84,7 +84,7 @@ function Generator() {
           </div>
         </Card>
         {settings && (
-          <Facts aria-label="Generator options">
+          <Facts aria-label='Generator options'>
             <Fact>
               <dt>Words</dt>
               <dd>{settings.numberOfWords}</dd>

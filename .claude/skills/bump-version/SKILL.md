@@ -4,7 +4,8 @@ description: Bump the extension version for the next release across deno.json, m
 disable-model-invocation: true
 ---
 
-Bump the version of the pwgen-browser extension. The argument should be the semver bump type: `patch` (default), `minor`, or `major`.
+Bump the version of the pwgen-browser extension. The argument should be the semver bump type: `patch` (default),
+`minor`, or `major`.
 
 Current version: !`deno eval "console.log(JSON.parse(Deno.readTextFileSync('deno.json')).version)"`
 

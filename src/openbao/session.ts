@@ -44,4 +44,4 @@ function useBaoSession(): IBaoSession | null | undefined {
   return session;
 }
 
-export { getSession, saveSession, clearSession, useBaoSession };
+export { clearSession, getSession, saveSession, useBaoSession };

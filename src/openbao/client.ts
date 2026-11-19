@@ -1,5 +1,5 @@
 import { ISettings } from '@types';
-import { getSession, clearSession } from './session.ts';
+import { clearSession, getSession } from './session.ts';
 
 class BaoError extends Error {
   // 0 = no response
@@ -36,7 +36,7 @@ class ConflictError extends BaoError {
 }
 
 class NetworkError extends BaoError {
-  constructor(message = 'Can\'t reach OpenBao') {
+  constructor(message = "Can't reach OpenBao") {
     super(message, 0);
     this.name = 'NetworkError';
   }
@@ -184,13 +184,5 @@ function kv(settings: ISettings) {
   };
 }
 
-export {
-  BaoError,
-  AuthError,
-  NotFoundError,
-  ConflictError,
-  NetworkError,
-  request,
-  kv
-};
-export type { KvVersion, KvWriteResult, KvSecret, KvMetadata };
+export { AuthError, BaoError, ConflictError, kv, NetworkError, NotFoundError, request };
+export type { KvMetadata, KvSecret, KvVersion, KvWriteResult };

@@ -110,8 +110,8 @@ function Settings() {
       </Header>
       <Form onSubmit={handleFormSubmit} style={{ padding: 8, flex: 1 }}>
         <Toolbar>
-          <LinkButton to="/">← Passwords</LinkButton>
-          <Button type="submit" data-kind="primary">
+          <LinkButton to='/'>← Passwords</LinkButton>
+          <Button type='submit' data-kind='primary'>
             Save settings
           </Button>
         </Toolbar>
@@ -147,20 +147,22 @@ function Settings() {
         <Card>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <SectionHead>Session</SectionHead>
-            {session ? (
-              <Button type="button" onClick={handleSignOut}>
-                Sign out
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                data-kind="primary"
-                onClick={handleSignIn}
-                disabled={signingIn || session === undefined}
-              >
-                {signingIn ? 'Signing in…' : 'Sign in'}
-              </Button>
-            )}
+            {session
+              ? (
+                <Button type='button' onClick={handleSignOut}>
+                  Sign out
+                </Button>
+              )
+              : (
+                <Button
+                  type='button'
+                  data-kind='primary'
+                  onClick={handleSignIn}
+                  disabled={signingIn || session === undefined}
+                >
+                  {signingIn ? 'Signing in…' : 'Sign in'}
+                </Button>
+              )}
           </div>
           <Facts>
             <Fact>
@@ -175,7 +177,7 @@ function Settings() {
             )}
           </Facts>
           {baoError && (
-            <Banner data-kind="error">
+            <Banner data-kind='error'>
               <span>{baoError}</span>
             </Banner>
           )}

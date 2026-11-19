@@ -72,8 +72,7 @@ export const LinkButton = styled(Link)`
 `;
 
 export const ButtonGroupButton = styled('button')`
-  ${buttonBase}
-  flex: 1 1 0;
+  ${buttonBase} flex: 1 1 0;
   max-width: 140px;
   padding: 11px 8px;
   text-align: center;
@@ -449,8 +448,7 @@ const editableCell = `
 `;
 
 export const PasswordText = styled('input')`
-  ${editableCell}
-  font-weight: 600;
+  ${editableCell} font-weight: 600;
   letter-spacing: -0.01em;
 
   &[data-hidden='true'] {
@@ -565,9 +563,7 @@ export const ActionButton = styled('button')`
     pointer-events: none;
   }
 
-  ${tooltip}
-
-  &:first-child::after {
+  ${tooltip} &:first-child::after {
     left: 0;
     transform: none;
   }
@@ -624,10 +620,8 @@ export const RowButton = styled('button')`
     pointer-events: none;
   }
 
-  ${tooltip}
-
-  /* the block sits at the panel's right edge: labels line up with the button's right side */
-  &::after {
+  ${tooltip} /* the block sits at the panel's right edge: labels line up with the button's right side */
+    &::after {
     left: auto;
     right: 0;
     transform: none;
@@ -798,8 +792,7 @@ export const ResultLine = styled('div')`
 `;
 
 export const ResultCell = styled('span')`
-  ${cell}
-  flex: 1;
+  ${cell} flex: 1;
 
   &[data-kind='password'] {
     font-weight: 600;

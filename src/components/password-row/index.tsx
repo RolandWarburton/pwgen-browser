@@ -48,8 +48,18 @@ interface IProps {
 
 function Password(props: IProps) {
   const navigate = useNavigate();
-  const { password, updateNote, deletePassword, flagPassword, hidePassword, savePassword, recheck, isNew, isFound, foundShown } =
-    props;
+  const {
+    password,
+    updateNote,
+    deletePassword,
+    flagPassword,
+    hidePassword,
+    savePassword,
+    recheck,
+    isNew,
+    isFound,
+    foundShown
+  } = props;
   const item = useRef<HTMLLIElement>(null);
   // the row's actions replace its content while the menu is open
   const [menuOpen, setMenuOpen] = useState(false);
@@ -192,131 +202,133 @@ function Password(props: IProps) {
       onMouseLeave={closeMenuOnLeave}
       onAnimationEnd={isFound ? foundShown : undefined}
     >
-      {menuOpen ? (
-        <ActionRow role="menu" aria-label="Row actions">
-          <ActionButton data-kind="back" data-tip="Back" aria-label="Back" onClick={() => setMenuOpen(false)}>
-            <IconBack />
-          </ActionButton>
-          <ActionButton data-tip="Copy" aria-label="Copy password" onClick={copy}>
-            <IconCopy />
-          </ActionButton>
-          <ActionButton
-            data-tip={password.hidden ? 'Show' : 'Hide'}
-            aria-label={password.hidden ? 'Show password' : 'Hide password'}
-            onClick={toggleHidden}
-          >
-            <IconEye hidden={password.hidden} />
-          </ActionButton>
-          <ActionButton
-            data-tip="QR code"
-            aria-label="Show QR code"
-            onClick={() => {
-              setMenuOpen(false);
-              withCurrent((current) => {
-                navigate(`/qr?${new URLSearchParams({ password: current.password })}`);
-              });
-            }}
-          >
-            <IconQR />
-          </ActionButton>
-          <ActionButton
-            data-tip={password.flagged ? 'Unflag' : 'Flag'}
-            aria-label={password.flagged ? 'Unflag password' : 'Flag password'}
-            onClick={() => {
-              flagPassword(password.key);
-              setMenuOpen(false);
-            }}
-          >
-            <IconFlag flagged={password.flagged} />
-          </ActionButton>
-          <ActionButton data-tip="Edit" aria-label="Edit password" onClick={edit}>
-            <IconEdit />
-          </ActionButton>
-          <ActionButton
-            data-kind="danger"
-            data-tip="Delete"
-            aria-label="Delete password"
-            onClick={() => deletePassword(password.key)}
-          >
-            <IconTrash />
-          </ActionButton>
-        </ActionRow>
-      ) : (
-        <PasswordFields>
-          <PasswordCells>
-            <PasswordText
-              ref={passwordInput}
-              type={password.hidden ? 'password' : 'text'}
-              data-hidden={password.hidden}
-              aria-label="Password"
-              spellCheck={false}
-              autoComplete="off"
-              value={draft}
-              onFocus={startPasswordEdit}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDraft(e.target.value)}
-              onBlur={finishPasswordEdit}
-              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
-                leaveOnEnterOrEsc(e, () => {
-                  cancelling.current = true;
-                })}
-            />
-            <NoteCell
-              type={password.hidden ? 'password' : 'text'}
-              placeholder="note"
-              aria-label="Note"
-              // custom_metadata limit
-              maxLength={512}
-              value={note}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                setNote(value);
-                clearTimeout(noteTimer.current);
-                noteTimer.current = setTimeout(() => saveNote(value), NOTE_SAVE_DELAY);
-              }}
-              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-                if (noteTimer.current !== undefined) {
-                  saveNote(e.target.value);
-                }
-              }}
-              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
-                leaveOnEnterOrEsc(e, () => {
-                  // back to the saved note; a pause in typing may already have saved part of it
-                  clearTimeout(noteTimer.current);
-                  noteTimer.current = undefined;
-                  setNote(password.note);
-                })}
-            />
-          </PasswordCells>
-          <RowButtons>
-            <RowButton
-              data-tip={copied ? 'Copied' : 'Copy'}
-              data-copied={copied}
-              aria-label="Copy password"
-              onClick={copy}
-            >
+      {menuOpen
+        ? (
+          <ActionRow role='menu' aria-label='Row actions'>
+            <ActionButton data-kind='back' data-tip='Back' aria-label='Back' onClick={() => setMenuOpen(false)}>
+              <IconBack />
+            </ActionButton>
+            <ActionButton data-tip='Copy' aria-label='Copy password' onClick={copy}>
               <IconCopy />
-            </RowButton>
-            <RowButton
+            </ActionButton>
+            <ActionButton
               data-tip={password.hidden ? 'Show' : 'Hide'}
               aria-label={password.hidden ? 'Show password' : 'Hide password'}
               onClick={toggleHidden}
             >
               <IconEye hidden={password.hidden} />
-            </RowButton>
-            <RowButton data-tip="More" aria-haspopup="menu" aria-label="More" onClick={() => setMenuOpen(true)}>
-              <IconEllipsis />
-            </RowButton>
-            <RowButton
-              data-kind="danger"
-              data-tip="Delete"
-              aria-label="Delete password"
+            </ActionButton>
+            <ActionButton
+              data-tip='QR code'
+              aria-label='Show QR code'
+              onClick={() => {
+                setMenuOpen(false);
+                withCurrent((current) => {
+                  navigate(`/qr?${new URLSearchParams({ password: current.password })}`);
+                });
+              }}
+            >
+              <IconQR />
+            </ActionButton>
+            <ActionButton
+              data-tip={password.flagged ? 'Unflag' : 'Flag'}
+              aria-label={password.flagged ? 'Unflag password' : 'Flag password'}
+              onClick={() => {
+                flagPassword(password.key);
+                setMenuOpen(false);
+              }}
+            >
+              <IconFlag flagged={password.flagged} />
+            </ActionButton>
+            <ActionButton data-tip='Edit' aria-label='Edit password' onClick={edit}>
+              <IconEdit />
+            </ActionButton>
+            <ActionButton
+              data-kind='danger'
+              data-tip='Delete'
+              aria-label='Delete password'
               onClick={() => deletePassword(password.key)}
             >
-              <IconClose />
-            </RowButton>
-          </RowButtons>
-        </PasswordFields>
-      )}
+              <IconTrash />
+            </ActionButton>
+          </ActionRow>
+        )
+        : (
+          <PasswordFields>
+            <PasswordCells>
+              <PasswordText
+                ref={passwordInput}
+                type={password.hidden ? 'password' : 'text'}
+                data-hidden={password.hidden}
+                aria-label='Password'
+                spellCheck={false}
+                autoComplete='off'
+                value={draft}
+                onFocus={startPasswordEdit}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDraft(e.target.value)}
+                onBlur={finishPasswordEdit}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                  leaveOnEnterOrEsc(e, () => {
+                    cancelling.current = true;
+                  })}
+              />
+              <NoteCell
+                type={password.hidden ? 'password' : 'text'}
+                placeholder='note'
+                aria-label='Note'
+                // custom_metadata limit
+                maxLength={512}
+                value={note}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value;
+                  setNote(value);
+                  clearTimeout(noteTimer.current);
+                  noteTimer.current = setTimeout(() => saveNote(value), NOTE_SAVE_DELAY);
+                }}
+                onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                  if (noteTimer.current !== undefined) {
+                    saveNote(e.target.value);
+                  }
+                }}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                  leaveOnEnterOrEsc(e, () => {
+                    // back to the saved note; a pause in typing may already have saved part of it
+                    clearTimeout(noteTimer.current);
+                    noteTimer.current = undefined;
+                    setNote(password.note);
+                  })}
+              />
+            </PasswordCells>
+            <RowButtons>
+              <RowButton
+                data-tip={copied ? 'Copied' : 'Copy'}
+                data-copied={copied}
+                aria-label='Copy password'
+                onClick={copy}
+              >
+                <IconCopy />
+              </RowButton>
+              <RowButton
+                data-tip={password.hidden ? 'Show' : 'Hide'}
+                aria-label={password.hidden ? 'Show password' : 'Hide password'}
+                onClick={toggleHidden}
+              >
+                <IconEye hidden={password.hidden} />
+              </RowButton>
+              <RowButton data-tip='More' aria-haspopup='menu' aria-label='More' onClick={() => setMenuOpen(true)}>
+                <IconEllipsis />
+              </RowButton>
+              <RowButton
+                data-kind='danger'
+                data-tip='Delete'
+                aria-label='Delete password'
+                onClick={() => deletePassword(password.key)}
+              >
+                <IconClose />
+              </RowButton>
+            </RowButtons>
+          </PasswordFields>
+        )}
     </PasswordItem>
   );
 }

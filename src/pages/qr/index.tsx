@@ -27,7 +27,7 @@ function PasswordQRCode() {
         </Toolbar>
         <PageTitle>QR code</PageTitle>
         <Code>
-          <QRCodeSVG value={password || 'NO PASSWORD SET'} width="100%" height="280px" fgColor="#121212" />
+          <QRCodeSVG value={password || 'NO PASSWORD SET'} width='100%' height='280px' fgColor='#121212' />
         </Code>
       </Container>
     </>

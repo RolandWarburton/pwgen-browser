@@ -54,7 +54,17 @@ async function createRelease() {
 
   // 4. Create the release
   try {
-    await run('gh', ['release', 'create', TAG, ZIP_FILE_PATH, '--title', RELEASE_NAME, '--notes', RELEASE_NOTES, '--latest']);
+    await run('gh', [
+      'release',
+      'create',
+      TAG,
+      ZIP_FILE_PATH,
+      '--title',
+      RELEASE_NAME,
+      '--notes',
+      RELEASE_NOTES,
+      '--latest'
+    ]);
     console.log(`\nSuccessfully created release ${TAG} and uploaded ${ZIP_FILE_PATH}`);
   } catch (error) {
     if (error instanceof Error && error.message.includes('already exists')) {

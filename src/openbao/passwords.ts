@@ -1,5 +1,5 @@
-import { ISettings, ITab, IPassword } from '@types';
-import { kv, ConflictError, NotFoundError, KvMetadata } from './client.ts';
+import { IPassword, ISettings, ITab } from '@types';
+import { ConflictError, kv, KvMetadata, NotFoundError } from './client.ts';
 
 // <mount>/<base path>/
 //   _tabs          { next }          tab counter; numbers are never reused
@@ -45,7 +45,7 @@ async function claimTabNumber(settings: ISettings, tabs: ITab[]): Promise<number
       }
     }
   }
-  throw new ConflictError('Couldn\'t claim a tab number; try again');
+  throw new ConflictError("Couldn't claim a tab number; try again");
 }
 
 async function loadTabs(settings: ISettings): Promise<ITab[]> {
@@ -213,14 +213,14 @@ async function deletePassword(settings: ISettings, slug: string, key: string) {
 }
 
 export {
-  loadTabs,
+  addPassword,
   createTab,
-  renameTab,
+  deletePassword,
   deleteTab,
   loadPassword,
   loadPasswords,
-  addPassword,
+  loadTabs,
+  renameTab,
   updatePassword,
-  updatePasswordMeta,
-  deletePassword
+  updatePasswordMeta
 };

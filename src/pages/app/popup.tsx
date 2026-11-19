@@ -1,34 +1,28 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { styled } from 'goober';
 // @ts-types="../../types/pwgen.d.ts"
 import { genpw } from '@rolandwarburton/pwgen';
 import {
-  ButtonGroupButton,
-  Button,
   Banner,
   Brand,
+  Button,
+  ButtonGroup,
+  ButtonGroupButton,
   Card,
+  ConfirmBanner,
   Container,
   Header,
   HeaderNav,
   Input,
   LinkButton,
   List,
-  ButtonGroup,
-  ConfirmBanner,
   NewPasswordBlock,
   SearchStatus
 } from '../../components/styles/index.ts';
-import {
-  getActiveTabId,
-  getSearchAllTabs,
-  getSettings,
-  saveActiveTabId,
-  saveSearchAllTabs
-} from '@/storage/index.ts';
-import { ITab, IPassword, ISettings } from '../../types/index.ts';
+import { getActiveTabId, getSearchAllTabs, getSettings, saveActiveTabId, saveSearchAllTabs } from '@/storage/index.ts';
+import { IPassword, ISettings, ITab } from '../../types/index.ts';
 import { AuthError, ConflictError, NetworkError, NotFoundError } from '@/openbao/client.ts';
-import { signIn, renewIfNeeded } from '@/openbao/auth.ts';
+import { renewIfNeeded, signIn } from '@/openbao/auth.ts';
 import { useBaoSession } from '@/openbao/session.ts';
 import {
   addPassword,
@@ -44,7 +38,7 @@ import {
 } from '@/openbao/passwords.ts';
 import Password from '@components/password-row/index.tsx';
 import Tabs from '@components/tabs/index.tsx';
-import { SearchBox, SearchResult, matches } from '@components/search/index.tsx';
+import { matches, SearchBox, SearchResult } from '@components/search/index.tsx';
 
 const Page = styled('div')`
   flex: 1;
@@ -246,9 +240,7 @@ const App = () => {
       return null;
     }
     const replace = (list: IPassword[], current: IPassword | null) =>
-      current
-        ? list.map((item) => (item.key === key ? current : item))
-        : list.filter((item) => item.key !== key);
+      current ? list.map((item) => (item.key === key ? current : item)) : list.filter((item) => item.key !== key);
     try {
       const current = await loadPassword(settings, slug, key);
       setAllLists((lists) => (lists && lists[slug] ? { ...lists, [slug]: replace(lists[slug], current) } : lists));
@@ -317,10 +309,10 @@ const App = () => {
       return;
     }
     const slug = activeTabRef.current;
-    updateList(slug, (list) =>
-      update
-        ? list.map((item) => (item.key === key ? update(item) : item))
-        : list.filter((item) => item.key !== key)
+    updateList(
+      slug,
+      (list) =>
+        update ? list.map((item) => (item.key === key ? update(item) : item)) : list.filter((item) => item.key !== key)
     );
     try {
       await write(settings, slug);
@@ -334,9 +326,7 @@ const App = () => {
         }
         return;
       }
-      updateList(slug, (list) =>
-        [...list.filter((item) => item.key !== key), original].sort(newestFirst)
-      );
+      updateList(slug, (list) => [...list.filter((item) => item.key !== key), original].sort(newestFirst));
       report(err);
     }
   };
@@ -410,8 +400,7 @@ const App = () => {
       return;
     }
     const slug = activeTabRef.current;
-    const showRow = (row: IPassword) =>
-      updateList(slug, (list) => list.map((item) => (item.key === key ? row : item)));
+    const showRow = (row: IPassword) => updateList(slug, (list) => list.map((item) => (item.key === key ? row : item)));
     showRow({ ...original, password: value });
     try {
       const version = await updatePassword(settings, slug, key, value, original.version);
@@ -420,7 +409,9 @@ const App = () => {
     } catch (err) {
       if (err instanceof ConflictError) {
         if (await recheck(key)) {
-          setProblem({ message: 'That password was changed elsewhere, so it has been reloaded. Make your change again.' });
+          setProblem({
+            message: 'That password was changed elsewhere, so it has been reloaded. Make your change again.'
+          });
         }
       } else if (err instanceof NotFoundError) {
         dropPassword(slug, key);
@@ -514,22 +505,21 @@ const App = () => {
   const activeTab = tabs?.find((tab) => tab.slug === activeTabId);
   const shown = passwords && needle ? passwords.filter((item) => matches(item, needle)) : (passwords ?? []);
   // in tab order; the open tab's own list is the live one
-  const allResults =
-    searchingAll && tabs && allLists
-      ? tabs.flatMap((tab) =>
-          ((tab.slug === activeTabId && passwords) || allLists[tab.slug] || [])
-            .filter((item) => matches(item, needle))
-            .map((item) => ({ tab, item }))
-        )
-      : [];
+  const allResults = searchingAll && tabs && allLists
+    ? tabs.flatMap((tab) =>
+      ((tab.slug === activeTabId && passwords) || allLists[tab.slug] || [])
+        .filter((item) => matches(item, needle))
+        .map((item) => ({ tab, item }))
+    )
+    : [];
 
   return (
     <Page>
       <Header>
         <Brand>pwgen</Brand>
         <HeaderNav>
-          <LinkButton to="/generator">Generator</LinkButton>
-          <LinkButton to="/settings">Settings</LinkButton>
+          <LinkButton to='/generator'>Generator</LinkButton>
+          <LinkButton to='/settings'>Settings</LinkButton>
         </HeaderNav>
       </Header>
       <Container>
@@ -550,36 +540,43 @@ const App = () => {
           <SearchBox query={query} allTabs={searchAll} setQuery={setQuery} setAllTabs={changeSearchAll} />
         )}
         {signedIn && tabs && needle !== '' && (
-          <SearchStatus role="status">
-            {searchingAll ? (
-              allLists === null ? (
-                `Searching ${tabs.length} ${tabs.length === 1 ? 'tab' : 'tabs'}…`
-              ) : (
-                resultCount(allResults.length, new Set(allResults.map((result) => result.tab.slug)).size)
+          <SearchStatus role='status'>
+            {searchingAll
+              ? (
+                allLists === null
+                  ? (
+                    `Searching ${tabs.length} ${tabs.length === 1 ? 'tab' : 'tabs'}…`
+                  )
+                  : (
+                    resultCount(allResults.length, new Set(allResults.map((result) => result.tab.slug)).size)
+                  )
               )
-            ) : (
-              passwords && (
-                <>
-                  <span>
-                    {shown.length} of {passwords.length} in “{activeTab?.name}”
-                  </span>
-                  {shown.length === 0 && tabs.length > 1 && (
-                    <button type="button" onClick={() => changeSearchAll(true)}>
-                      Search all tabs
-                    </button>
-                  )}
-                </>
-              )
-            )}
+              : (
+                passwords && (
+                  <>
+                    <span>
+                      {shown.length} of {passwords.length} in “{activeTab?.name}”
+                    </span>
+                    {shown.length === 0 && tabs.length > 1 && (
+                      <button
+                        type='button'
+                        onClick={() => changeSearchAll(true)}
+                      >
+                        Search all tabs
+                      </button>
+                    )}
+                  </>
+                )
+              )}
           </SearchStatus>
         )}
         <NewPasswordBlock data-dim={searchingAll} inert={searchingAll}>
           <Card style={{ gridTemplateColumns: 'auto minmax(0, 1fr)', alignItems: 'center' }}>
             <ButtonGroupButton onClick={() => generate()}>Generate</ButtonGroupButton>
             <Input
-              id="new-password"
-              aria-label="Password"
-              data-mono="true"
+              id='new-password'
+              aria-label='Password'
+              data-mono='true'
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setPassword(e.target.value);
@@ -588,14 +585,14 @@ const App = () => {
           </Card>
           <ButtonGroup style={{ padding: 0 }}>
             <ButtonGroupButton
-              data-kind="primary"
+              data-kind='primary'
               onClick={pushNewPassword}
               disabled={!signedIn || !activeTabId || saving}
             >
               {saving ? 'Saving…' : 'Add to list'}
             </ButtonGroupButton>
             <ButtonGroupButton
-              data-kind="hot-text"
+              data-kind='hot-text'
               onClick={() => setConfirmClear(true)}
               disabled={!passwords || passwords.length === 0}
             >
@@ -604,23 +601,27 @@ const App = () => {
           </ButtonGroup>
         </NewPasswordBlock>
         {confirmClear && passwords && passwords.length > 0 && (
-          <ConfirmBanner role="alertdialog" aria-label="Confirm clear tab">
+          <ConfirmBanner role='alertdialog' aria-label='Confirm clear tab'>
             <span>
-              <strong>Clear “{activeTab?.name}”?</strong> This permanently
-              removes {passwords.length} {passwords.length === 1 ? 'password' : 'passwords'} from OpenBao.
+              <strong>Clear “{activeTab?.name}”?</strong> This permanently removes {passwords.length}{' '}
+              {passwords.length === 1 ? 'password' : 'passwords'} from OpenBao.
             </span>
             <div>
-              <button type="button" onClick={() => setConfirmClear(false)}>
+              <button
+                type='button'
+                onClick={() =>
+                  setConfirmClear(false)}
+              >
                 Cancel
               </button>
-              <button type="button" onClick={clear}>
+              <button type='button' onClick={clear}>
                 Clear tab
               </button>
             </div>
           </ConfirmBanner>
         )}
         {problem && (
-          <Banner data-kind="error">
+          <Banner data-kind='error'>
             <span>{problem.message}</span>
             <span>
               {problem.retry && (
@@ -640,7 +641,7 @@ const App = () => {
         {session === null && (
           <Banner>
             <span>Sign in to OpenBao to see and save passwords.</span>
-            <Button data-kind="primary" onClick={handleSignIn} disabled={signingIn || !settings}>
+            <Button data-kind='primary' onClick={handleSignIn} disabled={signingIn || !settings}>
               {signingIn ? 'Signing in…' : 'Sign in'}
             </Button>
           </Banner>

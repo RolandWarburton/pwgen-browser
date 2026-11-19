@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { ITab } from '@types';
-import {
-  TabStrip,
-  Tab,
-  TabName,
-  TabNameInput,
-  TabAction,
-  ConfirmBanner
-} from '@components/styles/index.ts';
+import { ConfirmBanner, Tab, TabAction, TabName, TabNameInput, TabStrip } from '@components/styles/index.ts';
 
 interface IProps {
   tabs: ITab[];
@@ -23,8 +16,7 @@ interface IProps {
 }
 
 function Tabs(props: IProps) {
-  const { tabs, activeTabId, passwordCount, deletingId, selectTab, addTab, deleteTab, renameTab } =
-    props;
+  const { tabs, activeTabId, passwordCount, deletingId, selectTab, addTab, deleteTab, renameTab } = props;
   const [editingId, setEditingId] = useState<string | false>(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | false>(false);
 
@@ -51,25 +43,23 @@ function Tabs(props: IProps) {
             }}
             onDoubleClick={() => setEditingId(tab.slug)}
           >
-            {editingId === tab.slug ? (
-              <TabNameInput
-                autoFocus
-                defaultValue={tab.name}
-                onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
-                  commitRename(tab.slug, e.target.value)
-                }
-                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === 'Enter') {
-                    commitRename(tab.slug, e.currentTarget.value);
-                  } else if (e.key === 'Escape') {
-                    setEditingId(false);
-                  }
-                }}
-              />
-            ) : (
-              <TabName title="double click to rename">{tab.name}</TabName>
-            )}
+            {editingId === tab.slug
+              ? (
+                <TabNameInput
+                  autoFocus
+                  defaultValue={tab.name}
+                  onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                  onBlur={(e: React.FocusEvent<HTMLInputElement>) => commitRename(tab.slug, e.target.value)}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (e.key === 'Enter') {
+                      commitRename(tab.slug, e.currentTarget.value);
+                    } else if (e.key === 'Escape') {
+                      setEditingId(false);
+                    }
+                  }}
+                />
+              )
+              : <TabName title='double click to rename'>{tab.name}</TabName>}
             {/* asks in a banner below (confirm() freezes the panel); the last tab can't be deleted */}
             {tab.slug === activeTabId && tabs.length > 1 && editingId !== tab.slug && (
               <TabAction
@@ -86,7 +76,7 @@ function Tabs(props: IProps) {
           </Tab>
         ))}
         <TabAction
-          title="new tab"
+          title='new tab'
           onClick={() => {
             addTab();
             setConfirmDeleteId(false);
@@ -96,20 +86,18 @@ function Tabs(props: IProps) {
         </TabAction>
       </TabStrip>
       {confirmTab && tabs.length > 1 && (
-        <ConfirmBanner role="alertdialog" aria-label="Confirm delete tab">
+        <ConfirmBanner role='alertdialog' aria-label='Confirm delete tab'>
           <span>
-            <strong>Delete “{confirmTab.name}”?</strong> This permanently removes{' '}
-            {passwordCount === undefined
+            <strong>Delete “{confirmTab.name}”?</strong> This permanently removes {passwordCount === undefined
               ? 'its passwords'
-              : `${passwordCount} ${passwordCount === 1 ? 'password' : 'passwords'}`}{' '}
-            from OpenBao.
+              : `${passwordCount} ${passwordCount === 1 ? 'password' : 'passwords'}`} from OpenBao.
           </span>
           <div>
-            <button type="button" onClick={() => setConfirmDeleteId(false)}>
+            <button type='button' onClick={() => setConfirmDeleteId(false)}>
               Cancel
             </button>
             <button
-              type="button"
+              type='button'
               disabled={deletingId === confirmTab.slug}
               onClick={() => {
                 deleteTab(confirmTab.slug);
