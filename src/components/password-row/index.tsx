@@ -4,16 +4,16 @@ import { IPassword } from '../../types/index.ts';
 import {
   ActionButton,
   ActionRow,
-  Button,
-  ButtonRow,
-  Hint,
   NoteCell,
+  PasswordCells,
+  PasswordFields,
   PasswordItem,
-  PasswordLine,
   PasswordText,
-  Input
+  RowButton,
+  RowButtons
 } from '../styles/index.ts';
 import { IconBack } from '@components/icons/back.tsx';
+import { IconClose } from '@components/icons/close.tsx';
 import { IconCopy } from '@components/icons/copy.tsx';
 import { IconEdit } from '@components/icons/edit.tsx';
 import { IconEllipsis } from '@components/icons/ellipsis.tsx';
@@ -21,6 +21,10 @@ import { IconEye } from '@components/icons/eye.tsx';
 import { IconFlag } from '@components/icons/flag.tsx';
 import { IconQR } from '@components/icons/qr.tsx';
 import { IconTrash } from '@components/icons/trash.tsx';
+
+// Both cells are always-live inputs: click to edit, leaving the cell saves, Enter leaves it,
+// Esc puts the saved value back. A password is written once, on leaving (each write is a new
+// KV version); a note is saved as you type.
 
 // ms of typing pause before a note is saved
 const NOTE_SAVE_DELAY = 600;
@@ -44,11 +48,17 @@ function Password(props: IProps) {
   const { password, updateNote, deletePassword, flagPassword, hidePassword, savePassword, recheck, isNew } = props;
   // the row's actions replace its content while the menu is open
   const [menuOpen, setMenuOpen] = useState(false);
-  const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
   const [note, setNote] = useState(password.note);
+  const [draft, setDraft] = useState(password.password);
   const noteTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const copiedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const passwordInput = useRef<HTMLInputElement>(null);
+  const passwordFocused = useRef(false);
+  // Esc: leave the cell without saving
+  const cancelling = useRef(false);
+  // the menu's Edit: focus the password cell once the menu has closed
+  const focusPassword = useRef(false);
 
   // take a refreshed note unless the user is typing
   useEffect(() => {
@@ -56,6 +66,21 @@ function Password(props: IProps) {
       setNote(password.note);
     }
   }, [password.note]);
+
+  // take a refreshed password unless the user is editing it
+  useEffect(() => {
+    if (!passwordFocused.current) {
+      setDraft(password.password);
+    }
+  }, [password.password]);
+
+  useEffect(() => {
+    if (!menuOpen && focusPassword.current) {
+      focusPassword.current = false;
+      passwordInput.current?.focus();
+      passwordInput.current?.select();
+    }
+  }, [menuOpen]);
 
   useEffect(
     () => () => {
@@ -107,15 +132,48 @@ function Password(props: IProps) {
   };
 
   const edit = () => {
+    focusPassword.current = true;
     setMenuOpen(false);
-    withCurrent(() => setEditing(true));
+  };
+
+  // start from the current OpenBao value, unless the user has already started typing
+  const startPasswordEdit = () => {
+    passwordFocused.current = true;
+    const shown = draft;
+    recheck(password.key).then((current) => {
+      if (current) {
+        setDraft((value) => (value === shown ? current.password : value));
+      }
+    });
+  };
+
+  const finishPasswordEdit = () => {
+    passwordFocused.current = false;
+    if (cancelling.current) {
+      cancelling.current = false;
+      setDraft(password.password);
+    } else if (draft === '') {
+      setDraft(password.password);
+    } else {
+      // skips an unchanged value
+      savePassword(password.key, draft);
+    }
+  };
+
+  const leaveOnEnterOrEsc = (e: React.KeyboardEvent<HTMLInputElement>, cancel: () => void) => {
+    if (e.key === 'Enter') {
+      e.currentTarget.blur();
+    } else if (e.key === 'Escape') {
+      cancel();
+      e.currentTarget.blur();
+    }
   };
 
   const closeMenuOnLeave = () => setMenuOpen(false);
 
   return (
     <PasswordItem data-flagged={password.flagged} data-new={isNew} onMouseLeave={closeMenuOnLeave}>
-      {menuOpen && !editing ? (
+      {menuOpen ? (
         <ActionRow role="menu" aria-label="Row actions">
           <ActionButton data-kind="back" data-tip="Back" aria-label="Back" onClick={() => setMenuOpen(false)}>
             <IconBack />
@@ -164,77 +222,81 @@ function Password(props: IProps) {
             <IconTrash />
           </ActionButton>
         </ActionRow>
-      ) : editing ? (
-        <>
-          <Input
-            data-mono="true"
-            autoFocus
-            type={password.hidden ? 'password' : 'text'}
-            defaultValue={password.password}
-            aria-label="Edit password"
-            onFocus={(e: React.FocusEvent<HTMLInputElement>) => e.currentTarget.select()}
-            onBlur={() => setEditing(false)}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === 'Enter') {
-                savePassword(password.key, e.currentTarget.value);
-                setEditing(false);
-              } else if (e.key === 'Escape') {
-                setEditing(false);
-              }
-            }}
-          />
-          <Hint>Enter saves a new version · Esc cancels</Hint>
-        </>
       ) : (
-        <>
-          <PasswordLine>
+        <PasswordFields>
+          <PasswordCells>
             <PasswordText
+              ref={passwordInput}
+              type={password.hidden ? 'password' : 'text'}
               data-hidden={password.hidden}
-              title="Double click to edit"
-              onDoubleClick={edit}
+              aria-label="Password"
+              spellCheck={false}
+              autoComplete="off"
+              value={draft}
+              onFocus={startPasswordEdit}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDraft(e.target.value)}
+              onBlur={finishPasswordEdit}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                leaveOnEnterOrEsc(e, () => {
+                  cancelling.current = true;
+                })}
+            />
+            <NoteCell
+              type={password.hidden ? 'password' : 'text'}
+              placeholder="note"
+              aria-label="Note"
+              // custom_metadata limit
+              maxLength={512}
+              value={note}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value;
+                setNote(value);
+                clearTimeout(noteTimer.current);
+                noteTimer.current = setTimeout(() => saveNote(value), NOTE_SAVE_DELAY);
+              }}
+              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                if (noteTimer.current !== undefined) {
+                  saveNote(e.target.value);
+                }
+              }}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                leaveOnEnterOrEsc(e, () => {
+                  // back to the saved note; a pause in typing may already have saved part of it
+                  clearTimeout(noteTimer.current);
+                  noteTimer.current = undefined;
+                  setNote(password.note);
+                })}
+            />
+          </PasswordCells>
+          <RowButtons>
+            <RowButton
+              data-tip={copied ? 'Copied' : 'Copy'}
+              data-copied={copied}
+              aria-label="Copy password"
+              onClick={copy}
             >
-              {password.hidden ? '•'.repeat(password.password.length) : password.password}
-            </PasswordText>
-            <ButtonRow>
-              <Button data-size="small" onClick={copy}>
-                {copied ? 'Copied' : 'Copy'}
-              </Button>
-              <Button data-size="small" onClick={toggleHidden}>
-                {password.hidden ? 'Show' : 'Hide'}
-              </Button>
-              <Button data-size="small" aria-haspopup="menu" aria-label="More" onClick={() => setMenuOpen(true)}>
-                <IconEllipsis />
-              </Button>
-              <Button
-                data-size="small"
-                data-kind="danger"
-                aria-label="Delete"
-                onClick={() => deletePassword(password.key)}
-              >
-                ✕
-              </Button>
-            </ButtonRow>
-          </PasswordLine>
-          <NoteCell
-            type={password.hidden ? 'password' : 'text'}
-            placeholder="note"
-            aria-label="Note"
-            // custom_metadata limit
-            maxLength={512}
-            value={note}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const value = e.target.value;
-              setNote(value);
-              clearTimeout(noteTimer.current);
-              noteTimer.current = setTimeout(() => saveNote(value), NOTE_SAVE_DELAY);
-            }}
-            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-              if (noteTimer.current !== undefined) {
-                saveNote(e.target.value);
-              }
-            }}
-          />
-        </>
+              <IconCopy />
+            </RowButton>
+            <RowButton
+              data-tip={password.hidden ? 'Show' : 'Hide'}
+              aria-label={password.hidden ? 'Show password' : 'Hide password'}
+              onClick={toggleHidden}
+            >
+              <IconEye hidden={password.hidden} />
+            </RowButton>
+            <RowButton data-tip="More" aria-haspopup="menu" aria-label="More" onClick={() => setMenuOpen(true)}>
+              <IconEllipsis />
+            </RowButton>
+            <RowButton
+              data-kind="danger"
+              data-tip="Delete"
+              aria-label="Delete password"
+              onClick={() => deletePassword(password.key)}
+            >
+              <IconClose />
+            </RowButton>
+          </RowButtons>
+        </PasswordFields>
       )}
     </PasswordItem>
   );

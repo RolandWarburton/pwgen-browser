@@ -395,43 +395,43 @@ export const PasswordItem = styled('li')`
   }
 `;
 
-export const PasswordLine = styled('div')`
+// the password and note cells beside the row's buttons
+export const PasswordFields = styled('div')`
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-`;
-
-// a long password is cut off, never wrapped
-export const PasswordText = styled('p')`
-  flex: 1;
+  align-items: center;
+  gap: 8px;
   min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 600 13px/1.35 var(--font-mono);
-  letter-spacing: -0.01em;
-
-  &[data-hidden='true'] {
-    letter-spacing: 0.14em;
-  }
 `;
 
-export const ButtonRow = styled('span')`
+// the two cells, one above the other, matching in size, fill and font
+export const PasswordCells = styled('div')`
+  flex: 1;
   display: flex;
-  flex-shrink: 0;
+  flex-direction: column;
   gap: var(--gap);
+  min-width: 0;
 `;
 
-export const NoteCell = styled('input')`
+const cell = `
+  display: block;
   width: 100%;
-  padding: 6px 10px;
+  min-width: 0;
+  height: 28px;
+  margin: 0;
+  padding: 0 10px;
   border: 0;
   border-radius: 0;
   background: var(--layer-2);
   color: var(--fg);
-  font: 400 12px/1.2 var(--font-sans);
+  font: 400 13px/28px var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+// both cells are inputs, edited in place
+const editableCell = `
+  ${cell}
 
   &::placeholder {
     color: var(--muted);
@@ -443,10 +443,65 @@ export const NoteCell = styled('input')`
   }
 `;
 
+export const PasswordText = styled('input')`
+  ${editableCell}
+  font-weight: 600;
+  letter-spacing: -0.01em;
+
+  &[data-hidden='true'] {
+    letter-spacing: 0.14em;
+  }
+`;
+
+export const NoteCell = styled('input')`
+  ${editableCell}
+`;
+
 export const Hint = styled('p')`
   margin: 0;
   font: 400 12px/1.4 var(--font-mono);
   color: var(--muted);
+`;
+
+// a flat label under the button, shown on hover and keyboard focus
+const tooltip = `
+  &::after {
+    content: attr(data-tip);
+    display: none;
+    position: absolute;
+    top: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    padding: 6px 9px;
+    background: var(--inverse);
+    color: var(--on-inverse);
+    font: 500 11px/1 var(--font-sans);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  &::before {
+    content: '';
+    display: none;
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    width: 10px;
+    height: 5px;
+    background: var(--inverse);
+    clip-path: polygon(50% 0, 0 100%, 100% 100%);
+    pointer-events: none;
+  }
+
+  &:hover::after,
+  &:hover::before,
+  &:focus-visible::after,
+  &:focus-visible::before {
+    display: block;
+  }
 `;
 
 // one row of square icon buttons, standing in for the row's content
@@ -505,44 +560,7 @@ export const ActionButton = styled('button')`
     pointer-events: none;
   }
 
-  /* tooltip: a flat label under the button, shown on hover and keyboard focus */
-  &::after {
-    content: attr(data-tip);
-    display: none;
-    position: absolute;
-    top: calc(100% + 7px);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 30;
-    padding: 6px 9px;
-    background: var(--inverse);
-    color: var(--on-inverse);
-    font: 500 11px/1 var(--font-sans);
-    white-space: nowrap;
-    pointer-events: none;
-  }
-
-  &::before {
-    content: '';
-    display: none;
-    position: absolute;
-    top: calc(100% + 2px);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 30;
-    width: 10px;
-    height: 5px;
-    background: var(--inverse);
-    clip-path: polygon(50% 0, 0 100%, 100% 100%);
-    pointer-events: none;
-  }
-
-  &:hover::after,
-  &:hover::before,
-  &:focus-visible::after,
-  &:focus-visible::before {
-    display: block;
-  }
+  ${tooltip}
 
   &:first-child::after {
     left: 0;
@@ -553,5 +571,78 @@ export const ActionButton = styled('button')`
     left: auto;
     right: 0;
     transform: none;
+  }
+`;
+
+// the 2×2 block of small square buttons beside a row's cells
+export const RowButtons = styled('div')`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+  flex-shrink: 0;
+`;
+
+export const RowButton = styled('button')`
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--layer-2);
+  color: var(--fg);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--layer-2-hover);
+  }
+
+  &[data-kind='danger'] {
+    background: var(--hot);
+    color: var(--on-hot);
+  }
+
+  &[data-kind='danger']:hover {
+    background: var(--hot-hover);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    pointer-events: none;
+  }
+
+  ${tooltip}
+
+  /* the block sits at the panel's right edge: labels line up with the button's right side */
+  &::after {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  /* the top row's labels go above, clear of the buttons below */
+  &:nth-child(-n + 2)::after {
+    top: auto;
+    bottom: calc(100% + 7px);
+  }
+
+  &:nth-child(-n + 2)::before {
+    top: auto;
+    bottom: calc(100% + 2px);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  /* "Copied" stays up while it shows */
+  &[data-copied='true']::after,
+  &[data-copied='true']::before {
+    display: block;
   }
 `;
