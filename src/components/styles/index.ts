@@ -390,6 +390,11 @@ export const PasswordItem = styled('li')`
     animation: ${flash} 900ms ease-out;
   }
 
+  /* opened from an all-tabs search result */
+  &[data-found='true'] {
+    animation: ${flash} 1300ms ease-out;
+  }
+
   &[data-flagged='true']:hover {
     filter: brightness(0.95);
   }
@@ -644,5 +649,197 @@ export const RowButton = styled('button')`
   &[data-copied='true']::after,
   &[data-copied='true']::before {
     display: block;
+  }
+`;
+
+// search: the field and the All tabs box under the tab strip, and a count line under them
+export const SearchBar = styled('div')`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--gap);
+  padding: 8px 12px;
+  background: var(--layer);
+`;
+
+export const SearchField = styled('div')`
+  position: relative;
+  min-width: 0;
+
+  > svg {
+    position: absolute;
+    left: 9px;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    transform: translateY(-50%);
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 2.5;
+    stroke-linecap: square;
+    pointer-events: none;
+  }
+
+  > input {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  > input::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  > button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 30px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: 500 12px/1 var(--font-mono);
+    cursor: pointer;
+  }
+
+  > button:hover {
+    color: var(--fg);
+  }
+`;
+
+export const SearchScope = styled('label')`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 2px 0 10px;
+  font: 600 10px/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+
+  &:has(input:checked) {
+    color: var(--fg);
+  }
+
+  input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    accent-color: var(--accent);
+  }
+`;
+
+export const SearchStatus = styled('p')`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding: 0 2px;
+  font: 600 10px/1.4 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+
+  button {
+    padding: 4px 6px;
+    border: 0;
+    border-radius: 0;
+    background: var(--layer-2);
+    color: var(--fg);
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: var(--layer-2-hover);
+  }
+`;
+
+// Generate and Add to list, faded while an all-tabs search has no single tab to add to
+export const NewPasswordBlock = styled('div')`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &[data-dim='true'] {
+    opacity: 0.4;
+  }
+`;
+
+// an all-tabs search result: read-only cells, the tab chip and Copy
+export const ResultItem = styled('li')`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--layer);
+  min-width: 0;
+
+  &:hover {
+    background: var(--layer-hover);
+  }
+
+  &[data-flagged='true'] {
+    background: var(--flag);
+  }
+`;
+
+export const ResultLine = styled('div')`
+  display: flex;
+  gap: var(--gap);
+  min-width: 0;
+`;
+
+export const ResultCell = styled('span')`
+  ${cell}
+  flex: 1;
+
+  &[data-kind='password'] {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  &[data-hidden='true'] {
+    letter-spacing: 0.14em;
+  }
+
+  &:empty::before {
+    content: 'note';
+    color: var(--muted);
+  }
+
+  mark {
+    background: color-mix(in srgb, var(--accent) 25%, transparent);
+    color: inherit;
+  }
+`;
+
+// names the result's tab; opens it
+export const TabChip = styled('button')`
+  flex: 0 1 auto;
+  max-width: 45%;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: var(--inverse);
+  color: var(--on-inverse);
+  font: 600 10px/28px var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--inverse-hover);
   }
 `;

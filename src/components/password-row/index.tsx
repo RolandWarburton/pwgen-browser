@@ -41,11 +41,16 @@ interface IProps {
   // fresh read; null when deleted elsewhere
   recheck: (key: string) => Promise<IPassword | null>;
   isNew?: boolean;
+  // opened from an all-tabs search result: scroll to it and flash
+  isFound?: boolean;
+  foundShown?: () => void;
 }
 
 function Password(props: IProps) {
   const navigate = useNavigate();
-  const { password, updateNote, deletePassword, flagPassword, hidePassword, savePassword, recheck, isNew } = props;
+  const { password, updateNote, deletePassword, flagPassword, hidePassword, savePassword, recheck, isNew, isFound, foundShown } =
+    props;
+  const item = useRef<HTMLLIElement>(null);
   // the row's actions replace its content while the menu is open
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -81,6 +86,13 @@ function Password(props: IProps) {
       passwordInput.current?.select();
     }
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (isFound) {
+      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      item.current?.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'auto' });
+    }
+  }, [isFound]);
 
   useEffect(
     () => () => {
@@ -172,7 +184,14 @@ function Password(props: IProps) {
   const closeMenuOnLeave = () => setMenuOpen(false);
 
   return (
-    <PasswordItem data-flagged={password.flagged} data-new={isNew} onMouseLeave={closeMenuOnLeave}>
+    <PasswordItem
+      ref={item}
+      data-flagged={password.flagged}
+      data-new={isNew}
+      data-found={isFound}
+      onMouseLeave={closeMenuOnLeave}
+      onAnimationEnd={isFound ? foundShown : undefined}
+    >
       {menuOpen ? (
         <ActionRow role="menu" aria-label="Row actions">
           <ActionButton data-kind="back" data-tip="Back" aria-label="Back" onClick={() => setMenuOpen(false)}>

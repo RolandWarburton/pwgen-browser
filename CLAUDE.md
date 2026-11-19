@@ -32,13 +32,13 @@ cd mcp && npm install && npm run build   # the MCP server, a separate Node packa
 ## Architecture
 
 - **Entry points**: `src/sidepanel.tsx` (side panel, routes `*` → app, `/settings`, `/qr?password=&back=`, `/generator`; uses `createHashRouter` + Goober CSS-in-JS via `setup(React.createElement)`; renews the OpenBao token on load) and `src/background.ts` (service worker that makes the toolbar icon open the side panel).
-- **Pages**: `src/pages/{app,generator,settings,qr}/`. `pages/app/popup.tsx` is the main panel (named from when the UI was a popup): tabs, the password field with Generate beside it, the Add to list / Clear buttons, and the list; a password just added to the list flashes briefly. Settings has the OpenBao section with Sign in / Sign out.
+- **Pages**: `src/pages/{app,generator,settings,qr}/`. `pages/app/popup.tsx` is the main panel (named from when the UI was a popup): tabs, the search bar, the password field with Generate beside it, the Add to list / Clear buttons, and the list; a password just added to the list flashes briefly. Search filters the open tab's rows (note, and password unless hidden); with **All tabs** ticked it loads every tab once and shows read-only results (tab chip + Copy). Clicking the chip opens that tab in its usual order and scrolls to the row, which starts highlighted and fades (1.3 s). Settings has the OpenBao section with Sign in / Sign out.
 - **OpenBao**: `src/openbao/`
   - `session.ts`: the token in `chrome.storage.local` (`baoSession`), and the `useBaoSession()` hook
   - `client.ts`: `fetch` wrapper and typed errors (`AuthError` clears the session, `NotFoundError`, `ConflictError` for a failed check-and-set, `NetworkError`), plus `kv(settings)` helpers
   - `auth.ts`: `signIn` (OIDC through `chrome.identity.launchWebAuthFlow`), `renewIfNeeded`, `signOut`
   - `passwords.ts`: tabs and passwords on KV (`loadTabs`, `createTab`, `loadPasswords`, `addPassword`, `updatePassword`, …)
-- **Shared components**: `src/components/` — `password-row/` (list item: the password and the note as two matching 28px mono cells, one above the other, beside a 2×2 block of icon buttons with tooltips (Copy, Show/Hide, …, ✕); after "…", a row of seven square icon buttons with tooltips. Both cells are inputs edited in place: click to edit, Enter or leaving the cell saves (no confirmation), Esc puts the saved value back. A password is written once, on leaving, as a new KV version, and an empty one is not saved; notes are saved 600 ms after typing stops), `tabs/` (password list tabs), `icons/` (inline SVG in `currentColor`), `styles/` (Goober styled components)
+- **Shared components**: `src/components/` — `password-row/` (list item: the password and the note as two matching 28px mono cells, one above the other, beside a 2×2 block of icon buttons with tooltips (Copy, Show/Hide, …, ✕); after "…", a row of seven square icon buttons with tooltips. Both cells are inputs edited in place: click to edit, Enter or leaving the cell saves (no confirmation), Esc puts the saved value back. A password is written once, on leaving, as a new KV version, and an empty one is not saved; notes are saved 600 ms after typing stops), `tabs/` (password list tabs), `search/` (the search bar, `matches()`, and the read-only all-tabs result row), `icons/` (inline SVG in `currentColor`), `styles/` (Goober styled components)
 - **Look**: flat and borderless: no borders, rounded corners or shadows; blocks are told apart by fill and a 2px gap. Colours are CSS variables in `static/sidepanel.html` (light and dark from `prefers-color-scheme`): `accent` marks the one primary button, `hot` means destructive only, `flag` fills a flagged row. System fonts: sans for text, mono for passwords and labels
 - **Static files**: `static/` — `sidepanel.html`
 - **Types**: `src/types/index.ts` — `ISettings`, `IPassword`, `ITab`, `IBaoSession`
@@ -69,6 +69,7 @@ Mount `kv` (KV v2), base path `pwgen/`, reached with the extension's `pwgen-user
 |---|---|---|
 | `settings` | `ISettings`: generator options plus `baoAddress`, `baoMount`, `baoBasePath`, `baoRole` | `getSettings` (merged over `defaultSettings`, so new fields get defaults), `saveSettings` in `src/storage/index.ts` |
 | `activeTabId` | the selected tab's slug | `getActiveTabId` (falls back to the first tab), `saveActiveTabId` |
+| `searchAllTabs` | the search's All tabs box (the search text isn't kept) | `getSearchAllTabs`, `saveSearchAllTabs` |
 | `baoSession` | `IBaoSession`: the OpenBao token (99-day lease), expiry and display name | `src/openbao/session.ts` |
 
 No tabs or passwords are stored locally, and there is no password history. State management is plain React hooks — no global store.

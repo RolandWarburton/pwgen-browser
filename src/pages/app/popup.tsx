@@ -15,9 +15,17 @@ import {
   LinkButton,
   List,
   ButtonGroup,
-  ConfirmBanner
+  ConfirmBanner,
+  NewPasswordBlock,
+  SearchStatus
 } from '../../components/styles/index.ts';
-import { getActiveTabId, getSettings, saveActiveTabId } from '@/storage/index.ts';
+import {
+  getActiveTabId,
+  getSearchAllTabs,
+  getSettings,
+  saveActiveTabId,
+  saveSearchAllTabs
+} from '@/storage/index.ts';
 import { ITab, IPassword, ISettings } from '../../types/index.ts';
 import { AuthError, ConflictError, NetworkError, NotFoundError } from '@/openbao/client.ts';
 import { signIn, renewIfNeeded } from '@/openbao/auth.ts';
@@ -36,6 +44,7 @@ import {
 } from '@/openbao/passwords.ts';
 import Password from '@components/password-row/index.tsx';
 import Tabs from '@components/tabs/index.tsx';
+import { SearchBox, SearchResult, matches } from '@components/search/index.tsx';
 
 const Page = styled('div')`
   flex: 1;
@@ -47,6 +56,11 @@ interface IProblem {
   message: string;
   retry?: () => void;
 }
+
+const resultCount = (results: number, tabs: number) =>
+  results === 0
+    ? 'No matches in any tab'
+    : `${results} ${results === 1 ? 'result' : 'results'} in ${tabs} ${tabs === 1 ? 'tab' : 'tabs'}`;
 
 const newestFirst = (a: IPassword, b: IPassword) => b.createdTime.localeCompare(a.createdTime);
 
@@ -65,11 +79,24 @@ const App = () => {
   const [saving, setSaving] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
   const [problem, setProblem] = useState<IProblem | null>(null);
+  const [query, setQuery] = useState('');
+  const [searchAll, setSearchAll] = useState(false);
+  // every tab's passwords, by slug, loaded for an all-tabs search
+  const [allLists, setAllLists] = useState<Record<string, IPassword[]> | null>(null);
+  // the password opened from an all-tabs result
+  const [foundKey, setFoundKey] = useState<string>();
+  // shown at once when a result opens its tab, until the tab's own load lands
+  const seedList = useRef<IPassword[] | undefined>(undefined);
+  const allLoadId = useRef(0);
   // async work started for one tab must not land in another
   const activeTabRef = useRef('');
   activeTabRef.current = activeTabId;
   // a load finishing after a newer one is ignored
   const loadId = useRef(0);
+  const needle = query.trim().toLowerCase();
+  const searchingAll = searchAll && needle !== '' && Boolean(tabs);
+  const searchingAllRef = useRef(searchingAll);
+  searchingAllRef.current = searchingAll;
   // latest list, for handlers from timers set in earlier renders
   const passwordsRef = useRef(passwords);
   passwordsRef.current = passwords;
@@ -120,6 +147,20 @@ const App = () => {
     }
   };
 
+  const loadEveryTab = async (settings: ISettings, tabs: ITab[]) => {
+    const id = ++allLoadId.current;
+    try {
+      const lists = await Promise.all(tabs.map((tab) => loadPasswords(settings, tab.slug)));
+      if (id === allLoadId.current) {
+        setAllLists(Object.fromEntries(tabs.map((tab, i) => [tab.slug, lists[i]])));
+      }
+    } catch (err) {
+      if (id === allLoadId.current) {
+        report(err, () => loadEveryTab(settings, tabs));
+      }
+    }
+  };
+
   const generate = async (current: ISettings | null = settings) => {
     if (!current) {
       return;
@@ -129,6 +170,7 @@ const App = () => {
 
   // fresh password each time the panel opens
   useEffect(() => {
+    getSearchAllTabs().then(setSearchAll);
     getSettings()
       .then((loaded) => {
         setSettings(loaded);
@@ -149,6 +191,7 @@ const App = () => {
     } else {
       setTabs(null);
       setPasswords(null);
+      setAllLists(null);
       setActiveTabId('');
     }
   }, [settings, signedIn]);
@@ -158,7 +201,8 @@ const App = () => {
     if (!settings || !signedIn || !activeTabId) {
       return;
     }
-    setPasswords(null);
+    setPasswords(seedList.current ?? null);
+    seedList.current = undefined;
     setConfirmClear(false);
     saveActiveTabId(activeTabId);
     loadActivePasswords(settings, activeTabId);
@@ -172,11 +216,70 @@ const App = () => {
       }
       if (await renewIfNeeded(settings)) {
         await loadAll(settings);
+        if (searchingAllRef.current) {
+          setAllLists(null);
+        }
       }
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, [settings, signedIn]);
+
+  // load every tab when an all-tabs search starts (not on each keystroke); drop them after
+  useEffect(() => {
+    if (!searchingAll) {
+      allLoadId.current++;
+      setAllLists(null);
+    } else if (settings && tabs && allLists === null) {
+      loadEveryTab(settings, tabs);
+    }
+  }, [searchingAll, tabs, allLists === null]);
+
+  const changeSearchAll = (value: boolean) => {
+    setSearchAll(value);
+    saveSearchAllTabs(value);
+  };
+
+  // re-reads a result's password before it is copied
+  const recheckResult = async (slug: string, key: string): Promise<IPassword | null> => {
+    if (!settings) {
+      return null;
+    }
+    const replace = (list: IPassword[], current: IPassword | null) =>
+      current
+        ? list.map((item) => (item.key === key ? current : item))
+        : list.filter((item) => item.key !== key);
+    try {
+      const current = await loadPassword(settings, slug, key);
+      setAllLists((lists) => (lists && lists[slug] ? { ...lists, [slug]: replace(lists[slug], current) } : lists));
+      updateList(slug, (list) => replace(list, current));
+      if (!current) {
+        setProblem({ message: 'That password was deleted elsewhere.' });
+      }
+      return current;
+    } catch (err) {
+      report(err);
+      return null;
+    }
+  };
+
+  // from an all-tabs result: open its tab in the usual order, then scroll to it and flash it
+  const openResult = (slug: string, key: string) => {
+    setQuery('');
+    setFoundKey(key);
+    if (slug !== activeTabId) {
+      seedList.current = allLists?.[slug];
+      setActiveTabId(slug);
+    }
+  };
+
+  const selectTab = (slug: string) => {
+    if (searchingAll) {
+      setQuery('');
+    }
+    setFoundKey(undefined);
+    setActiveTabId(slug);
+  };
 
   const handleSignIn = async () => {
     if (!settings) {
@@ -408,6 +511,18 @@ const App = () => {
     }
   };
 
+  const activeTab = tabs?.find((tab) => tab.slug === activeTabId);
+  const shown = passwords && needle ? passwords.filter((item) => matches(item, needle)) : (passwords ?? []);
+  // in tab order; the open tab's own list is the live one
+  const allResults =
+    searchingAll && tabs && allLists
+      ? tabs.flatMap((tab) =>
+          ((tab.slug === activeTabId && passwords) || allLists[tab.slug] || [])
+            .filter((item) => matches(item, needle))
+            .map((item) => ({ tab, item }))
+        )
+      : [];
+
   return (
     <Page>
       <Header>
@@ -421,47 +536,77 @@ const App = () => {
         {tabs && (
           <Tabs
             tabs={tabs}
-            activeTabId={activeTabId}
+            // an all-tabs search isn't any one tab
+            activeTabId={searchingAll ? '' : activeTabId}
             passwordCount={passwords?.length}
             deletingId={deletingTabId}
-            selectTab={setActiveTabId}
+            selectTab={selectTab}
             addTab={addTab}
             deleteTab={deleteTab}
             renameTab={renameTab}
           />
         )}
-        <Card style={{ gridTemplateColumns: 'auto minmax(0, 1fr)', alignItems: 'center' }}>
-          <ButtonGroupButton onClick={() => generate()}>Generate</ButtonGroupButton>
-          <Input
-            id="new-password"
-            aria-label="Password"
-            data-mono="true"
-            value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </Card>
-        <ButtonGroup style={{ padding: 0 }}>
-          <ButtonGroupButton
-            data-kind="primary"
-            onClick={pushNewPassword}
-            disabled={!signedIn || !activeTabId || saving}
-          >
-            {saving ? 'Saving…' : 'Add to list'}
-          </ButtonGroupButton>
-          <ButtonGroupButton
-            data-kind="hot-text"
-            onClick={() => setConfirmClear(true)}
-            disabled={!passwords || passwords.length === 0}
-          >
-            Clear…
-          </ButtonGroupButton>
-        </ButtonGroup>
+        {signedIn && tabs && (
+          <SearchBox query={query} allTabs={searchAll} setQuery={setQuery} setAllTabs={changeSearchAll} />
+        )}
+        {signedIn && tabs && needle !== '' && (
+          <SearchStatus role="status">
+            {searchingAll ? (
+              allLists === null ? (
+                `Searching ${tabs.length} ${tabs.length === 1 ? 'tab' : 'tabs'}…`
+              ) : (
+                resultCount(allResults.length, new Set(allResults.map((result) => result.tab.slug)).size)
+              )
+            ) : (
+              passwords && (
+                <>
+                  <span>
+                    {shown.length} of {passwords.length} in “{activeTab?.name}”
+                  </span>
+                  {shown.length === 0 && tabs.length > 1 && (
+                    <button type="button" onClick={() => changeSearchAll(true)}>
+                      Search all tabs
+                    </button>
+                  )}
+                </>
+              )
+            )}
+          </SearchStatus>
+        )}
+        <NewPasswordBlock data-dim={searchingAll} inert={searchingAll}>
+          <Card style={{ gridTemplateColumns: 'auto minmax(0, 1fr)', alignItems: 'center' }}>
+            <ButtonGroupButton onClick={() => generate()}>Generate</ButtonGroupButton>
+            <Input
+              id="new-password"
+              aria-label="Password"
+              data-mono="true"
+              value={password}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setPassword(e.target.value);
+              }}
+            />
+          </Card>
+          <ButtonGroup style={{ padding: 0 }}>
+            <ButtonGroupButton
+              data-kind="primary"
+              onClick={pushNewPassword}
+              disabled={!signedIn || !activeTabId || saving}
+            >
+              {saving ? 'Saving…' : 'Add to list'}
+            </ButtonGroupButton>
+            <ButtonGroupButton
+              data-kind="hot-text"
+              onClick={() => setConfirmClear(true)}
+              disabled={!passwords || passwords.length === 0}
+            >
+              Clear…
+            </ButtonGroupButton>
+          </ButtonGroup>
+        </NewPasswordBlock>
         {confirmClear && passwords && passwords.length > 0 && (
           <ConfirmBanner role="alertdialog" aria-label="Confirm clear tab">
             <span>
-              <strong>Clear “{tabs?.find((tab) => tab.slug === activeTabId)?.name}”?</strong> This permanently
+              <strong>Clear “{activeTab?.name}”?</strong> This permanently
               removes {passwords.length} {passwords.length === 1 ? 'password' : 'passwords'} from OpenBao.
             </span>
             <div>
@@ -500,10 +645,24 @@ const App = () => {
             </Button>
           </Banner>
         )}
-        {signedIn && activeTabId && passwords === null && <Banner>Loading…</Banner>}
-        {passwords && (
+        {signedIn && activeTabId && passwords === null && !searchingAll && <Banner>Loading…</Banner>}
+        {searchingAll && allLists && (
           <List>
-            {passwords.map((item) => (
+            {allResults.map(({ tab, item }) => (
+              <SearchResult
+                key={`${tab.slug}/${item.key}`}
+                tab={tab}
+                password={item}
+                query={needle}
+                recheck={recheckResult}
+                openTab={openResult}
+              />
+            ))}
+          </List>
+        )}
+        {!searchingAll && passwords && (
+          <List>
+            {shown.map((item) => (
               <Password
                 key={item.key}
                 password={item}
@@ -514,6 +673,8 @@ const App = () => {
                 savePassword={savePassword}
                 recheck={recheck}
                 isNew={item.key === newKey}
+                isFound={item.key === foundKey}
+                foundShown={() => setFoundKey(undefined)}
               />
             ))}
           </List>

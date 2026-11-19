@@ -1,7 +1,7 @@
 import { ISettings } from '@types';
 import { BAO_ADDR } from '@/config.gen.ts';
 
-// browser storage holds only settings and the selected tab
+// browser storage holds only settings, the selected tab and the search's All tabs box
 const defaultSettings: ISettings = {
   minLength: 3,
   maxLength: 5,
@@ -51,4 +51,25 @@ function saveActiveTabId(activeTabId: string) {
   chrome.storage.local.set({ activeTabId });
 }
 
-export { defaultSettings, getSettings, saveSettings, getActiveTabId, saveActiveTabId };
+// the search's All tabs box
+function getSearchAllTabs(): Promise<boolean> {
+  return new Promise((resolve) => {
+    chrome.storage.local.get('searchAllTabs', (result) => {
+      resolve(result.searchAllTabs === true);
+    });
+  });
+}
+
+function saveSearchAllTabs(searchAllTabs: boolean) {
+  chrome.storage.local.set({ searchAllTabs });
+}
+
+export {
+  defaultSettings,
+  getActiveTabId,
+  getSearchAllTabs,
+  getSettings,
+  saveActiveTabId,
+  saveSearchAllTabs,
+  saveSettings
+};
