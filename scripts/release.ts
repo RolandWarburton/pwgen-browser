@@ -3,10 +3,10 @@ import { exists } from '@std/fs';
 import { load } from '@std/dotenv';
 
 // --- Configuration ---
-const TAG = 'v2.2.0';
-const RELEASE_NAME = 'Version 2.2.0';
+const TAG = 'v2.3.0';
+const RELEASE_NAME = 'Version 2.3.0';
 const ZIP_FILE_PATH = 'pwgen-browser.zip';
-const RELEASE_NOTES = 'Restyled side panel with icon buttons, and a confirmation before deleting or clearing a tab';
+const RELEASE_NOTES = 'Search the open tab or all tabs, and edit a password or note in place';
 // ---------------------
 
 // ZIP_PASSWORD comes from the environment or .env, never the repo
